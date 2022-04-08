@@ -79,7 +79,8 @@
               "browserTarget": "ecommerce-angular:build:production"
             },
             "development": {
-              "browserTarget": "ecommerce-angular:build:development"
+              "browserTarget": "ecommerce-angular:build:development",
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
