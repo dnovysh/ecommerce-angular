@@ -13,4 +13,5 @@ export interface ProductInterface {
   unitPrice: number
   dateCreated: Date
   lastUpdated: Date
+  inventoryStatus?:string
 }

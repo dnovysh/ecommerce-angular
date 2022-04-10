@@ -1,1 +1,36 @@
-<p>product-list works!</p>
+<p-toast position="bottom-left" key="cet"></p-toast>
+<div class="container" *ngIf="isLoading$ | async">
+  <ec-loading></ec-loading>
+</div>
+<ec-error-message [message]="error$ | async"></ec-error-message>
+<div class="card" *ngIf="products">
+  <p-dataView [value]="products" [paginator]="true" [rows]="6" layout="grid">
+    <ng-template let-product pTemplate="gridItem">
+      <div class="col-12 md:col-4">
+        <div class="product-grid-item card">
+          <div class="product-grid-item-top">
+            <div>
+              <i class="pi pi-tag product-category-icon"></i>
+              <span class="product-category">{{product.category}}</span>
+            </div>
+            <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">
+              {{product.inventoryStatus}}
+            </span>
+          </div>
+          <div class="product-grid-item-content">
+            <img [src]="'assets/showcase/images/demo/product/' + product.image" [alt]="product.name"/>
+            <div class="product-name">{{product.name}}</div>
+            <div class="product-description">{{product.description}}</div>
+          </div>
+          <div class="product-grid-item-bottom">
+            <span class="product-price">${{product.price}}</span>
+            <p-button
+              icon="pi pi-shopping-cart"
+              [disabled]="product.inventoryStatus === getInventoryStatusTypes().OUT_OF_STOCK"
+            ></p-button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-dataView>
+</div>

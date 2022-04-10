@@ -5,6 +5,7 @@ import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {StoreModule} from "@ngrx/store";
 import {EffectsModule} from "@ngrx/effects";
 import {routerReducer, StoreRouterConnectingModule} from "@ngrx/router-store";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -19,8 +20,10 @@ import {environment} from "src/environments/environment";
   ],
   imports: [
     BrowserModule,
+    // FormsModule,
     AppRoutingModule,
     HttpClientModule,
+    BrowserAnimationsModule,
     StoreModule.forRoot({router: routerReducer}, {}),
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),

@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core"
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {catchError, map, of, switchMap} from "rxjs";
+import {catchError, map, of, switchMap, tap} from "rxjs";
+import {MessageService} from "primeng/api";
 
 import {ProductListService} from "src/app/catalog/product-list/services/product-list.service";
 import {
@@ -12,9 +13,10 @@ import {ProductListResponseInterface} from "src/app/catalog/product-list/types/p
 
 
 @Injectable()
-export class GetFeedEffect {
+export class GetProductListEffect {
   constructor(private actions$: Actions,
-              private productListService: ProductListService) {
+              private productListService: ProductListService,
+              private messageService: MessageService) {
   }
 
   getProductList$ = createEffect(() => this.actions$.pipe(
@@ -24,8 +26,27 @@ export class GetFeedEffect {
         map((productListResponse: ProductListResponseInterface) =>
           getProductListSuccessAction({productListResponse})
         ),
-        catchError(() => of(getProductListFailureAction()))
+        catchError(() => of(getProductListFailureAction(
+          {error: 'Something went wrong while loading the catalog, please try again later or contact support'}
+        )))
       )
     })
   ))
+
+  showErrorToast$ = createEffect(() => this.actions$.pipe(
+      ofType(getProductListFailureAction),
+      tap(({error}) => {
+        if (error) {
+          this.messageService.add({
+            key: 'cet',
+            severity: 'error',
+            summary: 'Error',
+            detail: error,
+            life: 5000
+          });
+        }
+      })
+    ),
+    {dispatch: false}
+  )
 }

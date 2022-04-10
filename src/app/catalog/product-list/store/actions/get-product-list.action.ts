@@ -13,5 +13,6 @@ export const getProductListSuccessAction = createAction(
 )
 
 export const getProductListFailureAction = createAction(
-  ActionTypes.GET_PRODUCT_LIST_FAILURE
+  ActionTypes.GET_PRODUCT_LIST_FAILURE,
+  props<{ error: string | null }>()
 )
