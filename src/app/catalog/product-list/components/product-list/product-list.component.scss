@@ -1,4 +1,5 @@
 :host ::ng-deep {
+
   .p-dropdown {
     width: 14rem;
     font-weight: normal;
@@ -64,7 +65,7 @@
     }
 
     .p-rating {
-      margin: 0 0 .5rem 0;
+      margin: 0 0 0.5rem 0;
     }
 
     .product-price {
@@ -85,8 +86,7 @@
   }
 
   .product-grid-item {
-    margin: .5em;
-    border: 1px solid var(--surface-border);;
+    margin: .5em .75em;
     transition: all 0.3s ease 0s;
 
     .product-grid-item-top,
@@ -97,13 +97,17 @@
     }
 
     img {
-      width: 75%;
+      width: 100%;
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
       margin: 2rem 0;
     }
 
     .product-grid-item-content {
       text-align: center;
+    }
+
+    .p-rating {
+      margin: 0 0 0.5rem 0;
     }
 
     .product-price {
@@ -118,9 +122,7 @@
 
   .product-grid-item:hover,
   .product-grid-item:focus {
-    border: 1px solid var(--surface-border);
-    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
-    transform: scale(1.06);
+    box-shadow: 0 0 20px 0 rgb(0 0 0 / 20%);
     .product-grid-item-bottom .product-grid-cart-button {
       visibility: visible;
     }
@@ -131,7 +133,15 @@
   background: var(--surface-card);
   padding: 2rem;
   border-radius: 10px;
+}
+
+.product-item-card {
   margin-bottom: 2rem;
+}
+
+.spinner-container {
+  text-align: center;
+  margin: 130px 0;
 }
 
 @media screen and (max-width: 576px) {
@@ -163,6 +173,15 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .product-grid-item {
+    border: 1px solid var(--surface-border);
+    .product-grid-item-bottom .product-grid-cart-button {
+      visibility: visible;
     }
   }
 }

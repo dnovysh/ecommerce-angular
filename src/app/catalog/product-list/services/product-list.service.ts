@@ -12,7 +12,7 @@ export class ProductListService {
   }
 
   getProductList(): Observable<ProductListResponseInterface> {
-    const fullUrl = `${environment.apiUrl}/catalog-products?projection=inlineCategory`
+    const fullUrl = `${environment.catalogApiUrl}/catalog-products?projection=inlineCategory`
 
     return this.http.get<ProductListResponseInterface>(fullUrl)
   }

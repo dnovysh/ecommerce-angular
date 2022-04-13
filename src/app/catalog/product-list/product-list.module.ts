@@ -10,6 +10,7 @@ import {SelectButtonModule} from "primeng/selectbutton";
 import {PanelModule} from "primeng/panel";
 import {FormsModule} from "@angular/forms";
 import {RippleModule} from "primeng/ripple";
+import {RatingModule} from "primeng/rating";
 
 import {ProductListComponent} from './components/product-list/product-list.component';
 import {ProductListService} from "src/app/catalog/product-list/services/product-list.service";
@@ -17,6 +18,7 @@ import {reducer} from "src/app/catalog/product-list/store/reducers";
 import {GetProductListEffect} from "src/app/catalog/product-list/store/effects/get-product-list.effect";
 import {LoadingModule} from "src/app/shared/modules/loading/loading.module";
 import {ErrorMessageModule} from "src/app/shared/modules/error-message/error-message.module";
+import {ImagePreloadModule} from "src/app/shared/directives/image-preload/image-preload.module";
 
 
 @NgModule({
@@ -35,7 +37,9 @@ import {ErrorMessageModule} from "src/app/shared/modules/error-message/error-mes
     EffectsModule.forFeature([GetProductListEffect]),
     StoreModule.forFeature('productList', reducer),
     LoadingModule,
-    ErrorMessageModule
+    ErrorMessageModule,
+    RatingModule,
+    ImagePreloadModule
   ],
   providers: [
     ProductListService,

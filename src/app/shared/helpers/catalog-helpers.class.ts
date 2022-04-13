@@ -1,30 +1,27 @@
-import {InventoryStatusEnum} from "src/app/shared/types/catalog/inventory-status.enum";
-import {ProductInterface} from "src/app/shared/types/catalog/product.interface";
+import {environment} from "src/environments/environment";
 
 export class CatalogHelpers {
 
-  public static getProductsWithCalculatedInventoryStatus(products: ProductInterface[] | null)
-    : ProductInterface[] | null {
-    if (products === null) {
-      return null
+  public static getProductImageSrc = (productImage: string | null): string => {
+    if (productImage) {
+      const trimmedProductImage = productImage.trim()
+      if (trimmedProductImage) {
+        return environment.baseProductImageSource + trimmedProductImage
+      }
     }
-    return products.map((product) => this.getProductWithCalculatedInventoryStatus(product))
+    return this.getDefaultProductImage()
   }
 
-  public static getProductWithCalculatedInventoryStatus(product: ProductInterface): ProductInterface {
-    return {
-      ...product,
-      inventoryStatus: this.getInventoryStatus(product.unitsInStock)
-    }
-  }
+  public static getDefaultProductImage = (): string => environment.defaultProductImage
 
-  private static getInventoryStatus(unitsInStock: bigint): string {
-    if (unitsInStock > BigInt(3)) {
-      return InventoryStatusEnum.IN_STOCK
-    } else if (unitsInStock > BigInt(0)) {
-      return InventoryStatusEnum.LOW_STOCK
-    }
-    return InventoryStatusEnum.OUT_OF_STOCK
+  public static getNumberOfRatingStars = (rating: number | null): number => {
+    // one star for interval 0-29
+    // two stars for interval 30-49
+    // three stars for interval 50-69
+    // four stars for interval 70-89
+    // five stars for interval 90-100
+    // no stars for null
+    if (rating === 0) return 1
+    return rating ? Math.round((rating) / 20) : 0;
   }
-
 }

@@ -12,25 +12,27 @@ import {AppComponent} from './app.component';
 import {ProductListModule} from "src/app/catalog/product-list/product-list.module";
 import {LoadingModule} from "src/app/shared/modules/loading/loading.module";
 import {environment} from "src/environments/environment";
+import {SharedModule} from "primeng/api";
 
 
 @NgModule({
   declarations: [
     AppComponent
   ],
-  imports: [
-    BrowserModule,
-    // FormsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    StoreModule.forRoot({router: routerReducer}, {}),
-    EffectsModule.forRoot([]),
-    StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
-    StoreRouterConnectingModule.forRoot(),
-    ProductListModule,
-    LoadingModule
-  ],
+    imports: [
+        BrowserModule,
+        // FormsModule,
+        AppRoutingModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        StoreModule.forRoot({router: routerReducer}, {}),
+        EffectsModule.forRoot([]),
+        StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
+        StoreRouterConnectingModule.forRoot(),
+        ProductListModule,
+        LoadingModule,
+        SharedModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

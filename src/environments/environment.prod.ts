@@ -1,4 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://localhost:8080/api'
+  catalogApiUrl: 'http://localhost:4200/api',
+  baseProductImageSource: 'assets/catalog/product/images/',
+  defaultProductImage: 'assets/catalog/product/images/placeholder.jpg'
 };

@@ -38,7 +38,7 @@ export class GetProductListEffect {
       tap(({error}) => {
         if (error) {
           this.messageService.add({
-            key: 'cet',
+            key: 'productListErrorToast',
             severity: 'error',
             summary: 'Error',
             detail: error,

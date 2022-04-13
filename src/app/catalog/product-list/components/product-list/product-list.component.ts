@@ -30,8 +30,16 @@ export class ProductListComponent implements OnInit, OnDestroy {
   page: PageInterface | null
   limit: number = 12
 
+  getProductImageSrc = CatalogHelpers.getProductImageSrc
+  getDefaultProductImage = CatalogHelpers.getDefaultProductImage
+  getNumberOfRatingStars = CatalogHelpers.getNumberOfRatingStars
+
   constructor(
     private store: Store<AppStateInterface>) {
+  }
+
+  public getInventoryStatusTypes(): typeof InventoryStatusEnum {
+    return InventoryStatusEnum;
   }
 
   ngOnInit(): void {
@@ -45,10 +53,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.pageSubscription.unsubscribe()
   }
 
-  public getInventoryStatusTypes(): typeof InventoryStatusEnum {
-    return InventoryStatusEnum;
-  }
-
   private initializeValues() {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector))
     this.error$ = this.store.pipe(select(errorSelector))
@@ -58,7 +62,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productsSubscription = this.store
       .pipe(select(productListSelector))
       .subscribe((products: ProductInterface[] | null) =>
-        this.products = CatalogHelpers.getProductsWithCalculatedInventoryStatus(products)
+        this.products = products
       )
     this.pageSubscription = this.store
       .pipe(select(pageSelector))

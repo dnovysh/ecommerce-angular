@@ -7,11 +7,12 @@ export interface ProductInterface {
   category: ProductCategoryInterface
   name: string
   description: string | null
-  imageUrl: string | null
+  image: string | null
   active: boolean
-  unitsInStock: bigint
-  unitPrice: number
+  unitsInStock: number
+  unitPrice: number | null
+  rating: number | null
+  inventoryStatus: string | null
   dateCreated: Date
   lastUpdated: Date
-  inventoryStatus?:string
 }
