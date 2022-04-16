@@ -12,6 +12,10 @@
 
   .product-description {
     margin: 0 0 1rem 0;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .product-category-icon {
@@ -129,7 +133,19 @@
   }
 }
 
+
+.catalog-page {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
 .card {
+  display: flex;
+  flex-direction: row;
   background: var(--surface-card);
   padding: 2rem;
   border-radius: 10px;
