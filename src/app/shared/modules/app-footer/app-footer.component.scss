@@ -1,6 +1,6 @@
 .layout-footer {
   position: relative;
-  padding: 2rem;
+  padding: 36px 24px 24px 12px;
   font-size: 1rem;
   background-color: var(--surface-ground);
   display: flex;
@@ -30,7 +30,11 @@
   text-decoration: none;
 }
 
+.layout-footer a:hover {
+  color: #4291dc;
+}
+
 .layout-footer .layout-footer-right a i {
   color: var(--text-secondary-color);
-  font-size: 2rem;
+  font-size: 22px;
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AppNavbarComponent } from './app-navbar.component';
 import { RouterModule } from "@angular/router";
 import { InputTextModule } from "primeng/inputtext";
+import { BadgeModule } from 'primeng/badge';
 
 
 @NgModule({
@@ -12,7 +13,8 @@ import { InputTextModule } from "primeng/inputtext";
   imports: [
     CommonModule,
     RouterModule,
-    InputTextModule
+    InputTextModule,
+    BadgeModule
   ],
   exports: [
     AppNavbarComponent
