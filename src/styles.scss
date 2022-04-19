@@ -1,7 +1,16 @@
 :root {
   --app-navbar-height: 90px;
   --app-content-padding: 91px;
+  --app-navbar-fade-in-down-top: 53px;
   --side-padding: 24px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --app-navbar-height: 137px;
+    --app-content-padding: 138px;
+    --app-navbar-fade-in-down-top: 58px;
+  }
 }
 
 html {
