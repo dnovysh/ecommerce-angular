@@ -1,15 +1,15 @@
-import {Injectable} from "@angular/core"
-import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {catchError, map, of, switchMap, tap} from "rxjs";
-import {MessageService} from "primeng/api";
+import { Injectable } from "@angular/core"
+import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { catchError, map, of, switchMap, tap } from "rxjs";
+import { MessageService } from "primeng/api";
 
-import {ProductListService} from "src/app/catalog/product-list/services/product-list.service";
+import { ProductListService } from "src/app/catalog/product-list/services/product-list.service";
 import {
   getProductListAction,
   getProductListFailureAction,
   getProductListSuccessAction
 } from "src/app/catalog/product-list/store/actions/get-product-list.action";
-import {ProductListResponseInterface} from "src/app/catalog/product-list/types/product-list-response.interface";
+import { ProductListResponseInterface } from "src/app/catalog/product-list/types/product-list-response.interface";
 
 
 @Injectable()

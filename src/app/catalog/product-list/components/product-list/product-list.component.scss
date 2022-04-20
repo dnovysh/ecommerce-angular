@@ -1,5 +1,57 @@
-:host ::ng-deep {
+.catalog-page_wrapper {
+  display: flex;
+  width: 100%;
+}
 
+.catalog-page {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  flex-direction: row;
+  background: var(--surface-card);
+}
+
+@media screen and (min-width: 992px) {
+  .catalog-page {
+    flex-wrap: nowrap;
+  }
+}
+
+.catalog-menu-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  margin-right: 1.5rem;
+  padding: 0;
+  width: 100%;
+}
+
+@media screen and (min-width: 992px) {
+  .catalog-menu-wrapper {
+    flex: 0 0 auto;
+    padding: 0.5rem;
+    width: 25%;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  background: var(--surface-card);
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.product-item-card {
+  margin-bottom: 2rem;
+}
+
+.spinner-container {
+  text-align: center;
+  margin: 130px 0;
+}
+
+:host ::ng-deep {
   .p-dropdown {
     width: 14rem;
     font-weight: normal;
@@ -127,37 +179,11 @@
   .product-grid-item:hover,
   .product-grid-item:focus {
     box-shadow: 0 0 20px 0 rgb(0 0 0 / 20%);
+
     .product-grid-item-bottom .product-grid-cart-button {
       visibility: visible;
     }
   }
-}
-
-
-.catalog-page {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.card {
-  display: flex;
-  flex-direction: row;
-  background: var(--surface-card);
-  padding: 2rem;
-  border-radius: 10px;
-}
-
-.product-item-card {
-  margin-bottom: 2rem;
-}
-
-.spinner-container {
-  text-align: center;
-  margin: 130px 0;
 }
 
 @media screen and (max-width: 576px) {
@@ -196,6 +222,7 @@
 @media screen and (max-width: 767px) {
   .product-grid-item {
     border: 1px solid var(--surface-border);
+
     .product-grid-item-bottom .product-grid-cart-button {
       visibility: visible;
     }

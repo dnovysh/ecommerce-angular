@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-category-menu',
+  selector: 'ec-category-menu',
   templateUrl: './category-menu.component.html',
   styleUrls: ['./category-menu.component.scss']
 })

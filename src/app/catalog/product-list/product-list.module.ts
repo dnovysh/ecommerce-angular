@@ -22,6 +22,7 @@ import { ErrorMessageModule } from "src/app/shared/modules/error-message/error-m
 import { ImagePreloadModule } from "src/app/shared/directives/image-preload/image-preload.module";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { DividerModule } from "primeng/divider";
+import { CategoryMenuModule } from "src/app/catalog/category-menu/category-menu.module";
 
 
 const routes = [
@@ -51,7 +52,8 @@ const routes = [
     RatingModule,
     ImagePreloadModule,
     ScrollPanelModule,
-    DividerModule
+    DividerModule,
+    CategoryMenuModule
   ],
   providers: [
     ProductListService,
