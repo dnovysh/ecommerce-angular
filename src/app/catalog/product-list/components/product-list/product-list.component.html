@@ -5,8 +5,10 @@
       <ec-category-menu></ec-category-menu>
       <p-divider class="lg:hidden"></p-divider>
     </div>
-    <div class="border-2 border-dashed lg:mt-0 mt-3 surface-border surface-section w-full">
-      <ec-error-message [message]="error$ | async"></ec-error-message>
+    <div class="product-list-data-wrapper">
+      <div class="flex mt-2 justify-content-center font-medium font-semibold">
+        <ec-error-message [message]="error$ | async"></ec-error-message>
+      </div>
       <div class="spinner-container" *ngIf="isLoading$ | async">
         <ec-loading></ec-loading>
       </div>

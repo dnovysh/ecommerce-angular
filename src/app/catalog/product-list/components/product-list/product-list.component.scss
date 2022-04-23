@@ -6,9 +6,10 @@
 .catalog-page {
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
   flex-direction: row;
-  background: var(--surface-card);
+  width: 100%;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  background-color: var(--surface-card);
 }
 
 @media screen and (min-width: 992px) {
@@ -21,17 +22,19 @@
   display: flex;
   flex-direction: column;
   flex: 0 0 auto;
-  margin-right: 1.5rem;
-  padding: 0 0.5rem;
   width: 100%;
+  margin-right: 1.5rem;
 }
 
 @media screen and (min-width: 992px) {
   .catalog-menu-wrapper {
     flex: 0 0 auto;
-    padding: 0 0.5rem 0.5rem 0.5rem;
-    width: 25%;
+    width: 256px;
   }
+}
+
+.product-list-data-wrapper {
+  width: 100%;
 }
 
 .card {
@@ -219,7 +222,11 @@
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
+  .catalog-page {
+    padding: 0;
+  }
+
   .product-grid-item {
     border: 1px solid var(--surface-border);
 
