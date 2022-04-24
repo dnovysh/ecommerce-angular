@@ -23,6 +23,8 @@ import { ImagePreloadModule } from "src/app/shared/directives/image-preload/imag
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { DividerModule } from "primeng/divider";
 import { CategoryMenuModule } from "src/app/catalog/category-menu/category-menu.module";
+import { InputTextModule } from "primeng/inputtext";
+import { DropdownModule } from "primeng/dropdown";
 
 
 const routes = [
@@ -35,26 +37,28 @@ const routes = [
   declarations: [
     ProductListComponent
   ],
-  imports: [
-    CommonModule,
-    DataViewModule,
-    ButtonModule,
-    SelectButtonModule,
-    PanelModule,
-    RippleModule,
-    FormsModule,
-    ToastModule,
-    RouterModule.forChild(routes),
-    EffectsModule.forFeature([GetProductListEffect]),
-    StoreModule.forFeature('productList', reducer),
-    LoadingModule,
-    ErrorMessageModule,
-    RatingModule,
-    ImagePreloadModule,
-    ScrollPanelModule,
-    DividerModule,
-    CategoryMenuModule
-  ],
+    imports: [
+        CommonModule,
+        DataViewModule,
+        ButtonModule,
+        SelectButtonModule,
+        PanelModule,
+        RippleModule,
+        FormsModule,
+        ToastModule,
+        RouterModule.forChild(routes),
+        EffectsModule.forFeature([GetProductListEffect]),
+        StoreModule.forFeature('productList', reducer),
+        LoadingModule,
+        ErrorMessageModule,
+        RatingModule,
+        ImagePreloadModule,
+        ScrollPanelModule,
+        DividerModule,
+        CategoryMenuModule,
+        InputTextModule,
+        DropdownModule
+    ],
   providers: [
     ProductListService,
     MessageService
