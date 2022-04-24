@@ -75,6 +75,15 @@
     font-size: 12px;
   }
 
+  .product-list-search {
+    margin-bottom: 0.5rem;
+    margin-left: 0;
+  }
+
+  .product-list-search > input {
+    width: 250px;
+  }
+
   .product-name {
     font-size: 1.5rem;
     font-weight: 700;
@@ -211,6 +220,11 @@
     border-radius: 10px;
     margin-bottom: 2rem;
   }
+
+  .product-list-data-wrapper .p-dataview-emptymessage {
+    text-align: center;
+    font-weight: 600;
+  }
 }
 
 @media screen and (max-width: 576px) {
@@ -257,5 +271,12 @@
     .product-grid-item-bottom .product-grid-cart-button {
       visibility: visible;
     }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  :host ::ng-deep .product-list-search {
+    margin-bottom: 0;
+    margin-left: 0.5rem;
   }
 }

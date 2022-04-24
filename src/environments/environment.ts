@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  catalogApiUrl: 'http://localhost:4200/api',
+  baseApiUrl: 'http://localhost:4200/api',
   baseProductImageSource: 'assets/catalog/product/images/',
   defaultProductImage: 'assets/catalog/product/images/placeholder.jpg'
 };

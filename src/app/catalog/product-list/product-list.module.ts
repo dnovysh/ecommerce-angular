@@ -29,7 +29,6 @@ import { DropdownModule } from "primeng/dropdown";
 
 const routes = [
   { path: 'category/:categoryId', component: ProductListComponent },
-  { path: 'category', component: ProductListComponent },
   { path: 'products', component: ProductListComponent }
 ]
 

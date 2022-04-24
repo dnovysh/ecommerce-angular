@@ -6,24 +6,30 @@
       <p-divider class="lg:hidden"></p-divider>
     </div>
     <div class="product-list-data-wrapper">
-      <div class="flex justify-content-center font-medium font-semibold">
+      <div class="flex justify-content-center font-semibold p-3">
         <ec-error-message [message]="error$ | async"></ec-error-message>
       </div>
-      <div class="spinner-container" *ngIf="isLoading$ | async">
+      <div class="spinner-container" *ngIf="(isLoading$ | async) && !products">
         <ec-loading></ec-loading>
       </div>
       <div *ngIf="products">
-        <p-dataView #dv [value]="products" [paginator]="true" [rows]="pageSize" filterBy="name" layout="grid">
+        <p-dataView #dv
+                    [value]="products"
+                    [paginator]="true"
+                    [rows]="pageSize"
+                    filterBy="name"
+                    layout="grid"
+        >
           <ng-template pTemplate="header">
             <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-               <span class="p-input-icon-left mb-2 md:mb-0">
-                 <i class="pi pi-search"></i>
-                 <input
-                   type="search"
-                   pInputText
-                   placeholder="Search by Name"
-                   (input)="dv.filter(getHTMLInputElementValue($event.target))">
-               </span>
+                <span class="p-input-icon-left product-list-search">
+                  <i class="pi pi-search"></i>
+                  <input
+                    type="search"
+                    pInputText
+                    placeholder="Search by Name"
+                    (input)="dv.filter(getHTMLInputElementValue($event.target))">
+                </span>
               <div class="product-list-layout-options">
                 <p-dropdown [options]="pageSizeList" [(ngModel)]="pageSize"></p-dropdown>
                 <p-dataViewLayoutOptions></p-dataViewLayoutOptions>

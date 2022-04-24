@@ -14,6 +14,8 @@ import { PageInterface } from "src/app/shared/types/page.interface";
 import { getProductListAction } from "src/app/catalog/product-list/store/actions/get-product-list.action";
 import { InventoryStatusEnum } from "src/app/shared/types/catalog/inventory-status.enum";
 import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
+import { ActivatedRoute } from "@angular/router";
+import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
 
 
 @Component({
@@ -37,20 +39,20 @@ export class ProductListComponent implements OnInit, OnDestroy {
   getDefaultProductImage = CatalogHelpers.getDefaultProductImage
   getNumberOfRatingStars = CatalogHelpers.getNumberOfRatingStars
 
-  constructor(private store: Store<AppStateInterface>) { }
+  constructor(private store: Store<AppStateInterface>,
+              private route: ActivatedRoute) { }
 
   public getInventoryStatusTypes(): typeof InventoryStatusEnum {
     return InventoryStatusEnum;
   }
 
   public getHTMLInputElementValue(target: EventTarget | null): string {
-    return  EventTarget ? (target as HTMLInputElement).value : ''
+    return EventTarget ? (target as HTMLInputElement).value : ''
   }
 
   ngOnInit(): void {
     this.initializeValues()
     this.initializeListeners()
-    this.fetchData()
   }
 
   ngOnDestroy(): void {
@@ -76,9 +78,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
       .subscribe((page: PageInterface | null) => {
         this.page = page
       })
-  }
-
-  private fetchData(): void {
-    this.store.dispatch(getProductListAction())
+    this.route.paramMap
+      .subscribe((paramMap) => {
+        const categoryId = CommonHelperClass.parseIntParameter(paramMap.get('categoryId'))
+        this.store.dispatch(getProductListAction({categoryId}))
+      })
   }
 }

@@ -37,7 +37,9 @@ a {
 }
 
 .category-menu-panel > ul > li > a:hover,
-.category-menu-panel > ul > li > a:focus {
+.category-menu-panel > ul > li > a:focus,
+.category-menu-panel > ul > li > a.active
+{
   font-weight: 600;
   color: var(--blue-500, #2196f3);
   background-color: var(--surface-hover, #e9ecef);

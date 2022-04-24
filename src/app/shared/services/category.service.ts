@@ -11,7 +11,7 @@ export class CategoryService {
   constructor(private http: HttpClient) { }
 
   getAllCategories(): Observable<ProductCategoryInterface[]> {
-    const fullUrl = `${environment.catalogApiUrl}/catalog-categories`
+    const fullUrl = `${environment.baseApiUrl}/catalog-categories`
 
     return this.http.get<ProductCategoryResponseInterface>(fullUrl)
       .pipe(map((response) => response._embedded.categories))

@@ -21,8 +21,8 @@ export class GetProductListEffect {
 
   getProductList$ = createEffect(() => this.actions$.pipe(
     ofType(getProductListAction),
-    switchMap(() => {
-      return this.productListService.getProductList().pipe(
+    switchMap((action) => {
+      return this.productListService.getProductList(action.categoryId).pipe(
         map((productListResponse: ProductListResponseInterface) =>
           getProductListSuccessAction({productListResponse})
         ),
