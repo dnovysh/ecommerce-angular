@@ -1,30 +1,32 @@
-import {createFeatureSelector, createSelector} from "@ngrx/store";
-
-import {ProductListStateInterface} from "src/app/catalog/product-list/types/product-list-state.interface";
-import {AppStateInterface} from "src/app/shared/types/app-state.interface";
-import {ProductInterface} from "src/app/shared/types/catalog/product.interface";
-import {PageInterface} from "src/app/shared/types/page.interface";
+import { createFeatureSelector, createSelector } from "@ngrx/store";
+import { AppStateInterface } from "src/app/shared/types/app-state.interface";
+import { ProductListStateInterface } from "src/app/catalog/product-list/types/product-list-state.interface";
+import { ProductListDataInterface } from "src/app/catalog/product-list/types/product-list-data.interface";
+import {
+  ProductListPageSettingsStateInterface
+} from "src/app/catalog/product-list/types/product-list-page-settings-state.interface";
 
 
 export const productListFeatureSelector = createFeatureSelector<ProductListStateInterface>('productList');
 
-export const isLoadingSelector = createSelector<AppStateInterface, [ProductListStateInterface], boolean>(
+export const isLoadingSelector = createSelector<AppStateInterface, ProductListStateInterface, boolean>(
   productListFeatureSelector,
-  (productListState: ProductListStateInterface) => productListState.isLoading
+  (state) => state.isLoading
 )
 
-export const errorSelector = createSelector<AppStateInterface, [ProductListStateInterface], string | null>(
+export const errorSelector = createSelector<AppStateInterface, ProductListStateInterface, string | null>(
   productListFeatureSelector,
-  (productListState: ProductListStateInterface) => productListState.error
+  (state) => state.error
 )
 
-export const productListSelector = createSelector<AppStateInterface,
-  [ProductListStateInterface], ProductInterface[] | null>(
-  productListFeatureSelector,
-  (productListState: ProductListStateInterface) => productListState.data
-)
+export const productListDataSelector =
+  createSelector<AppStateInterface, ProductListStateInterface, ProductListDataInterface | null>(
+    productListFeatureSelector,
+    (state) => state.data
+  )
 
-export const pageSelector = createSelector<AppStateInterface, [ProductListStateInterface], PageInterface | null>(
-  productListFeatureSelector,
-  (productListState: ProductListStateInterface) => productListState.page
-)
+export const pageSettingsSelector =
+  createSelector<AppStateInterface, ProductListStateInterface, ProductListPageSettingsStateInterface | null>(
+    productListFeatureSelector,
+    (state) => state.pageSettings
+  )

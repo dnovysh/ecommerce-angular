@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from "@ngrx/store";
-import { Observable, Subscription } from "rxjs";
+import { combineLatest, combineLatestAll, map, Observable, Subscription } from "rxjs";
+import { ActivatedRoute, ParamMap } from "@angular/router";
 
 import {
   errorSelector,
-  isLoadingSelector,
-  pageSelector,
-  productListSelector
+  isLoadingSelector, pageSettingsSelector,
+  productListDataSelector
 } from "src/app/catalog/product-list/store/selectors";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
 import { ProductInterface } from "src/app/shared/types/catalog/product.interface";
@@ -14,8 +14,18 @@ import { PageInterface } from "src/app/shared/types/page.interface";
 import { getProductListAction } from "src/app/catalog/product-list/store/actions/get-product-list.action";
 import { InventoryStatusEnum } from "src/app/shared/types/catalog/inventory-status.enum";
 import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
-import { ActivatedRoute } from "@angular/router";
 import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
+import { environment } from "src/environments/environment";
+import {
+  setProductListPageSettingsAction
+} from "src/app/catalog/product-list/store/actions/set-product-list-page-settings.action";
+import { ProductListDataInterface } from "src/app/catalog/product-list/types/product-list-data.interface";
+import {
+  getProductListPageSettingsAction
+} from "src/app/catalog/product-list/store/actions/get-product-list-page-settings.action";
+import {
+  ProductListPageSettingsStateInterface
+} from "src/app/catalog/product-list/types/product-list-page-settings-state.interface";
 
 
 @Component({
@@ -26,14 +36,14 @@ import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
 export class ProductListComponent implements OnInit, OnDestroy {
   isLoading$: Observable<boolean>
   error$: Observable<string | null>
-  productsSubscription: Subscription
-  pageSubscription: Subscription
+  conditionSubscription: Subscription
+  productsDataSubscription: Subscription
   products: ProductInterface[] | null
   page: PageInterface | null
-  limit: number = 12
 
-  pageSizeList: number[];
-  pageSize: number;
+  pageSizeList: number[]
+  pageSize: number
+  layout: string
 
   getProductImageSrc = CatalogHelpers.getProductImageSrc
   getDefaultProductImage = CatalogHelpers.getDefaultProductImage
@@ -50,38 +60,97 @@ export class ProductListComponent implements OnInit, OnDestroy {
     return EventTarget ? (target as HTMLInputElement).value : ''
   }
 
+  public onPageSizeChange(value: number) {
+    this.setPageSize(value)
+  }
+
+  public onChangeLayout($event: Event) {
+    const layout = ($event as any).layout
+    if (this.layout != layout) {
+      this.layout = layout
+    }
+  }
+
   ngOnInit(): void {
     this.initializeValues()
+    this.initializeSettings()
     this.initializeListeners()
   }
 
   ngOnDestroy(): void {
-    this.productsSubscription.unsubscribe()
-    this.pageSubscription.unsubscribe()
+    this.productsDataSubscription.unsubscribe()
+    this.conditionSubscription.unsubscribe()
   }
 
-  private initializeValues() {
-    this.pageSizeList = [6, 12, 24, 48, 96]
-    this.pageSize = this.pageSizeList[0]
+  private initializeValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector))
     this.error$ = this.store.pipe(select(errorSelector))
   }
 
-  private initializeListeners() {
-    this.productsSubscription = this.store
-      .pipe(select(productListSelector))
-      .subscribe((products: ProductInterface[] | null) =>
-        this.products = products
-      )
-    this.pageSubscription = this.store
-      .pipe(select(pageSelector))
-      .subscribe((page: PageInterface | null) => {
-        this.page = page
+  private initializeSettings(): void {
+    this.pageSizeList = environment.pageSizeList
+    this.store.dispatch(getProductListPageSettingsAction())
+    this.layout = 'grid'
+  }
+
+  private initializeListeners(): void {
+    this.subscribeToProductsData()
+    this.subscribeToChangeConditions()
+  }
+
+  private subscribeToProductsData(): void {
+    this.productsDataSubscription = this.store
+      .pipe(select(productListDataSelector))
+      .subscribe((productsData: ProductListDataInterface | null) => {
+        if (productsData) {
+          this.products = productsData.products
+          this.page = productsData.page
+        } else {
+          this.products = this.page = null
+        }
       })
-    this.route.paramMap
-      .subscribe((paramMap) => {
-        const categoryId = CommonHelperClass.parseIntParameter(paramMap.get('categoryId'))
-        this.store.dispatch(getProductListAction({categoryId}))
-      })
+  }
+
+  private subscribeToChangeConditions(): void {
+    this.conditionSubscription = combineLatest([
+        this.store.pipe(select(pageSettingsSelector)),
+        this.route.paramMap
+      ]
+    ).pipe(map(([pageSettings, paramMap]: [ProductListPageSettingsStateInterface | null, ParamMap]) => {
+      return { pageSettings, paramMap }
+    })).subscribe(({ pageSettings, paramMap }) => {
+      if (pageSettings === null || pageSettings.isLoading) {
+        console.log(`pageSettings ${pageSettings}, paramMap ${paramMap}`)
+        return;
+      }
+      if (pageSettings && pageSettings.size) {
+        if (this.pageSize !== pageSettings.size) {
+          this.pageSize = pageSettings.size
+        }
+      }
+      const paramPageSize = CommonHelperClass.parseIntParameter(paramMap.get('pageSize'))
+      if (paramPageSize && this.pageSize !== paramPageSize) {
+        this.setPageSize(paramPageSize)
+        return;
+      }
+      if (pageSettings.size === null && !pageSettings.failure) {
+        this.store.dispatch(getProductListPageSettingsAction())
+        return;
+      }
+      if (pageSettings.size === null && pageSettings.failure) {
+        this.setPageSize(this.pageSizeList[environment.defaultPageSizeIndex])
+        return;
+      }
+
+      const categoryId = CommonHelperClass.parseIntParameter(paramMap.get('categoryId'))
+      this.store.dispatch(getProductListAction({ params: { categoryId, pageSize: this.pageSize } }))
+    })
+  }
+
+  private setPageSize(size: number): void {
+    if (this.pageSize !== size) {
+      this.pageSize = size
+      this.store.dispatch(setProductListPageSettingsAction({ pageSettings: { size } }))
+    }
   }
 }

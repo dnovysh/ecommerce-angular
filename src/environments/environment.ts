@@ -4,6 +4,8 @@
 
 export const environment = {
   production: false,
+  pageSizeList:  [6, 12, 24, 48, 96],
+  defaultPageSizeIndex: 0,
   baseApiUrl: 'http://localhost:4200/api',
   baseProductImageSource: 'assets/catalog/product/images/',
   defaultProductImage: 'assets/catalog/product/images/placeholder.jpg'

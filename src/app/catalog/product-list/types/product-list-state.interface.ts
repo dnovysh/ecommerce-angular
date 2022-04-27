@@ -1,9 +1,11 @@
-import {PageInterface} from "src/app/shared/types/page.interface";
-import {ProductInterface} from "src/app/shared/types/catalog/product.interface";
+import {
+  ProductListPageSettingsStateInterface
+} from "src/app/catalog/product-list/types/product-list-page-settings-state.interface";
+import { ProductListDataInterface } from "src/app/catalog/product-list/types/product-list-data.interface";
 
 export interface ProductListStateInterface {
-  isLoading: boolean,
-  error: string | null,
-  data: ProductInterface[] | null,
-  page: PageInterface | null
+  isLoading: boolean
+  error: string | null
+  data: ProductListDataInterface | null
+  pageSettings: ProductListPageSettingsStateInterface
 }

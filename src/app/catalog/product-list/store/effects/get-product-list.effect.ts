@@ -22,7 +22,7 @@ export class GetProductListEffect {
   getProductList$ = createEffect(() => this.actions$.pipe(
     ofType(getProductListAction),
     switchMap((action) => {
-      return this.productListService.getProductList(action.categoryId).pipe(
+      return this.productListService.getProductList(action.params).pipe(
         map((productListResponse: ProductListResponseInterface) =>
           getProductListSuccessAction({productListResponse})
         ),
