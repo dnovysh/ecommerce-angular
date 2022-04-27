@@ -7,7 +7,7 @@ import {
   getCategoriesAction,
   getCategoriesFailureAction,
   getCategoriesSuccessAction
-} from "src/app/catalog/category-menu/store/actions/get-categories.action";
+} from "src/app/shared/modules/categories/store/get-categories.action";
 import { ProductCategoryInterface } from "src/app/shared/types/catalog/product-category.interface";
 
 
@@ -22,7 +22,7 @@ export class GetCategoriesEffect {
     switchMap(() => {
       return this.categoryService.getAllCategories().pipe(
         map((categories: ProductCategoryInterface[]) =>
-          getCategoriesSuccessAction({categories})
+          getCategoriesSuccessAction({ categories })
         ),
         catchError(() => of(getCategoriesFailureAction()))
       )

@@ -3,7 +3,7 @@ a {
 }
 
 .category-menu-panel {
-  height: 340px;
+  max-height: 340px;
   line-height: 22px;
   padding-right: 2rem;
   background-color: var(--surface-overlay, #fff);
@@ -38,8 +38,7 @@ a {
 
 .category-menu-panel > ul > li > a:hover,
 .category-menu-panel > ul > li > a:focus,
-.category-menu-panel > ul > li > a.active
-{
+.category-menu-panel > ul > li > a.active {
   font-weight: 600;
   color: var(--blue-500, #2196f3);
   background-color: var(--surface-hover, #e9ecef);

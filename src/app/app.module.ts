@@ -15,28 +15,30 @@ import { environment } from "src/environments/environment";
 import { SharedModule } from "primeng/api";
 import { AppFooterModule } from "src/app/shared/modules/app-footer/app-footer.module";
 import { AppNavbarModule } from "src/app/shared/modules/app-navbar/app-navbar.module";
+import { CategoriesModule } from "src/app/shared/modules/categories/categories.module";
 
 
 @NgModule({
   declarations: [
     AppComponent
   ],
-    imports: [
-        BrowserModule,
-        // FormsModule,
-        HttpClientModule,
-        BrowserAnimationsModule,
-        StoreModule.forRoot({ router: routerReducer }, {}),
-        EffectsModule.forRoot([]),
-        StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
-        StoreRouterConnectingModule.forRoot(),
-        ProductListModule,
-        LoadingModule,
-        SharedModule,
-        AppFooterModule,
-        AppRoutingModule,
-        AppNavbarModule
-    ],
+  imports: [
+    BrowserModule,
+    // FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    StoreModule.forRoot({ router: routerReducer }, {}),
+    EffectsModule.forRoot([]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    StoreRouterConnectingModule.forRoot(),
+    CategoriesModule,
+    ProductListModule,
+    LoadingModule,
+    SharedModule,
+    AppFooterModule,
+    AppRoutingModule,
+    AppNavbarModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 
 import { ProductListResponseInterface } from "src/app/catalog/product-list/types/product-list-response.interface";
@@ -18,16 +18,18 @@ export class ProductListService {
   constructor(private http: HttpClient) {
   }
 
-  getProductList(params: ProductListApiQueryParamsInterface): Observable<ProductListResponseInterface> {
-    let suffix = 'projection=inlineCategory'
-    if (params.pageSize) {
-      suffix = `size=${params.pageSize}&${suffix}`
+  getProductList(apiParams: ProductListApiQueryParamsInterface): Observable<ProductListResponseInterface> {
+    let params = new HttpParams()
+    let url = this.defaultQueryAllUrl
+    if (apiParams.categoryId !== null) {
+      params = params.append('id', apiParams.categoryId)
+      url = this.baseSearchUrl + '/findByCategoryId'
     }
-    if (params.categoryId === null) {
-      const fullUrl = `${this.defaultQueryAllUrl}?${suffix}`
-      return this.http.get<ProductListResponseInterface>(fullUrl)
+    if (apiParams.size) {
+      params = params.append('size', apiParams.size)
     }
-    const fullUrl = this.baseSearchUrl + `/findByCategoryId?id=${params.categoryId}&${suffix}`
-    return this.http.get<ProductListResponseInterface>(fullUrl)
+    params = params.append('projection', 'inlineCategory')
+
+    return this.http.get<ProductListResponseInterface>(url, { params })
   }
 }

@@ -6,13 +6,13 @@
       <p-divider class="lg:hidden"></p-divider>
     </div>
     <div class="product-list-data-wrapper">
-      <div class="flex justify-content-center font-semibold p-3">
+      <div class="flex justify-content-center font-semibold p-3" *ngIf="error$ | async">
         <ec-error-message [message]="error$ | async"></ec-error-message>
       </div>
       <div class="spinner-container" *ngIf="(isLoading$ | async) && !products">
         <ec-loading></ec-loading>
       </div>
-      <div *ngIf="products">
+      <div *ngIf="products && layout">
         <p-dataView #dv
                     [value]="products"
                     [paginator]="true"

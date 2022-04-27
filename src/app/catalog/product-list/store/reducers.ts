@@ -13,6 +13,14 @@ import {
 import {
   setProductListPageSettingsAction
 } from "src/app/catalog/product-list/store/actions/set-product-list-page-settings.action";
+import {
+  getProductListLayoutSettingsAction,
+  getProductListLayoutSettingsFailureAction,
+  getProductListLayoutSettingsSuccessAction
+} from "src/app/catalog/product-list/store/actions/get-product-list-layout-settings.action";
+import {
+  setProductListLayoutSettingsAction
+} from "src/app/catalog/product-list/store/actions/set-product-list-layout-settings.action";
 
 
 const initialState: ProductListStateInterface = {
@@ -22,6 +30,11 @@ const initialState: ProductListStateInterface = {
   pageSettings: {
     isLoading: false,
     size: null,
+    failure: false
+  },
+  layoutSettings: {
+    isLoading: false,
+    layout: null,
     failure: false
   }
 }
@@ -48,6 +61,7 @@ export const reducer = createReducer<ProductListStateInterface, Action>(
     data: null
   })),
 
+  // page settings
   on(getProductListPageSettingsAction, (state): ProductListStateInterface => ({
     ...state,
     pageSettings: {
@@ -79,4 +93,37 @@ export const reducer = createReducer<ProductListStateInterface, Action>(
       size: action.pageSettings.size
     }
   })),
+
+  //layout settings
+  on(getProductListLayoutSettingsAction, (state): ProductListStateInterface => ({
+    ...state,
+    layoutSettings: {
+      ...(state.layoutSettings),
+      isLoading: true
+    }
+  })),
+  on(getProductListLayoutSettingsSuccessAction, (state, action): ProductListStateInterface => ({
+    ...state,
+    layoutSettings: {
+      ...(state.layoutSettings),
+      isLoading: false,
+      layout: action.layoutSettings.layout,
+      failure: false
+    }
+  })),
+  on(getProductListLayoutSettingsFailureAction, (state): ProductListStateInterface => ({
+    ...state,
+    layoutSettings: {
+      ...(state.layoutSettings),
+      isLoading: false,
+      failure: true
+    }
+  })),
+  on(setProductListLayoutSettingsAction, (state, action): ProductListStateInterface => ({
+    ...state,
+    layoutSettings: {
+      ...(state.layoutSettings),
+      layout: action.layoutSettings.layout
+    }
+  }))
 )

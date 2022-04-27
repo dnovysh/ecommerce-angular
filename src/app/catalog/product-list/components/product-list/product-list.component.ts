@@ -1,11 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from "@ngrx/store";
-import { combineLatest, combineLatestAll, map, Observable, Subscription } from "rxjs";
+import { combineLatest, map, Observable, Subscription } from "rxjs";
 import { ActivatedRoute, ParamMap } from "@angular/router";
 
 import {
   errorSelector,
-  isLoadingSelector, pageSettingsSelector,
+  isLoadingSelector,
+  layoutSettingsSelector,
+  pageSettingsSelector,
   productListDataSelector
 } from "src/app/catalog/product-list/store/selectors";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
@@ -26,6 +28,15 @@ import {
 import {
   ProductListPageSettingsStateInterface
 } from "src/app/catalog/product-list/types/product-list-page-settings-state.interface";
+import {
+  getProductListLayoutSettingsAction
+} from "src/app/catalog/product-list/store/actions/get-product-list-layout-settings.action";
+import {
+  setProductListLayoutSettingsAction
+} from "src/app/catalog/product-list/store/actions/set-product-list-layout-settings.action";
+import {
+  ProductListLayoutSettingsStateInterface
+} from "src/app/catalog/product-list/types/product-list-layout-settings-state.interface";
 
 
 @Component({
@@ -38,6 +49,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   error$: Observable<string | null>
   conditionSubscription: Subscription
   productsDataSubscription: Subscription
+  layoutSettingsSubscription: Subscription
   products: ProductInterface[] | null
   page: PageInterface | null
 
@@ -66,9 +78,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   public onChangeLayout($event: Event) {
     const layout = ($event as any).layout
-    if (this.layout != layout) {
-      this.layout = layout
-    }
+    this.setLayout(layout)
   }
 
   ngOnInit(): void {
@@ -79,6 +89,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.productsDataSubscription.unsubscribe()
+    this.layoutSettingsSubscription.unsubscribe()
     this.conditionSubscription.unsubscribe()
   }
 
@@ -90,17 +101,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private initializeSettings(): void {
     this.pageSizeList = environment.pageSizeList
     this.store.dispatch(getProductListPageSettingsAction())
-    this.layout = 'grid'
+    this.store.dispatch(getProductListLayoutSettingsAction())
   }
 
   private initializeListeners(): void {
     this.subscribeToProductsData()
+    this.subscribeToLayoutSettings()
     this.subscribeToChangeConditions()
   }
 
   private subscribeToProductsData(): void {
-    this.productsDataSubscription = this.store
-      .pipe(select(productListDataSelector))
+    this.productsDataSubscription = this.store.pipe(select(productListDataSelector))
       .subscribe((productsData: ProductListDataInterface | null) => {
         if (productsData) {
           this.products = productsData.products
@@ -108,6 +119,22 @@ export class ProductListComponent implements OnInit, OnDestroy {
         } else {
           this.products = this.page = null
         }
+      })
+  }
+
+  private subscribeToLayoutSettings(): void {
+    this.layoutSettingsSubscription = this.store.pipe(select(layoutSettingsSelector))
+      .subscribe((layoutSettings: ProductListLayoutSettingsStateInterface | null) => {
+        if (layoutSettings === null || layoutSettings.isLoading) {
+          return
+        }
+        if (layoutSettings.layout === 'grid' || layoutSettings.layout === 'list') {
+          if (this.layout != layoutSettings.layout) {
+            this.layout = layoutSettings.layout
+          }
+          return;
+        }
+        this.setLayout('grid')
       })
   }
 
@@ -120,10 +147,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
       return { pageSettings, paramMap }
     })).subscribe(({ pageSettings, paramMap }) => {
       if (pageSettings === null || pageSettings.isLoading) {
-        console.log(`pageSettings ${pageSettings}, paramMap ${paramMap}`)
         return;
       }
-      if (pageSettings && pageSettings.size) {
+      if (pageSettings.size) {
         if (this.pageSize !== pageSettings.size) {
           this.pageSize = pageSettings.size
         }
@@ -141,9 +167,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
         this.setPageSize(this.pageSizeList[environment.defaultPageSizeIndex])
         return;
       }
-
       const categoryId = CommonHelperClass.parseIntParameter(paramMap.get('categoryId'))
-      this.store.dispatch(getProductListAction({ params: { categoryId, pageSize: this.pageSize } }))
+      this.store.dispatch(getProductListAction({
+        params: {
+          categoryId,
+          size: this.pageSize
+        }
+      }))
     })
   }
 
@@ -151,6 +181,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
     if (this.pageSize !== size) {
       this.pageSize = size
       this.store.dispatch(setProductListPageSettingsAction({ pageSettings: { size } }))
+    }
+  }
+
+  private setLayout(layout: string): void {
+    if (this.layout !== layout) {
+      this.layout = layout
+      this.store.dispatch(setProductListLayoutSettingsAction({ layoutSettings: { layout } }))
     }
   }
 }

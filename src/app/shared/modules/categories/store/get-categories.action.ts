@@ -1,6 +1,6 @@
 import { createAction, props } from "@ngrx/store";
 
-import { ActionTypes } from "src/app/catalog/category-menu/store/action.types";
+import { ActionTypes } from "src/app/shared/modules/categories/store/action.types";
 import { ProductCategoryInterface } from "src/app/shared/types/catalog/product-category.interface";
 
 export const getCategoriesAction = createAction(

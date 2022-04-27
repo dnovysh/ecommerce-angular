@@ -32,6 +32,12 @@ import {
   SetProductListPageSettingsEffect
 } from "src/app/catalog/product-list/store/effects/set-product-list-page-settings.effect";
 import { PersistenceService } from "src/app/shared/services/persistence.service";
+import {
+  GetProductListLayoutSettingsEffect
+} from "src/app/catalog/product-list/store/effects/get-product-list-layout-settings.effect";
+import {
+  SetProductListLayoutSettingsEffect
+} from "src/app/catalog/product-list/store/effects/set-product-list-layout-settings.effect";
 
 
 const routes = [
@@ -56,7 +62,9 @@ const routes = [
     EffectsModule.forFeature([
       GetProductListEffect,
       GetProductListPageSettingsEffect,
-      SetProductListPageSettingsEffect
+      SetProductListPageSettingsEffect,
+      GetProductListLayoutSettingsEffect,
+      SetProductListLayoutSettingsEffect
     ]),
     StoreModule.forFeature('productList', reducer),
     LoadingModule,

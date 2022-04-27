@@ -5,6 +5,9 @@ import { ProductListDataInterface } from "src/app/catalog/product-list/types/pro
 import {
   ProductListPageSettingsStateInterface
 } from "src/app/catalog/product-list/types/product-list-page-settings-state.interface";
+import {
+  ProductListLayoutSettingsStateInterface
+} from "src/app/catalog/product-list/types/product-list-layout-settings-state.interface";
 
 
 export const productListFeatureSelector = createFeatureSelector<ProductListStateInterface>('productList');
@@ -29,4 +32,10 @@ export const pageSettingsSelector =
   createSelector<AppStateInterface, ProductListStateInterface, ProductListPageSettingsStateInterface | null>(
     productListFeatureSelector,
     (state) => state.pageSettings
+  )
+
+export const layoutSettingsSelector =
+  createSelector<AppStateInterface, ProductListStateInterface, ProductListLayoutSettingsStateInterface | null>(
+    productListFeatureSelector,
+    (state) => state.layoutSettings
   )
