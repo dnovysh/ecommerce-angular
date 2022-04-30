@@ -13,7 +13,7 @@ import {
 export class ProductListService {
   baseUrl = `${environment.baseApiUrl}/catalog-products`
   baseSearchUrl = this.baseUrl + '/search'
-  defaultQueryAllUrl = this.baseSearchUrl + '/queryAllByOrderByPopularityIndexDescRatingDescIdDesc'
+  defaultQueryAllUrl = this.baseSearchUrl + '/queryAllDefault'
 
   constructor(private http: HttpClient) {
   }

@@ -4,6 +4,7 @@ import { AppNavbarComponent } from './app-navbar.component';
 import { RouterModule } from "@angular/router";
 import { InputTextModule } from "primeng/inputtext";
 import { BadgeModule } from 'primeng/badge';
+import { FormsModule } from "@angular/forms";
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { BadgeModule } from 'primeng/badge';
     CommonModule,
     RouterModule,
     InputTextModule,
-    BadgeModule
+    BadgeModule,
+    FormsModule
   ],
   exports: [
     AppNavbarComponent

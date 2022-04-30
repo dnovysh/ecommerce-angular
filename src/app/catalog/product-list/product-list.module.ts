@@ -22,7 +22,6 @@ import { ErrorMessageModule } from "src/app/shared/modules/error-message/error-m
 import { ImagePreloadModule } from "src/app/shared/directives/image-preload/image-preload.module";
 import { ScrollPanelModule } from "primeng/scrollpanel";
 import { DividerModule } from "primeng/divider";
-import { CategoryMenuModule } from "src/app/catalog/category-menu/category-menu.module";
 import { InputTextModule } from "primeng/inputtext";
 import { DropdownModule } from "primeng/dropdown";
 import {
@@ -38,6 +37,7 @@ import {
 import {
   SetProductListLayoutSettingsEffect
 } from "src/app/catalog/product-list/store/effects/set-product-list-layout-settings.effect";
+import { CategoryMenuComponent } from "src/app/catalog/product-list/components/category-menu/category-menu.component";
 
 
 const routes = [
@@ -47,6 +47,7 @@ const routes = [
 
 @NgModule({
   declarations: [
+    CategoryMenuComponent,
     ProductListComponent
   ],
   imports: [
@@ -73,7 +74,6 @@ const routes = [
     ImagePreloadModule,
     ScrollPanelModule,
     DividerModule,
-    CategoryMenuModule,
     InputTextModule,
     DropdownModule
   ],

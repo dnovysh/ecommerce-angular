@@ -1,7 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Store } from "@ngrx/store";
+import { AppStateInterface } from "src/app/shared/types/app-state.interface";
+import { getCategoriesAction } from "src/app/shared/modules/categories/store/get-categories.action";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent {}
+export class AppComponent implements OnInit {
+
+  constructor(private store: Store<AppStateInterface>) { }
+
+  ngOnInit(): void {
+    this.store.dispatch(getCategoriesAction())
+  }
+
+}

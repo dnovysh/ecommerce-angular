@@ -6,13 +6,13 @@ import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
 import { routerReducer, StoreRouterConnectingModule } from "@ngrx/router-store";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { SharedModule } from "primeng/api";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ProductListModule } from "src/app/catalog/product-list/product-list.module";
 import { LoadingModule } from "src/app/shared/modules/loading/loading.module";
 import { environment } from "src/environments/environment";
-import { SharedModule } from "primeng/api";
 import { AppFooterModule } from "src/app/shared/modules/app-footer/app-footer.module";
 import { AppNavbarModule } from "src/app/shared/modules/app-navbar/app-navbar.module";
 import { CategoriesModule } from "src/app/shared/modules/categories/categories.module";

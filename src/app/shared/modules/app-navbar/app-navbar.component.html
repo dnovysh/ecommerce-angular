@@ -17,11 +17,13 @@
       <div class="layout-navbar-search-action">
         <div class="search-item">
             <span class="p-input-icon-left">
-              <i class="pi pi-search"></i>
+              <i class="pi pi-search" (click)="onSearchEnter()" (mousedown)="$event.preventDefault()"></i>
               <input type="text"
-                     pInputText=""
+                     pInputText [(ngModel)]="searchText"
                      placeholder="Search..."
-                     class="p-inputtext p-component p-element">
+                     class="p-inputtext p-component p-element"
+                     (keyup.enter)="onSearchEnter()"
+              >
             </span>
         </div>
       </div>

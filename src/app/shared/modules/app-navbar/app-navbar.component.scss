@@ -185,17 +185,6 @@ p:last-child {
   font-size: 18px;
 }
 
-:host ::ng-deep {
-  .layout-navbar-right .layout-navbar-actions > li > a > .navbar-icon .p-badge,
-  .layout-navbar-right .layout-navbar-actions > li > .navbar-icon-wrapper .navbar-icon .p-badge {
-    height: 14px;
-    width: 14px;
-    min-width: 14px;
-    font-size: 10px;
-    line-height: 14px;
-  }
-}
-
 .layout-navbar-right .layout-navbar-actions > li > ul {
   display: none;
   position: absolute;
@@ -302,6 +291,15 @@ p:last-child {
   min-width: 200px;
   padding: 8px 8px 8px 30px;
   font-size: 15px;
+}
+
+.layout-navbar-right .layout-navbar-search-action > .search-item i {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.layout-navbar-right .layout-navbar-search-action > .search-item i:hover {
+  font-weight: 600;
 }
 
 .layout-navbar-right .layout-navbar-search-action > .search-item ul > input {
@@ -510,7 +508,18 @@ p:last-child {
 
 .layout-navbar-right .layout-navbar-search-action > .search-item input {
   background-color: #E8F1F8;
-  color: #515C66;
+  color: var(--gray-400, #BDBDBD);
+}
+
+.layout-navbar-right .layout-navbar-search-action > .search-item input:enabled:focus {
+  color: black;
+  background-color: white;
+}
+
+.layout-navbar-right .layout-navbar-search-action > .search-item span:hover {
+  input {
+    color: black;
+  }
 }
 
 .layout-navbar-right .layout-navbar-search-action > .search-item input::placeholder {
@@ -519,6 +528,10 @@ p:last-child {
 
 .layout-navbar-right .layout-navbar-search-action > .search-item i {
   color: #515C66;
+}
+
+.layout-navbar-right .layout-navbar-search-action > .search-item i:hover {
+  color: black;
 }
 
 .layout-navbar-right .layout-navbar-actions > li.notifications > ul > li:nth-child(2) > a > i {
@@ -621,4 +634,15 @@ p:last-child {
 .layout-navbar-right .layout-navbar-actions > li > ul > li:hover {
   background-color: rgba(232, 241, 248, 0.7);
   transition: background-color 0.2s;
+}
+
+:host ::ng-deep {
+  .layout-navbar-right .layout-navbar-actions > li > a > .navbar-icon .p-badge,
+  .layout-navbar-right .layout-navbar-actions > li > .navbar-icon-wrapper .navbar-icon .p-badge {
+    height: 14px;
+    width: 14px;
+    min-width: 14px;
+    font-size: 10px;
+    line-height: 14px;
+  }
 }

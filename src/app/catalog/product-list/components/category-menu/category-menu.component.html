@@ -6,7 +6,7 @@
         All
       </a>
     </li>
-    <li tabindex="0" *ngFor="let category of (categories$ | async) ">
+    <li tabindex="0" *ngFor="let category of (categories$ | async)">
       <a routerLink="/category/{{category.id}}" routerLinkActive="active">
         {{category.name}}
       </a>
