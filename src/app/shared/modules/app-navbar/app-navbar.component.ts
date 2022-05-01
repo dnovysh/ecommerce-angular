@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from "@angular/router";
 
+// noinspection JSIgnoredPromiseFromCall
 @Component({
   selector: 'ec-app-navbar',
   templateUrl: './app-navbar.component.html',
@@ -8,7 +10,11 @@ import { Component } from '@angular/core';
 export class AppNavbarComponent {
   searchText: string | null
 
-  onSearchEnter() {
+  constructor(private router: Router) { }
 
+  onSearchEnter(): void {
+    if (this.searchText) {
+      this.router.navigate(['products/search'], { queryParams: { name: this.searchText } })
+    }
   }
 }

@@ -141,11 +141,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private subscribeToChangeConditions(): void {
     this.conditionSubscription = combineLatest([
         this.store.pipe(select(pageSettingsSelector)),
-        this.route.paramMap
+        this.route.paramMap,
+        this.route.queryParamMap
       ]
-    ).pipe(map(([pageSettings, paramMap]: [ProductListPageSettingsStateInterface | null, ParamMap]) => {
-      return { pageSettings, paramMap }
-    })).subscribe(({ pageSettings, paramMap }) => {
+    ).pipe(map(([pageSettings, paramMap, queryParamMap]:
+                  [ProductListPageSettingsStateInterface | null, ParamMap, ParamMap]) => {
+      return { pageSettings, paramMap, queryParamMap}
+    })).subscribe(({ pageSettings, paramMap,  queryParamMap}) => {
       if (pageSettings === null || pageSettings.isLoading) {
         return;
       }
@@ -167,9 +169,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
         this.setPageSize(this.pageSizeList[environment.defaultPageSizeIndex])
         return;
       }
-      const categoryId = CommonHelperClass.parseIntParameter(paramMap.get('categoryId'))
+      const name = queryParamMap.get('name')
+      let categoryId: number | null = null
+      if (this.route.snapshot.url[0].path === 'category') {
+        categoryId = CommonHelperClass.parseIntParameter(paramMap.get('categoryId'))
+      }
       this.store.dispatch(getProductListAction({
         params: {
+          name,
           categoryId,
           size: this.pageSize
         }

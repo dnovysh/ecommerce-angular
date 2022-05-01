@@ -41,7 +41,9 @@ import { CategoryMenuComponent } from "src/app/catalog/product-list/components/c
 
 
 const routes = [
+  { path: 'category/:categoryId/search', component: ProductListComponent },
   { path: 'category/:categoryId', component: ProductListComponent },
+  { path: 'products/search', component: ProductListComponent },
   { path: 'products', component: ProductListComponent }
 ]
 

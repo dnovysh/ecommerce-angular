@@ -20,10 +20,19 @@ export class ProductListService {
 
   getProductList(apiParams: ProductListApiQueryParamsInterface): Observable<ProductListResponseInterface> {
     let params = new HttpParams()
-    let url = this.defaultQueryAllUrl
-    if (apiParams.categoryId !== null) {
+    let url: string
+    if (apiParams.categoryId !== null && apiParams.name) {
+      params = params.append('id', apiParams.categoryId)
+      params = params.append('name', apiParams.name)
+      url = this.baseSearchUrl + '/findByCategoryIdAndProductName'
+    } else if (apiParams.categoryId !== null) {
       params = params.append('id', apiParams.categoryId)
       url = this.baseSearchUrl + '/findByCategoryId'
+    } else if (apiParams.name) {
+      params = params.append('name', apiParams.name)
+      url = this.baseSearchUrl + '/findByProductName'
+    } else {
+      url = this.defaultQueryAllUrl
     }
     if (apiParams.size) {
       params = params.append('size', apiParams.size)
