@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from "@ngrx/store";
 import { combineLatest, map, Observable, Subscription } from "rxjs";
-import { ActivatedRoute, ParamMap } from "@angular/router";
+import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
 
 import {
   errorSelector,
@@ -39,6 +39,7 @@ import {
 } from "src/app/catalog/product-list/types/product-list-layout-settings-state.interface";
 
 
+// noinspection JSIgnoredPromiseFromCall
 @Component({
   selector: 'ec-product-list',
   templateUrl: './product-list.component.html',
@@ -50,6 +51,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   conditionSubscription: Subscription
   productsDataSubscription: Subscription
   layoutSettingsSubscription: Subscription
+  queryParamMapSubscription: Subscription
   products: ProductInterface[] | null
   page: PageInterface | null
 
@@ -57,11 +59,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
   pageSize: number
   layout: string
 
+  searchText: string
+
   getProductImageSrc = CatalogHelpers.getProductImageSrc
   getDefaultProductImage = CatalogHelpers.getDefaultProductImage
   getNumberOfRatingStars = CatalogHelpers.getNumberOfRatingStars
 
   constructor(private store: Store<AppStateInterface>,
+              private router: Router,
               private route: ActivatedRoute) { }
 
   public getInventoryStatusTypes(): typeof InventoryStatusEnum {
@@ -81,6 +86,36 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.setLayout(layout)
   }
 
+  onSearchByName(): void {
+    let queryParams: Params
+    if (this.searchText.trim().length > 0) {
+      queryParams = { ...this.route.snapshot.queryParams, name: this.searchText }
+    } else {
+      queryParams = { ...this.route.snapshot.queryParams }
+      delete queryParams['name']
+    }
+    console.log(queryParams)
+
+    let segments = this.route.snapshot.url.map((element) => element.path)
+    const hasParams = Object.keys(queryParams).length > 0
+    const currentLastSegmentIsSearch = segments[segments.length - 1] === 'search'
+    if (hasParams && !currentLastSegmentIsSearch) {
+      segments.push('search')
+    }
+    if (!hasParams && currentLastSegmentIsSearch) {
+      segments.pop()
+    }
+
+    const url = segments.join('/')
+    console.log(url)
+
+    if (hasParams) {
+      this.router.navigate([url], { queryParams: queryParams })
+      return
+    }
+    this.router.navigateByUrl(url)
+  }
+
   ngOnInit(): void {
     this.initializeValues()
     this.initializeSettings()
@@ -91,11 +126,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productsDataSubscription.unsubscribe()
     this.layoutSettingsSubscription.unsubscribe()
     this.conditionSubscription.unsubscribe()
+    this.queryParamMapSubscription.unsubscribe()
   }
 
   private initializeValues(): void {
     this.isLoading$ = this.store.pipe(select(isLoadingSelector))
     this.error$ = this.store.pipe(select(errorSelector))
+    this.searchText = ''
   }
 
   private initializeSettings(): void {
@@ -108,6 +145,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.subscribeToProductsData()
     this.subscribeToLayoutSettings()
     this.subscribeToChangeConditions()
+    this.subscribeToQueryParamMap()
   }
 
   private subscribeToProductsData(): void {
@@ -146,8 +184,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
       ]
     ).pipe(map(([pageSettings, paramMap, queryParamMap]:
                   [ProductListPageSettingsStateInterface | null, ParamMap, ParamMap]) => {
-      return { pageSettings, paramMap, queryParamMap}
-    })).subscribe(({ pageSettings, paramMap,  queryParamMap}) => {
+      return { pageSettings, paramMap, queryParamMap }
+    })).subscribe(({ pageSettings, paramMap, queryParamMap }) => {
       if (pageSettings === null || pageSettings.isLoading) {
         return;
       }
@@ -182,6 +220,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
         }
       }))
     })
+  }
+
+  private subscribeToQueryParamMap(): void {
+    this.queryParamMapSubscription = this.route.queryParamMap.subscribe(
+      (queryParamMap: ParamMap) => {
+
+        console.log(queryParamMap)
+
+        const nameParameter = queryParamMap.get('name')
+        this.searchText = nameParameter ? nameParameter : ''
+      })
   }
 
   private setPageSize(size: number): void {
