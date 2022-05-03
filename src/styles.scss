@@ -116,3 +116,9 @@ a {
   background-color: var(--surface-600);
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb(221, 226, 228)'><polygon points='0,0 100,0 50,50'/></svg>");
 }
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+  min-width: 2.643rem !important;
+  height: 2.643rem !important;
+  border-radius: 50% !important;
+}

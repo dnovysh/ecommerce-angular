@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from "@ngrx/store";
-import { combineLatest, map, Observable, Subscription } from "rxjs";
-import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
+import { combineLatest, filter, map, Observable, Subscription } from "rxjs";
+import { ActivatedRoute, NavigationEnd, ParamMap, Params, Router } from "@angular/router";
+import { ViewportScroller } from "@angular/common";
 
 import {
   errorSelector,
@@ -52,6 +53,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   productsDataSubscription: Subscription
   layoutSettingsSubscription: Subscription
   queryParamMapSubscription: Subscription
+  navigationEndSubscription: Subscription
   products: ProductInterface[] | null
   page: PageInterface | null
 
@@ -67,7 +69,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<AppStateInterface>,
               private router: Router,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private viewPortScroller: ViewportScroller) {
+    this.subscribeToNavigationEnd()
+  }
 
   public getInventoryStatusTypes(): typeof InventoryStatusEnum {
     return InventoryStatusEnum;
@@ -77,27 +82,41 @@ export class ProductListComponent implements OnInit, OnDestroy {
     return EventTarget ? (target as HTMLInputElement).value : ''
   }
 
-  public onPageSizeChange(value: number) {
+  onPageSizeChange(value: number): void {
+    if (this.pageSize === value) {
+      return
+    }
+    const routeSizeParam = this.route.snapshot.queryParamMap.get('size')
+    if (routeSizeParam !== null && parseInt(routeSizeParam) !== value) {
+      const queryParams: Params = {
+        ...this.route.snapshot.queryParams,
+        page: '1',
+        size: `${value}`
+      }
+      const url = this.route.snapshot.url.map((element) => element.path).join('/')
+      this.router.navigate([url], { queryParams: queryParams })
+      return
+    }
     this.setPageSize(value)
   }
 
-  public onChangeLayout($event: Event) {
+  onChangeLayout($event: Event): void {
     const layout = ($event as any).layout
     this.setLayout(layout)
   }
 
   onSearchByName(): void {
-    let queryParams: Params
+    let queryParams: Params = { ...this.route.snapshot.queryParams }
     if (this.searchText.trim().length > 0) {
-      queryParams = { ...this.route.snapshot.queryParams, name: this.searchText }
+      queryParams = { ...queryParams, name: this.searchText }
     } else {
-      queryParams = { ...this.route.snapshot.queryParams }
       delete queryParams['name']
     }
-    console.log(queryParams)
-
-    let segments = this.route.snapshot.url.map((element) => element.path)
     const hasParams = Object.keys(queryParams).length > 0
+    if (hasParams && queryParams['page']) {
+      queryParams = { ...queryParams, page: '1', size: `${this.pageSize}` }
+    }
+    let segments = this.route.snapshot.url.map((element) => element.path)
     const currentLastSegmentIsSearch = segments[segments.length - 1] === 'search'
     if (hasParams && !currentLastSegmentIsSearch) {
       segments.push('search')
@@ -105,15 +124,35 @@ export class ProductListComponent implements OnInit, OnDestroy {
     if (!hasParams && currentLastSegmentIsSearch) {
       segments.pop()
     }
-
     const url = segments.join('/')
-    console.log(url)
-
     if (hasParams) {
       this.router.navigate([url], { queryParams: queryParams })
       return
     }
     this.router.navigateByUrl(url)
+  }
+
+  onPage($event: any): void {
+    let first = 0
+    let rows = this.pageSize
+    if ($event.first !== undefined && $event.first !== null && parseInt($event.first) >= 0) {
+      first = parseInt($event.first)
+    }
+    if ($event.rows !== undefined && $event.rows !== null && parseInt($event.rows) > 0) {
+      rows = parseInt($event.rows)
+    }
+    const pageNumber = first / rows + 1
+    let queryParams: Params = {
+      ...this.route.snapshot.queryParams,
+      page: `${pageNumber}`,
+      size: `${rows}`
+    }
+    let segments = this.route.snapshot.url.map((element) => element.path)
+    if (segments[segments.length - 1] !== 'search') {
+      segments.push('search')
+    }
+    const url = segments.join('/')
+    this.router.navigate([url], { queryParams: queryParams })
   }
 
   ngOnInit(): void {
@@ -127,6 +166,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.layoutSettingsSubscription.unsubscribe()
     this.conditionSubscription.unsubscribe()
     this.queryParamMapSubscription.unsubscribe()
+    this.navigationEndSubscription.unsubscribe()
   }
 
   private initializeValues(): void {
@@ -189,12 +229,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
       if (pageSettings === null || pageSettings.isLoading) {
         return;
       }
-      if (pageSettings.size) {
+      const paramPageSize = CommonHelperClass.parseIntParameter(queryParamMap.get('size'))
+      if (pageSettings.size && !paramPageSize) {
         if (this.pageSize !== pageSettings.size) {
           this.pageSize = pageSettings.size
         }
       }
-      const paramPageSize = CommonHelperClass.parseIntParameter(paramMap.get('pageSize'))
+      if (pageSettings.size && paramPageSize && pageSettings.size === paramPageSize) {
+        if (this.pageSize !== pageSettings.size) {
+          this.pageSize = pageSettings.size
+        }
+      }
       if (paramPageSize && this.pageSize !== paramPageSize) {
         this.setPageSize(paramPageSize)
         return;
@@ -212,10 +257,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
       if (this.route.snapshot.url[0].path === 'category') {
         categoryId = CommonHelperClass.parseIntParameter(paramMap.get('categoryId'))
       }
+      let page: number | null = CommonHelperClass.parseIntParameter(queryParamMap.get('page'))
+      if (page !== null) {
+        page = page - 1
+      }
       this.store.dispatch(getProductListAction({
         params: {
           name,
           categoryId,
+          page,
           size: this.pageSize
         }
       }))
@@ -225,12 +275,25 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private subscribeToQueryParamMap(): void {
     this.queryParamMapSubscription = this.route.queryParamMap.subscribe(
       (queryParamMap: ParamMap) => {
-
-        console.log(queryParamMap)
-
-        const nameParameter = queryParamMap.get('name')
-        this.searchText = nameParameter ? nameParameter : ''
+        const nameQueryParameter = queryParamMap.get('name')
+        this.searchText = nameQueryParameter ? nameQueryParameter : ''
       })
+  }
+
+  private subscribeToNavigationEnd(): void {
+    this.navigationEndSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event) => {
+
+
+
+          console.log(event)
+
+
+
+          this.viewPortScroller.scrollToPosition([0, 0])
+        }
+      )
   }
 
   private setPageSize(size: number): void {

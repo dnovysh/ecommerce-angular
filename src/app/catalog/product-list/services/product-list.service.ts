@@ -34,9 +34,10 @@ export class ProductListService {
     } else {
       url = this.defaultQueryAllUrl
     }
-    if (apiParams.size) {
-      params = params.append('size', apiParams.size)
+    if (apiParams.page !== null) {
+      params = params.append('page', apiParams.page)
     }
+    params = params.append('size', apiParams.size)
     params = params.append('projection', 'inlineCategory')
 
     return this.http.get<ProductListResponseInterface>(url, { params })

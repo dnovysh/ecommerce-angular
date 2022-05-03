@@ -12,11 +12,15 @@
       <div class="spinner-container" *ngIf="(isLoading$ | async) && !products">
         <ec-loading></ec-loading>
       </div>
-      <div *ngIf="products && layout">
+      <div *ngIf="products && layout&&page">
         <p-dataView #dv
                     [value]="products"
                     [paginator]="true"
-                    [rows]="pageSize"
+                    [first]="page.number * page.size"
+                    [rows]="page.size"
+                    [lazy]="true"
+                    (onPage)="onPage($event)"
+                    [totalRecords]="page.totalElements"
                     [layout]="layout"
                     (onChangeLayout)="onChangeLayout($event)"
         >
