@@ -113,7 +113,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       delete queryParams['name']
     }
     const hasParams = Object.keys(queryParams).length > 0
-    if (hasParams && queryParams['page']) {
+    if (hasParams && queryParams.hasOwnProperty('page')) {
       queryParams = { ...queryParams, page: '1', size: `${this.pageSize}` }
     }
     let segments = this.route.snapshot.url.map((element) => element.path)
@@ -141,9 +141,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
     if ($event.rows !== undefined && $event.rows !== null && parseInt($event.rows) > 0) {
       rows = parseInt($event.rows)
     }
-    const pageNumber = first / rows + 1
-    let queryParams: Params = {
-      ...this.route.snapshot.queryParams,
+    const pageNumber: number = first / rows + 1
+    let queryParams: Params = { ...this.route.snapshot.queryParams }
+    const currentQueryParamsPage = parseInt(queryParams['page'])
+    const currentPage: number = currentQueryParamsPage > 1 ? currentQueryParamsPage : 1
+    if (pageNumber === currentPage) {
+      return
+    }
+    queryParams = {
+      ...queryParams,
       page: `${pageNumber}`,
       size: `${rows}`
     }
@@ -284,13 +290,6 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.navigationEndSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event) => {
-
-
-
-          console.log(event)
-
-
-
           this.viewPortScroller.scrollToPosition([0, 0])
         }
       )

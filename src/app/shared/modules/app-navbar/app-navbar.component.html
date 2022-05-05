@@ -82,7 +82,7 @@
             </span>
           </div>
         </li>
-        <li class="navbar-item user-sign-in" style="display:none!important;">
+        <li class="navbar-item user-sign-in" *ngIf="isGuest$ | async">
           <div class="user-sign-in-wrapper">
             <i class="pi pi-sign-in"></i>
             <div class="sign-in-text">
@@ -90,7 +90,7 @@
             </div>
           </div>
         </li>
-        <li class="navbar-item user-profile">
+        <li class="navbar-item user-profile" *ngIf="isAuthenticated$ | async">
           <div class="user-profile-wrapper">
             <i class="pi pi-user"></i>
             <div class="profile-info">

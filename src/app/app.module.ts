@@ -16,6 +16,7 @@ import { environment } from "src/environments/environment";
 import { AppFooterModule } from "src/app/shared/modules/app-footer/app-footer.module";
 import { AppNavbarModule } from "src/app/shared/modules/app-navbar/app-navbar.module";
 import { CategoriesModule } from "src/app/shared/modules/categories/categories.module";
+import { IdentityModule } from "src/app/shared/modules/identity/identity.module";
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { CategoriesModule } from "src/app/shared/modules/categories/categories.m
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
+    IdentityModule,
     CategoriesModule,
     ProductListModule,
     LoadingModule,
