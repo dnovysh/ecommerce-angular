@@ -17,6 +17,7 @@ import { AppFooterModule } from "src/app/shared/modules/app-footer/app-footer.mo
 import { AppNavbarModule } from "src/app/shared/modules/app-navbar/app-navbar.module";
 import { CategoriesModule } from "src/app/shared/modules/categories/categories.module";
 import { IdentityModule } from "src/app/shared/modules/identity/identity.module";
+import { AuthModule } from "src/app/auth/auth.module";
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { IdentityModule } from "src/app/shared/modules/identity/identity.module"
     StoreRouterConnectingModule.forRoot(),
     IdentityModule,
     CategoriesModule,
+    AuthModule,
     ProductListModule,
     LoadingModule,
     SharedModule,

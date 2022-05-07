@@ -328,8 +328,7 @@ p:last-child {
 .layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper .sign-in-text {
   display: inline-block;
   vertical-align: top;
-  margin-top: 2px;
-  margin-left: 9px;
+  margin-left: 10px;
 }
 
 .layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper .sign-in-text h6 {
@@ -430,6 +429,12 @@ p:last-child {
   display: block;
 }
 
+@media screen and (min-width: 992px) {
+  .layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper {
+    margin: 0 12px 0 60px;
+  }
+}
+
 @media (max-width: 768px) {
   .layout-navbar {
     height: var(--app-navbar-height);
@@ -469,6 +474,10 @@ p:last-child {
     right: 2px;
     height: auto;
     width: auto;
+  }
+
+  .layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper {
+    margin: 0 12px 0 12px;
   }
 
   .layout-navbar-right .layout-navbar-actions > .navbar-item.user-profile {

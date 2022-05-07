@@ -17,12 +17,12 @@
       <div class="layout-navbar-search-action">
         <div class="search-item">
             <span class="p-input-icon-left">
-              <i class="pi pi-search" (click)="onSearchEnter()" (mousedown)="$event.preventDefault()"></i>
+              <i class="pi pi-search" (click)="onEnterSearch()" (mousedown)="$event.preventDefault()"></i>
               <input type="text"
                      pInputText [(ngModel)]="searchText"
                      placeholder="Search..."
                      class="p-inputtext p-component p-element"
-                     (keyup.enter)="onSearchEnter()"
+                     (keyup.enter)="onEnterSearch()"
               >
             </span>
         </div>
@@ -83,28 +83,30 @@
           </div>
         </li>
         <li class="navbar-item user-sign-in" *ngIf="isGuest$ | async">
-          <div class="user-sign-in-wrapper">
-            <i class="pi pi-sign-in"></i>
-            <div class="sign-in-text">
-              <h6>Sign in</h6>
+          <a [routerLink]="loginUrl">
+            <div class="user-sign-in-wrapper" (click)="onClickSignIn()">
+              <i class="pi pi-sign-in"></i>
+              <div class="sign-in-text">
+                <h6>Sign In</h6>
+              </div>
             </div>
-          </div>
+          </a>
         </li>
         <li class="navbar-item user-profile" *ngIf="isAuthenticated$ | async">
           <div class="user-profile-wrapper">
             <i class="pi pi-user"></i>
-            <div class="profile-info">
-              <h6>User Name</h6>
+            <div class="profile-info" *ngIf="userAlias$ | async">
+              <h6>{{userAlias$ | async}}</h6>
             </div>
           </div>
           <ul class="fade-in-down-user-profile" style="display:none!important;">
             <li class="layout-submenu-header">
-<!--              <img-->
-<!--                src="assets/layout/images/avatar-profile.png"-->
-<!--                alt=""-->
-<!--                class="profile-image"-->
-<!--                style="display:none!important;"-->
-<!--              >-->
+              <!--              <img-->
+              <!--                src="assets/layout/images/avatar-profile.png"-->
+              <!--                alt=""-->
+              <!--                class="profile-image"-->
+              <!--                style="display:none!important;"-->
+              <!--              >-->
               <i class="pi pi-user"></i>
               <div class="profile-info">
                 <h6>Edward Lindgren</h6>

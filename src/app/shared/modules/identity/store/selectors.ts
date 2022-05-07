@@ -27,3 +27,9 @@ export const userDetailsSelector =
     identityFeatureSelector,
     (state: IdentityStateInterface) => state.userDetails
   )
+
+export const userAliasSelector =
+  createSelector<AppStateInterface, IdentityStateInterface, string | null>(
+    identityFeatureSelector,
+    (state: IdentityStateInterface) => state.userDetails ? state.userDetails.userAlias : null
+  )

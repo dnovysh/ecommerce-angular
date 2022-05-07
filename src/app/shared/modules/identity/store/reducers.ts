@@ -8,8 +8,8 @@ import {
 
 
 const initialState: IdentityStateInterface = {
+  isLoading: false,
   isLoggedIn: null,
-  userDetailsIsLoading: false,
   userDetails: null
 }
 
@@ -17,17 +17,17 @@ export const reducer = createReducer<IdentityStateInterface, Action>(
   initialState,
   on(getUserDetailsAction, (state): IdentityStateInterface => ({
     ...state,
-    userDetailsIsLoading: true
+    isLoading: true
   })),
   on(getUserDetailsSuccessAction, (state, action): IdentityStateInterface => ({
     ...state,
-    userDetailsIsLoading: false,
+    isLoading: false,
     isLoggedIn: true,
     userDetails: action.userDetails
   })),
   on(getUserDetailsFailureAction, (state): IdentityStateInterface => ({
     ...state,
-    userDetailsIsLoading: false,
+    isLoading: false,
     isLoggedIn: false
   }))
 )

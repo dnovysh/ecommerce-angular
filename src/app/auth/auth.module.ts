@@ -12,7 +12,7 @@ import { RippleModule } from "primeng/ripple";
 
 const routes: Routes = [
   {
-    path: 'signin',
+    path: 'login',
     component: SignInComponent
   },
   {
