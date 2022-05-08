@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from "@angular/router";
+import { NavigationEnd, Params, Router } from "@angular/router";
 import { filter, Observable, Subscription } from "rxjs";
 import { select, Store } from "@ngrx/store";
 import {
@@ -23,11 +23,12 @@ export class AppNavbarComponent implements OnInit, OnDestroy {
   navigationEndSubscription: Subscription
 
   searchText: string | null
-  loginUrl: string
+  navigationEnd: NavigationEnd
+  loginUrl: string = '/login'
+  loginQueryParams: Params
 
   constructor(private router: Router,
               private store: Store<AppStateInterface>) {
-    this.loginUrl = '/login'
     this.subscribeToNavigationEnd()
   }
 
@@ -47,27 +48,26 @@ export class AppNavbarComponent implements OnInit, OnDestroy {
     }
   }
 
-  onClickSignIn() {
-    const currentUrl = this.router.routerState.snapshot.url
-    if (currentUrl.includes('/login')) {
-      this.router.navigateByUrl(currentUrl)
-      return
-    }
-
-    console.log(this.router.routerState.snapshot)
-    console.log(this.router.routerState.snapshot.url)
-    this.router.navigate(['login'], {
-      queryParams: { returnUrl: this.router.routerState.snapshot.url }
-    })
-  }
-
   private subscribeToNavigationEnd(): void {
     this.navigationEndSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event) => {
-        console.log(event)
+          const navigationEndEvent = <NavigationEnd>event
+          this.navigationEnd = new NavigationEnd(
+            navigationEndEvent.id, navigationEndEvent.url, navigationEndEvent.urlAfterRedirects
+          )
+          this.setLoginQueryParams(this.navigationEnd.url)
         }
       )
   }
 
+  private setLoginQueryParams(returnUrl: string): void {
+    if (returnUrl.includes('/login')) {
+      return
+    }
+    this.loginQueryParams = {
+      guardRedirect: false,
+      returnUrl: returnUrl
+    }
+  }
 }

@@ -83,12 +83,12 @@
           </div>
         </li>
         <li class="navbar-item user-sign-in" *ngIf="isGuest$ | async">
-          <a [routerLink]="loginUrl">
-            <div class="user-sign-in-wrapper" (click)="onClickSignIn()">
+          <a [routerLink]="loginUrl" [queryParams]="loginQueryParams" class="sign-in-href">
+            <span class="navbar-icon">
               <i class="pi pi-sign-in"></i>
-              <div class="sign-in-text">
-                <h6>Sign In</h6>
-              </div>
+            </span>
+            <div class="sign-in-text">
+              <h6>Sign In</h6>
             </div>
           </a>
         </li>

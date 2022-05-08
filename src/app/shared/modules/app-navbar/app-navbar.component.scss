@@ -312,26 +312,22 @@ p:last-child {
   font-weight: bold;
 }
 
-.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper {
+.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .sign-in-href {
   display: block;
-  margin: 0 12px;
-  padding: 10px 10px 7px;
-  border-radius: 10px;
-  cursor: pointer;
   white-space: nowrap;
 }
 
-.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper > i {
-  font-size: 18px;
+.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .sign-in-href > span {
+  display: inline-block;
 }
 
-.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper .sign-in-text {
+.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .sign-in-href .sign-in-text {
   display: inline-block;
   vertical-align: top;
   margin-left: 10px;
 }
 
-.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper .sign-in-text h6 {
+.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .sign-in-href .sign-in-text h6 {
   font-weight: 600;
   margin: 0;
   max-width: 90px;
@@ -430,7 +426,7 @@ p:last-child {
 }
 
 @media screen and (min-width: 992px) {
-  .layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper {
+  .layout-navbar-right .layout-navbar-actions > li.user-sign-in > .sign-in-href {
     margin: 0 12px 0 60px;
   }
 }
@@ -474,10 +470,6 @@ p:last-child {
     right: 2px;
     height: auto;
     width: auto;
-  }
-
-  .layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper {
-    margin: 0 12px 0 12px;
   }
 
   .layout-navbar-right .layout-navbar-actions > .navbar-item.user-profile {
@@ -563,10 +555,6 @@ p:last-child {
   color: #2f8ee5;
 }
 
-.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper {
-  color: #515C66;
-}
-
 .layout-navbar-right .layout-navbar-actions > li.user-profile > .user-profile-wrapper {
   color: #515C66;
 }
@@ -634,7 +622,6 @@ p:last-child {
 
 .layout-navbar-right .layout-navbar-actions > li > a:hover,
 .layout-navbar-right .layout-navbar-actions > li > .navbar-icon-wrapper:hover,
-.layout-navbar-right .layout-navbar-actions > li.user-sign-in > .user-sign-in-wrapper:hover,
 .layout-navbar-right .layout-navbar-actions > li.user-profile > .user-profile-wrapper:hover {
   background-color: rgba(232, 241, 248, 0.7);
   transition: background-color 0.2s;
