@@ -8,6 +8,7 @@ import {
   userAliasSelector
 } from "src/app/shared/modules/identity/store/selectors";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
+import { SignInRouteQueryParamsInterface } from "src/app/auth/types/sign-in-route-query-params.interface";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -56,7 +57,7 @@ export class AppNavbarComponent implements OnInit, OnDestroy {
           this.navigationEnd = new NavigationEnd(
             navigationEndEvent.id, navigationEndEvent.url, navigationEndEvent.urlAfterRedirects
           )
-          this.setLoginQueryParams(this.navigationEnd.url)
+          this.setLoginQueryParams(this.navigationEnd.urlAfterRedirects)
         }
       )
   }
@@ -65,9 +66,10 @@ export class AppNavbarComponent implements OnInit, OnDestroy {
     if (returnUrl.includes('/login')) {
       return
     }
-    this.loginQueryParams = {
+    const queryParams: SignInRouteQueryParamsInterface = {
       guardRedirect: false,
       returnUrl: returnUrl
     }
+    this.loginQueryParams = { ...queryParams }
   }
 }

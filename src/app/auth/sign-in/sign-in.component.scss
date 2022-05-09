@@ -10,9 +10,10 @@
 
 .login-wrapper {
   z-index: 1107;
-  width: 50%;
   height: 100%;
+  width: 50%;
   min-width: 380px;
+  max-width: 475px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,6 +36,7 @@
   padding: 1.5rem;
   border-radius: 24px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 0 2px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.12);
+  background-color: var(--surface-card);
 }
 
 .login-wrapper .login-panel .login-header {
@@ -43,13 +45,33 @@
   color: var(--text-color);
 }
 
-@media screen and (min-width: 992px) {
-  .login-wrapper {
-    width: 33%;
+.login-wrapper .login-panel .login-form {
+  margin-bottom: 3rem;
+}
+
+.login-wrapper .login-panel .login-form input,
+.login-wrapper .login-panel .login-form .password-input-style {
+  width: 100%;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+}
+
+:host ::ng-deep .login-wrapper .login-panel .login-form .p-password {
+  width: 100%;
+  margin-bottom: 1rem;
+
+  input {
+    width: 100%;
+    font-size: 1.125rem;
   }
 }
 
-.login-wrapper .login-panel {
-  background-color: var(--surface-card);
+.login-wrapper .login-panel .login-footer {
+  text-align: center;
 }
 
+@media screen and (min-width: 992px) {
+  .login-wrapper {
+    width: 475px;
+  }
+}

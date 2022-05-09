@@ -8,17 +8,13 @@ import { InputTextModule } from "primeng/inputtext";
 import { CheckboxModule } from "primeng/checkbox";
 import { ButtonModule } from "primeng/button";
 import { RippleModule } from "primeng/ripple";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { PasswordModule } from "primeng/password";
 
 
 const routes: Routes = [
-  {
-    path: 'login',
-    component: SignInComponent
-  },
-  {
-    path: 'signup',
-    component: SignUpComponent
-  }
+  { path: 'login', component: SignInComponent },
+  { path: 'signup', component: SignUpComponent }
 ]
 
 @NgModule({
@@ -29,10 +25,13 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    FormsModule,
+    ReactiveFormsModule,
     InputTextModule,
     CheckboxModule,
     ButtonModule,
     RippleModule,
+    PasswordModule
   ],
   exports: [
     SignInComponent,
