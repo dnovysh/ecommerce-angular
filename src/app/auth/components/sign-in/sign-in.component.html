@@ -1,5 +1,11 @@
 <div class="login-body p-component-overlay">
   <div class="login-wrapper">
+    <p-toast
+      key="signInErrorToast"
+      position="bottom-left"
+      [baseZIndex]="1209"
+      [preventOpenDuplicates]="true"
+    ></p-toast>
     <div class="login-indent-top"></div>
     <div class="login-panel">
 
@@ -18,14 +24,17 @@
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <label for="signInEmail1" class="block text-900 font-medium mb-2">Email</label>
           <input
+            #signInEmail
             id="signInEmail1"
             formControlName="email"
             type="email"
             name="email"
             pInputText
+            (keydown.enter)="onKeydownEnter($event, signInPassword)"
           >
           <label for="signInPassword1" class="block text-900 font-medium mb-2">Password</label>
           <p-password
+            #signInPassword
             inputId="signInPassword1"
             formControlName="password"
             [toggleMask]="true"

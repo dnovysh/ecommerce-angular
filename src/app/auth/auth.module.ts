@@ -15,6 +15,7 @@ import { SignInEffect } from "src/app/auth/store/effects/sign-in.effect";
 import { AuthService } from "src/app/auth/services/auth.service";
 import { StoreModule } from "@ngrx/store";
 import { reducer } from "src/app/auth/store/reducers";
+import { ToastModule } from "primeng/toast";
 
 
 const routes: Routes = [
@@ -30,19 +31,20 @@ const routes: Routes = [
   providers: [
     AuthService
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    StoreModule.forFeature('auth', reducer),
-    EffectsModule.forFeature([SignInEffect]),
-    FormsModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    CheckboxModule,
-    ButtonModule,
-    RippleModule,
-    PasswordModule
-  ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        StoreModule.forFeature('auth', reducer),
+        EffectsModule.forFeature([SignInEffect]),
+        FormsModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        CheckboxModule,
+        ButtonModule,
+        RippleModule,
+        PasswordModule,
+        ToastModule
+    ],
   exports: [
     SignInComponent,
     SignUpComponent
