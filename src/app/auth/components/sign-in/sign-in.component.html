@@ -4,7 +4,11 @@
     <div class="login-panel">
 
       <div class="login-header">
-        <img src="assets/layout/images/logo-shopocon-auth.png" alt="Logo" height="101" class="mb-3">
+        <a [routerLink]="backToShopLink" [queryParams]="backToShopQueryParams"
+           class="no-underline cursor-pointer"
+        >
+          <img src="../../../../assets/layout/images/logo-shopocon-auth.png" alt="Logo" height="101" class="mt-2 mb-3">
+        </a>
         <div class="text-3xl font-medium mb-3">Welcome back to Shopocon</div>
         <span class="text-600 font-medium line-height-3">Don't have an account?</span>
         <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer"> Sign up </a>

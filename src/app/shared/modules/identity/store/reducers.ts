@@ -2,9 +2,11 @@ import { Action, createReducer, on } from "@ngrx/store";
 
 import { IdentityStateInterface } from "src/app/shared/modules/identity/types/identity-state.interface";
 import {
-  getUserDetailsAction, getUserDetailsFailureAction,
+  getUserDetailsAction,
+  getUserDetailsFailureAction,
   getUserDetailsSuccessAction
 } from "src/app/shared/modules/identity/store/actions/get-user-details.action";
+import { signInSuccessAction } from "src/app/auth/store/actions/sign-in.action";
 
 
 const initialState: IdentityStateInterface = {
@@ -29,5 +31,10 @@ export const reducer = createReducer<IdentityStateInterface, Action>(
     ...state,
     isLoading: false,
     isLoggedIn: false
+  })),
+  on(signInSuccessAction, (state, action): IdentityStateInterface => ({
+    ...state,
+    isLoggedIn: true,
+    userDetails: action.userDetails
   }))
 )

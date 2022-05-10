@@ -24,13 +24,13 @@ export class ProductListService {
     if (apiParams.categoryId !== null && apiParams.name) {
       params = params.append('id', apiParams.categoryId)
       params = params.append('name', apiParams.name)
-      url = this.baseSearchUrl + '/findByCategoryIdAndProductName'
+      url = `${this.baseSearchUrl}/findByCategoryIdAndProductName`
     } else if (apiParams.categoryId !== null) {
       params = params.append('id', apiParams.categoryId)
-      url = this.baseSearchUrl + '/findByCategoryId'
+      url = `${this.baseSearchUrl}/findByCategoryId`
     } else if (apiParams.name) {
       params = params.append('name', apiParams.name)
-      url = this.baseSearchUrl + '/findByProductName'
+      url = `${this.baseSearchUrl}/findByProductName`
     } else {
       url = this.defaultQueryAllUrl
     }

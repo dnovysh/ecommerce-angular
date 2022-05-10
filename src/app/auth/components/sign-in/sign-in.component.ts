@@ -2,9 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { Observable } from "rxjs";
 import { ActivatedRoute, Params } from "@angular/router";
+import { Store } from "@ngrx/store";
 
 import { SignInRouteQueryParamsInterface } from "src/app/auth/types/sign-in-route-query-params.interface";
 import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
+import { SignInRequestInterface } from "src/app/auth/types/sign-in-request.interface";
+import { SignInFormGroupInterface } from "src/app/auth/types/sign-in-form-group.interface";
+import { signInAction } from "src/app/auth/store/actions/sign-in.action";
+import { AppStateInterface } from "src/app/shared/types/app-state.interface";
 
 
 @Component({
@@ -20,7 +25,9 @@ export class SignInComponent implements OnInit {
   backToShopLink: string
   backToShopQueryParams: Params | null
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute) { }
+  constructor(private fb: FormBuilder,
+              private route: ActivatedRoute,
+              private store: Store<AppStateInterface>) { }
 
   ngOnInit(): void {
     this.initializeValues()
@@ -28,8 +35,15 @@ export class SignInComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log(this.form.value)
-    console.log('ToDo dispatch login action')
+    const signInRequest: SignInRequestInterface = { user: this.form.value }
+    const returnUrl: string = (
+      this.signInQueryParams.returnUrl && !this.signInQueryParams.returnUrl.includes('/login')
+    ) ? this.signInQueryParams.returnUrl : '/'
+
+    console.log(signInRequest)
+    console.log(returnUrl)
+
+    this.store.dispatch(signInAction({ signInRequest, returnUrl }))
   }
 
   private initializeValues(): void {
@@ -47,11 +61,12 @@ export class SignInComponent implements OnInit {
   }
 
   private initializeForm(): void {
-    this.form = this.fb.group({
+    const initialValue: SignInFormGroupInterface = {
       email: '',
       password: '',
       rememberMe: false
-    })
+    }
+    this.form = this.fb.group(initialValue)
   }
 
   private setBackToShopValues(returnUrl: string): void {
