@@ -1,6 +1,6 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { filter, Observable, Subscription } from "rxjs";
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { filter, Subscription } from "rxjs";
 import { ActivatedRoute, Params } from "@angular/router";
 import { select, Store } from "@ngrx/store";
 
@@ -14,6 +14,9 @@ import { isSubmittingSelector, isUnknownErrorSelector, validationErrorsSelector 
 import { ValidationErrorInterface } from "src/app/shared/types/error/validation-error.interface";
 import { MessageService } from "primeng/api";
 import { Password } from "primeng/password";
+import { Checkbox } from "primeng/checkbox";
+import { FocusNodes } from "src/app/shared/helpers/focus/focus-nodes";
+import { FocusNode } from "src/app/shared/helpers/focus/focus-node";
 
 
 @Component({
@@ -21,12 +24,21 @@ import { Password } from "primeng/password";
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
-export class SignInComponent implements OnInit, OnDestroy {
-  form: FormGroup
-  isSubmitting$: Observable<boolean>
+export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
+  @ViewChild("signUpHref") signUpHref: ElementRef;
+  @ViewChild("signInEmail") signInEmail: ElementRef;
+  @ViewChild("signInPassword") signInPassword: Password;
+  @ViewChild("signInRememberMe") signInRememberMe: Checkbox;
+  @ViewChild("signInSubmitButton") signInSubmitButton: ElementRef;
+  @ViewChild("backToShopHref") backToShopHref: ElementRef;
+  focusNodes: FocusNodes
+
+  isSubmittingSubscription: Subscription
   validationErrorsSubscription: Subscription
   isUnknownErrorSubscription: Subscription
-
+  form: FormGroup
+  isSubmitStarted: boolean
+  isSubmitting: boolean
   validationErrors: ValidationErrorInterface[]
   isUnknownError: boolean
 
@@ -46,11 +58,30 @@ export class SignInComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.isSubmittingSubscription.unsubscribe()
     this.validationErrorsSubscription.unsubscribe()
     this.isUnknownErrorSubscription.unsubscribe()
   }
 
+  ngAfterViewInit(): void {
+    this.focusNodes = new FocusNodes([
+      new FocusNode('signInEmail', this.signInEmail),
+      new FocusNode('signInPassword', this.signInPassword),
+      new FocusNode('signInRememberMe', this.signInRememberMe),
+      new FocusNode('signInSubmitButton', this.signInSubmitButton),
+      new FocusNode('backToShopHref', this.backToShopHref),
+      new FocusNode('signUpHref', this.signUpHref)
+    ])
+    this.focusDefault()
+  }
+
   onSubmit(): void {
+    this.isSubmitStarted = true
+    if (this.form.invalid) {
+      console.log('Form invalid')
+      return
+    }
+
     const signInRequest: SignInRequestInterface = { user: this.form.value }
     const returnUrl: string = (
       this.signInQueryParams.returnUrl && !this.signInQueryParams.returnUrl.includes('/login')
@@ -62,24 +93,56 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.store.dispatch(signInAction({ signInRequest, returnUrl }))
   }
 
-  onKeydownEnter($event: any, element: ElementRef | Password): void {
+  onKeydownFormField($event: KeyboardEvent, refName: string): void {
+    if ($event.key !== 'Tab' && $event.key !== 'Enter') {
+      return
+    }
+    if ($event.key === 'Enter' &&
+      (refName === 'signInSubmitButton' || refName === 'backToShopHref' || refName === 'signUpHref')) {
+      return
+    }
     $event.preventDefault()
-    console.log($event)
-    console.log(element)
-    console.log($event.target)
-    console.log($event.target.nextElementSibling)
+    if ($event.key === 'Tab' && $event.shiftKey) {
+      this.focusNodes.focusPrev()
+      return
+    }
+    this.focusNodes.focusNext()
+  }
 
-    setTimeout(() => {
-      if (element instanceof Password) {
-        element.input.nativeElement.focus()
-        return
-      }
-      element.nativeElement.focus()
-    }, 0)
+  onFocus($event: FocusEvent | MouseEvent, refName: string) {
+    if (refName) {
+      this.focusNodes.setFocusedNodeByKey(refName)
+    }
+  }
+
+  onToastClose(): void {
+    if (this.focusNodes?.getFocusedNodeKey()) {
+      this.focusNodes.focusByKey(this.focusNodes.getFocusedNodeKey())
+      return
+    }
+    this.focusDefault()
+  }
+
+  focusDefault(): void {
+    this.focusNodes.focusByKey('signInEmail')
+  }
+
+  get formControls() { return this.form.controls }
+
+  get isEmailValidationErrors() {
+    console.log('isEmailValidationErrors')
+    return this.isSubmitStarted && this.formControls['email'].errors
+  }
+
+  get emailError() {
+
+    console.log(this.formControls)
+
+    return this.formControls['email'].errors ? this.formControls['email'].errors : ''
   }
 
   private initializeValues(): void {
-    this.isSubmitting$ = this.store.pipe(select(isSubmittingSelector))
+    this.isSubmitStarted = false
     this.signInQueryParams = {
       guardRedirect: this.route.snapshot.queryParams['guardRedirect'] === 'true',
       returnUrl: this.route.snapshot.queryParams['returnUrl']
@@ -99,7 +162,9 @@ export class SignInComponent implements OnInit, OnDestroy {
       password: '',
       rememberMe: false
     }
-    this.form = this.fb.group(initialValue)
+    this.form = this.fb.group(initialValue, { updateOn: 'submit' })
+    this.form.controls["email"].addValidators([Validators.email, Validators.required]);
+    this.form.controls["password"].addValidators([Validators.required]);
   }
 
   private initializeListeners() {
@@ -108,7 +173,6 @@ export class SignInComponent implements OnInit, OnDestroy {
       .subscribe((value: ValidationErrorInterface[]) => {
         this.validationErrors = value
       })
-
     this.isUnknownErrorSubscription = this.store
       .pipe(select(isUnknownErrorSelector))
       .subscribe((value: boolean) => {
@@ -121,6 +185,14 @@ export class SignInComponent implements OnInit, OnDestroy {
             detail: 'Something went wrong, please try again later or contact support',
             life: 3000
           })
+        }
+      })
+    this.isSubmittingSubscription = this.store
+      .pipe(select(isSubmittingSelector))
+      .subscribe((value: boolean) => {
+        this.isSubmitting = value
+        if (!this.isSubmitting && this.focusNodes?.getFocusedNodeKey() === 'signInSubmitButton') {
+          this.focusNodes.focusByKey('signInSubmitButton')
         }
       })
   }
