@@ -37,10 +37,15 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   validationErrorsSubscription: Subscription
   isUnknownErrorSubscription: Subscription
   form: FormGroup
-  isSubmitStarted: boolean
   isSubmitting: boolean
   validationErrors: ValidationErrorInterface[]
   isUnknownError: boolean
+
+  isEmailValidationErrors: boolean
+  emailValidationErrors: string[] | null
+  isPasswordValidationErrors: boolean
+  passwordValidationErrors: string[] | null
+  passwordInputStyleClass: string
 
   signInQueryParams: SignInRouteQueryParamsInterface
   backToShopLink: string
@@ -50,6 +55,8 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
               private route: ActivatedRoute,
               private store: Store<AppStateInterface>,
               private messageService: MessageService) { }
+
+  get f() { return this.form.controls }
 
   ngOnInit(): void {
     this.initializeValues()
@@ -76,9 +83,23 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSubmit(): void {
-    this.isSubmitStarted = true
+    const emailControl = this.f['email']
+    if (emailControl.invalid) {
+      this.isEmailInvalid = true
+    }
+
+    if (this.f['email'].errors) {
+
+      if (this.f['email'].errors['email'] === true) {
+        this.emailValidationErrors = ['Valid e-mail address required']
+      }
+    }
+    if (this.f['password'].errors) {
+      this.isPasswordValidationErrors = true
+      this.passwordInputStyleClass = `${this.passwordInputStyleClass} ng-dirty ng-invalid`
+      this.passwordValidationErrors = ['Test error 1', 'Test error 2', 'Required field']
+    }
     if (this.form.invalid) {
-      console.log('Form invalid')
       return
     }
 
@@ -109,6 +130,18 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
     this.focusNodes.focusNext()
   }
 
+  onEmailInput(): void {
+    if (this.isEmailValidationErrors) {
+      this.resetEmailErrors()
+    }
+  }
+
+  onPasswordInput(): void {
+    if (this.isPasswordValidationErrors) {
+      this.resetPasswordErrors()
+    }
+  }
+
   onFocus($event: FocusEvent | MouseEvent, refName: string) {
     if (refName) {
       this.focusNodes.setFocusedNodeByKey(refName)
@@ -127,22 +160,9 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
     this.focusNodes.focusByKey('signInEmail')
   }
 
-  get formControls() { return this.form.controls }
-
-  get isEmailValidationErrors() {
-    console.log('isEmailValidationErrors')
-    return this.isSubmitStarted && this.formControls['email'].errors
-  }
-
-  get emailError() {
-
-    console.log(this.formControls)
-
-    return this.formControls['email'].errors ? this.formControls['email'].errors : ''
-  }
-
   private initializeValues(): void {
-    this.isSubmitStarted = false
+    this.resetEmailErrors()
+    this.resetPasswordErrors()
     this.signInQueryParams = {
       guardRedirect: this.route.snapshot.queryParams['guardRedirect'] === 'true',
       returnUrl: this.route.snapshot.queryParams['returnUrl']
@@ -163,8 +183,12 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
       rememberMe: false
     }
     this.form = this.fb.group(initialValue, { updateOn: 'submit' })
-    this.form.controls["email"].addValidators([Validators.email, Validators.required]);
-    this.form.controls["password"].addValidators([Validators.required]);
+    const emailControl = this.f["email"]
+    emailControl.addValidators([Validators.email, Validators.required]);
+    emailControl.updateValueAndValidity()
+    const passwordControl = this.f["password"]
+    passwordControl.addValidators([Validators.required]);
+    passwordControl.updateValueAndValidity()
   }
 
   private initializeListeners() {
@@ -210,5 +234,16 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   private setBackToShopValuesDefault(): void {
     this.backToShopLink = '/'
     this.backToShopQueryParams = null
+  }
+
+  private resetEmailErrors(): void {
+    this.isEmailValidationErrors = false
+    this.emailValidationErrors = null
+  }
+
+  private resetPasswordErrors(): void {
+    this.isPasswordValidationErrors = false
+    this.passwordValidationErrors = null
+    this.passwordInputStyleClass = 'p-inputtext p-component p-element p-filled p-password-input'
   }
 }

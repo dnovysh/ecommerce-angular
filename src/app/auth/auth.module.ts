@@ -16,6 +16,8 @@ import { AuthService } from "src/app/auth/services/auth.service";
 import { StoreModule } from "@ngrx/store";
 import { reducer } from "src/app/auth/store/reducers";
 import { ToastModule } from "primeng/toast";
+import { MessageModule } from "primeng/message";
+import { AuthValidationErrorsComponent } from './components/auth-validation-errors/auth-validation-errors.component';
 
 
 const routes: Routes = [
@@ -26,7 +28,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     SignInComponent,
-    SignUpComponent
+    SignUpComponent,
+    AuthValidationErrorsComponent
   ],
   providers: [
     AuthService
@@ -43,7 +46,8 @@ const routes: Routes = [
         ButtonModule,
         RippleModule,
         PasswordModule,
-        ToastModule
+        ToastModule,
+        MessageModule
     ],
   exports: [
     SignInComponent,

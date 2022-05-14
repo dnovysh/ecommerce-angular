@@ -39,40 +39,42 @@
 
       <div class="login-form">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
-          <label for="signInEmail1" class="block text-900 font-medium mb-2">Email</label>
-          <input
-            #signInEmail
-            id="signInEmail1"
-            formControlName="email"
-            type="email"
-            name="email"
-            pInputText
-            (keydown)="onKeydownFormField($event, 'signInEmail')"
-            (focus)="onFocus($event, 'signInEmail')"
-            [ngClass] = "{ 'ng-dirty ng-invalid mb-0': isEmailValidationErrors }"
-            aria-describedby="email-error"
-          >
-          <small
-            id="email-error"
-            class="p-error mb-3"
-            *ngIf="isEmailValidationErrors"
-          >
-            {{emailError}}
-          </small>
-
-
-          <label for="signInPassword1" class="block text-900 font-medium mb-2">Password</label>
-          <p-password
-            #signInPassword
-            inputId="signInPassword1"
-            formControlName="password"
-            [toggleMask]="true"
-            [feedback]="false"
-            (keydown)="onKeydownFormField($event, 'signInPassword')"
-            (onFocus)="onFocus($event, 'signInPassword')"
-            styleClass="p-password p-component p-inputwrapper p-input-icon-right"
-            inputStyleClass="p-inputtext p-component p-element p-filled p-password-input"
-          ></p-password>
+          <div class="login-email-wrapper">
+            <label for="signInEmail1" class="block text-900 font-medium mb-2">Email</label>
+            <input
+              #signInEmail
+              id="signInEmail1"
+              formControlName="email"
+              type="email"
+              name="email"
+              pInputText
+              (input)="onEmailInput()"
+              (keydown)="onKeydownFormField($event, 'signInEmail')"
+              (focus)="onFocus($event, 'signInEmail')"
+              [ngClass]="{ 'ng-dirty ng-invalid': isEmailValidationErrors }"
+            >
+            <div class="validation-errors" *ngIf="isEmailValidationErrors && emailValidationErrors">
+              <ec-auth-validation-errors [errors]="emailValidationErrors"></ec-auth-validation-errors>
+            </div>
+          </div>
+          <div class="login-password-wrapper">
+            <label for="signInPassword1" class="block text-900 font-medium mb-2">Password</label>
+            <p-password
+              #signInPassword
+              inputId="signInPassword1"
+              formControlName="password"
+              [toggleMask]="true"
+              [feedback]="false"
+              (input)="onPasswordInput()"
+              (keydown)="onKeydownFormField($event, 'signInPassword')"
+              (onFocus)="onFocus($event, 'signInPassword')"
+              styleClass="p-password p-component p-inputwrapper p-input-icon-right"
+              [inputStyleClass]="passwordInputStyleClass"
+            ></p-password>
+            <div class="validation-errors" *ngIf="isPasswordValidationErrors && passwordValidationErrors">
+              <ec-auth-validation-errors [errors]="passwordValidationErrors"></ec-auth-validation-errors>
+            </div>
+          </div>
           <div class="flex align-items-center justify-content-between mb-6">
             <div class="flex align-items-center">
               <p-checkbox
