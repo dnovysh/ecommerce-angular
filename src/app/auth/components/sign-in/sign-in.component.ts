@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { filter, Subscription } from "rxjs";
 import { ActivatedRoute, Params } from "@angular/router";
 import { select, Store } from "@ngrx/store";
@@ -37,15 +37,16 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   validationErrorsSubscription: Subscription
   isUnknownErrorSubscription: Subscription
   form: FormGroup
+  emailControl: AbstractControl
+  passwordControl: AbstractControl
   isSubmitting: boolean
   validationErrors: ValidationErrorInterface[]
   isUnknownError: boolean
 
-  isEmailValidationErrors: boolean
+  isEmailInvalid: boolean
   emailValidationErrors: string[] | null
-  isPasswordValidationErrors: boolean
+  isPasswordInvalid: boolean
   passwordValidationErrors: string[] | null
-  passwordInputStyleClass: string
 
   signInQueryParams: SignInRouteQueryParamsInterface
   backToShopLink: string
@@ -83,26 +84,14 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSubmit(): void {
-    const emailControl = this.f['email']
-    if (emailControl.invalid) {
-      this.isEmailInvalid = true
+    this.isEmailInvalid = this.emailControl.invalid
+    if (this.emailControl.errors && this.emailControl.errors['email'] === true) {
+      this.emailValidationErrors = ['Valid e-mail address required']
     }
-
-    if (this.f['email'].errors) {
-
-      if (this.f['email'].errors['email'] === true) {
-        this.emailValidationErrors = ['Valid e-mail address required']
-      }
-    }
-    if (this.f['password'].errors) {
-      this.isPasswordValidationErrors = true
-      this.passwordInputStyleClass = `${this.passwordInputStyleClass} ng-dirty ng-invalid`
-      this.passwordValidationErrors = ['Test error 1', 'Test error 2', 'Required field']
-    }
+    this.isPasswordInvalid = this.passwordControl.invalid
     if (this.form.invalid) {
       return
     }
-
     const signInRequest: SignInRequestInterface = { user: this.form.value }
     const returnUrl: string = (
       this.signInQueryParams.returnUrl && !this.signInQueryParams.returnUrl.includes('/login')
@@ -131,20 +120,14 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onEmailInput(): void {
-    if (this.isEmailValidationErrors) {
+    if (this.isEmailInvalid) {
       this.resetEmailErrors()
     }
   }
 
   onPasswordInput(): void {
-    if (this.isPasswordValidationErrors) {
+    if (this.isPasswordInvalid) {
       this.resetPasswordErrors()
-    }
-  }
-
-  onFocus($event: FocusEvent | MouseEvent, refName: string) {
-    if (refName) {
-      this.focusNodes.setFocusedNodeByKey(refName)
     }
   }
 
@@ -153,6 +136,36 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
       this.focusNodes.focusByKey(this.focusNodes.getFocusedNodeKey())
       return
     }
+    this.focusDefault()
+  }
+
+  onFocus($event: FocusEvent | MouseEvent, refName: string) {
+    if (refName) {
+      this.focusNodes.setFocusedNodeByKey(refName)
+    }
+  }
+
+  onPasswordWrapperFocus() {
+    this.focusNodes.focusByKey('signInPassword')
+  }
+
+  onPasswordWrapperClick($event: MouseEvent) {
+    $event.preventDefault()
+    $event.stopPropagation()
+    if ((<HTMLElement>$event.target).nodeName === 'I') {
+      setTimeout(() => {
+        const inputPasswordElement = <HTMLInputElement>this.signInPassword.input.nativeElement
+        const endPosition = inputPasswordElement.value.length
+        inputPasswordElement.setSelectionRange(endPosition, endPosition)
+      }, 0)
+    }
+  }
+
+  onRememberMeWrapperFocus(): void {
+    this.focusNodes.focusByKey('signInRememberMe')
+  }
+
+  onBackgroundFocus() {
     this.focusDefault()
   }
 
@@ -183,12 +196,12 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
       rememberMe: false
     }
     this.form = this.fb.group(initialValue, { updateOn: 'submit' })
-    const emailControl = this.f["email"]
-    emailControl.addValidators([Validators.email, Validators.required]);
-    emailControl.updateValueAndValidity()
-    const passwordControl = this.f["password"]
-    passwordControl.addValidators([Validators.required]);
-    passwordControl.updateValueAndValidity()
+    this.emailControl = this.f["email"]
+    this.passwordControl = this.f["password"]
+    this.emailControl.addValidators([Validators.email, Validators.required]);
+    this.emailControl.updateValueAndValidity()
+    this.passwordControl.addValidators([Validators.required]);
+    this.passwordControl.updateValueAndValidity()
   }
 
   private initializeListeners() {
@@ -237,13 +250,12 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private resetEmailErrors(): void {
-    this.isEmailValidationErrors = false
+    this.isEmailInvalid = false
     this.emailValidationErrors = null
   }
 
   private resetPasswordErrors(): void {
-    this.isPasswordValidationErrors = false
+    this.isPasswordInvalid = false
     this.passwordValidationErrors = null
-    this.passwordInputStyleClass = 'p-inputtext p-component p-element p-filled p-password-input'
   }
 }

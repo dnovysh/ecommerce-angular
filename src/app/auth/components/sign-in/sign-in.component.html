@@ -1,10 +1,12 @@
 <div class="login-body p-component-overlay"
+     id="loginBody1"
      [tabIndex]="-1"
-     (focus)="focusDefault()"
+     (focus)="onBackgroundFocus()"
 >
   <div class="login-wrapper"
+       id="loginWrapper1"
        [tabIndex]="-1"
-       (focus)="focusDefault()"
+       (focus)="onBackgroundFocus()"
   >
     <div class="login-indent-top"></div>
     <div class="login-panel">
@@ -51,13 +53,18 @@
               (input)="onEmailInput()"
               (keydown)="onKeydownFormField($event, 'signInEmail')"
               (focus)="onFocus($event, 'signInEmail')"
-              [ngClass]="{ 'ng-dirty ng-invalid': isEmailValidationErrors }"
+              [ngClass]="{ 'ng-invalid ng-touched ng-dirty': isEmailInvalid }"
             >
-            <div class="validation-errors" *ngIf="isEmailValidationErrors && emailValidationErrors">
+            <div class="validation-errors" *ngIf="isEmailInvalid && emailValidationErrors">
               <ec-auth-validation-errors [errors]="emailValidationErrors"></ec-auth-validation-errors>
             </div>
           </div>
-          <div class="login-password-wrapper">
+          <div
+            class="login-password-wrapper"
+            [tabIndex]="-1"
+            (focus)="onPasswordWrapperFocus()"
+            (click)="onPasswordWrapperClick($event)"
+          >
             <label for="signInPassword1" class="block text-900 font-medium mb-2">Password</label>
             <p-password
               #signInPassword
@@ -65,26 +72,30 @@
               formControlName="password"
               [toggleMask]="true"
               [feedback]="false"
+              styleClass="p-password p-component p-inputwrapper p-input-icon-right"
+              inputStyleClass="p-inputtext p-component p-element p-password-input"
               (input)="onPasswordInput()"
               (keydown)="onKeydownFormField($event, 'signInPassword')"
               (onFocus)="onFocus($event, 'signInPassword')"
-              styleClass="p-password p-component p-inputwrapper p-input-icon-right"
-              [inputStyleClass]="passwordInputStyleClass"
+              [ngClass]="{ 'ng-invalid ng-touched ng-dirty': isPasswordInvalid }"
             ></p-password>
-            <div class="validation-errors" *ngIf="isPasswordValidationErrors && passwordValidationErrors">
+            <div class="validation-errors" *ngIf="isPasswordInvalid && passwordValidationErrors">
               <ec-auth-validation-errors [errors]="passwordValidationErrors"></ec-auth-validation-errors>
             </div>
           </div>
           <div class="flex align-items-center justify-content-between mb-6">
-            <div class="flex align-items-center">
+            <div
+              id="rememberMeWrapper1"
+              class="flex align-items-center"
+              [tabIndex]="-1"
+              (focus)="onRememberMeWrapperFocus()"
+            >
               <p-checkbox
                 #signInRememberMe
                 id="signInRememberMe1"
                 formControlName="rememberMe"
                 [binary]="true"
-
                 (keydown)="onKeydownFormField($event, 'signInRememberMe')"
-                (click)="onFocus($event, 'signInRememberMe')"
                 styleClass="mr-2"
               ></p-checkbox>
               <label for="signInRememberMe1" class="text-900">Remember me</label>
