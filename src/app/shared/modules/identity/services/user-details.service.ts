@@ -13,7 +13,7 @@ export class UserDetailsService {
   constructor(private http: HttpClient) { }
 
   getUserDetails(): Observable<UserDetailsInterface> {
-    const url = `${environment.baseApiUrl}/ToDoInBackend`
+    const url = `${environment.baseApiUrl}/auth/refresh`
     return this.http.get<UserDetailsResponseInterface>(url)
       .pipe(map((response): UserDetailsInterface => response.userDetails))
   }

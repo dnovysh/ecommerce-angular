@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from "@angular/common/http";
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
@@ -18,6 +18,7 @@ import { AppNavbarModule } from "src/app/shared/modules/app-navbar/app-navbar.mo
 import { CategoriesModule } from "src/app/shared/modules/categories/categories.module";
 import { IdentityModule } from "src/app/shared/modules/identity/identity.module";
 import { AuthModule } from "src/app/auth/auth.module";
+import { HttpXsrfInterceptor } from "src/app/shared/interceptors/http-xsrf.interceptor";
 
 
 @NgModule({
@@ -26,8 +27,8 @@ import { AuthModule } from "src/app/auth/auth.module";
   ],
   imports: [
     BrowserModule,
-    // FormsModule,
     HttpClientModule,
+    HttpClientXsrfModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({ router: routerReducer }, {}),
     EffectsModule.forRoot([]),
@@ -43,7 +44,9 @@ import { AuthModule } from "src/app/auth/auth.module";
     AppRoutingModule,
     AppNavbarModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

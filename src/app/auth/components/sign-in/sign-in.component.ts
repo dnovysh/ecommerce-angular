@@ -92,13 +92,17 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.form.invalid) {
       return
     }
-    const signInRequest: SignInRequestInterface = { user: this.form.value }
+    const formValue: SignInFormGroupInterface = this.form.value
+
+    const signInRequest: SignInRequestInterface = {
+      username: formValue.email,
+      password: formValue.password,
+      rememberMe: formValue.rememberMe
+    }
+
     const returnUrl: string = (
       this.signInQueryParams.returnUrl && !this.signInQueryParams.returnUrl.includes('/login')
     ) ? this.signInQueryParams.returnUrl : '/'
-
-    console.log(signInRequest)
-    console.log(returnUrl)
 
     this.store.dispatch(signInAction({ signInRequest, returnUrl }))
   }

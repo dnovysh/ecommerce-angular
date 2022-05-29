@@ -12,7 +12,7 @@ export class AuthService {
   }
 
   signIn = (data: SignInRequestInterface): Observable<AuthResponseInterface> => {
-    const url = `${environment.baseApiUrl}/users/login`
+    const url = `${environment.baseApiUrl}/auth/signin`
 
     return this.http.post<AuthResponseInterface>(url, data)
   }
