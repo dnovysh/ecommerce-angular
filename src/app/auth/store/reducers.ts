@@ -5,7 +5,7 @@ import { signInAction, signInFailureAction, signInSuccessAction } from "src/app/
 const initialState: AuthStateInterface = {
   isSubmitting: false,
   successfullyCompleted: null,
-  error: null
+  apiError: null
 }
 
 export const reducer = createReducer<AuthStateInterface, Action>(
@@ -23,6 +23,6 @@ export const reducer = createReducer<AuthStateInterface, Action>(
     ...state,
     isSubmitting: false,
     successfullyCompleted: false,
-    error: action.error
+    apiError: action.error
   }))
 )

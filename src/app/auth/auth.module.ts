@@ -18,6 +18,7 @@ import { reducer } from "src/app/auth/store/reducers";
 import { ToastModule } from "primeng/toast";
 import { MessageModule } from "primeng/message";
 import { AuthValidationErrorsComponent } from './components/auth-validation-errors/auth-validation-errors.component';
+import { AuthErrorComponent } from './components/auth-error/auth-error.component';
 
 
 const routes: Routes = [
@@ -29,7 +30,8 @@ const routes: Routes = [
   declarations: [
     SignInComponent,
     SignUpComponent,
-    AuthValidationErrorsComponent
+    AuthValidationErrorsComponent,
+    AuthErrorComponent
   ],
   providers: [
     AuthService

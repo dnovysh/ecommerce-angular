@@ -2,8 +2,12 @@ import { ValidationErrorInterface } from "src/app/shared/types/error/validation-
 
 export interface ApiErrorInterface {
   status: number
-  statusName: string
-  timestamp: string
+  error: string
   message: string
-  validationErrors?: ValidationErrorInterface[]
+  requiredAction: string
+  timestamp: string
+  timestampMs: number
+  errors?: ValidationErrorInterface[] | null
+  path?: string
+  debugMessage?: string
 }

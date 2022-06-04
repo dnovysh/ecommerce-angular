@@ -1,6 +1,6 @@
 export interface ValidationErrorInterface {
   object: string
-  field: string
+  field: string | null
   rejectedValue: any
-  "message": string
+  message: string
 }

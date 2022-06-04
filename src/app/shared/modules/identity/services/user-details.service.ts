@@ -12,10 +12,10 @@ export class UserDetailsService {
 
   constructor(private http: HttpClient) { }
 
-  getUserDetails(): Observable<UserDetailsInterface> {
+  refreshUserDetails(): Observable<UserDetailsInterface | null> {
     const url = `${environment.baseApiUrl}/auth/refresh`
-    return this.http.get<UserDetailsResponseInterface>(url)
-      .pipe(map((response): UserDetailsInterface => response.userDetails))
+    return this.http.post<UserDetailsResponseInterface>(url, null)
+      .pipe(map((response) => response.user))
   }
 
 }

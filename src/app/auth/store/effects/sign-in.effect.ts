@@ -22,14 +22,17 @@ export class SignInEffect {
     switchMap(({ signInRequest, returnUrl }) =>
       this.authService.signIn(signInRequest).pipe(
         map((authResponse: AuthResponseInterface) => {
-          //ToDo Access token save in cookie
+          if (authResponse.user === null) {
+            return signInFailureAction({ error: null })
+          }
           return signInSuccessAction({
-            userDetails: authResponse.userDetails,
+            userDetails: authResponse.user,
             returnUrl: returnUrl
           })
         }),
-        catchError((errorResponse: HttpErrorResponse) =>
-          of(signInFailureAction({ error: errorResponse.error }))
+        catchError((errorResponse: HttpErrorResponse) => {
+            return of(signInFailureAction({ error: errorResponse.error }))
+          }
         )
       )
     )

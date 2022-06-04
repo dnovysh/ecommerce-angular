@@ -39,6 +39,10 @@
         </a>
       </div>
 
+      <div class="login-errors" *ngIf="objectErrors">
+        <ec-auth-error [errors]="objectErrors"></ec-auth-error>
+      </div>
+
       <div class="login-form">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="login-email-wrapper">
