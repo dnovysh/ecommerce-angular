@@ -19,6 +19,7 @@ import { CategoriesModule } from "src/app/shared/modules/categories/categories.m
 import { IdentityModule } from "src/app/shared/modules/identity/identity.module";
 import { AuthModule } from "src/app/auth/auth.module";
 import { HttpXsrfInterceptor } from "src/app/shared/interceptors/http-xsrf.interceptor";
+import { SupportModule } from "src/app/general/support/support.module";
 
 
 @NgModule({
@@ -39,10 +40,11 @@ import { HttpXsrfInterceptor } from "src/app/shared/interceptors/http-xsrf.inter
     AuthModule,
     ProductListModule,
     LoadingModule,
+    SupportModule,
     SharedModule,
     AppFooterModule,
     AppRoutingModule,
-    AppNavbarModule
+    AppNavbarModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true }

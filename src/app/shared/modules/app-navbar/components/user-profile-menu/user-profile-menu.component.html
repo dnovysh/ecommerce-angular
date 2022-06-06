@@ -13,6 +13,16 @@
     </div>
   </li>
   <li role="menuitem"><a href="#"><i class="pi pi-cog"></i><h6>Settings</h6></a></li>
-  <li role="menuitem"><a href="#"><i class="pi pi-compass"></i><h6>Support</h6></a></li>
-  <li role="menuitem"><a href="#"><i class="pi pi-power-off"></i><h6>Logout</h6></a></li>
+  <li role="menuitem">
+    <a routerLink="/support" (click)="onClickSupport($event)">
+      <i class="pi pi-compass"></i>
+      <h6>Support</h6>
+    </a>
+  </li>
+  <li role="menuitem">
+    <a href="#">
+      <i class="pi pi-power-off"></i>
+      <h6>Sign out</h6>
+    </a>
+  </li>
 </ul>

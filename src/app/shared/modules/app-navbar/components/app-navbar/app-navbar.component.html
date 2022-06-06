@@ -3,7 +3,7 @@
     <div class="layout-navbar-left">
       <div class="layout-navbar-logo">
         <a routerLink="/" tabindex="0">
-          <img alt="" src="../../../../../../assets/layout/images/logo-shopocon.png">
+          <img alt="" src="assets/layout/images/logo-shopocon.png">
           <div>
             <span>Shopocon</span>
           </div>
@@ -106,7 +106,7 @@
             styleClass="navbar-fade-in-down-menu"
           >
             <ng-template pTemplate="navbarProfileMenu">
-              <ec-user-profile-menu></ec-user-profile-menu>
+              <ec-user-profile-menu (clickMenuItem)="opNavbarProfileMenu.hide()"></ec-user-profile-menu>
             </ng-template>
           </p-overlayPanel>
         </li>

@@ -23,7 +23,8 @@ import { AuthErrorComponent } from './components/auth-error/auth-error.component
 
 const routes: Routes = [
   { path: 'login', component: SignInComponent },
-  { path: 'signup', component: SignUpComponent }
+  { path: 'signup', component: SignUpComponent },
+  { path: 'logout', component: SignOutComponent }
 ]
 
 @NgModule({

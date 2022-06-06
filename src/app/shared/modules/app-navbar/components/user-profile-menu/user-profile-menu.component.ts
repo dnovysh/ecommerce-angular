@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'ec-user-profile-menu',
@@ -6,10 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./user-profile-menu.component.scss']
 })
 export class UserProfileMenuComponent implements OnInit {
+  @Output() clickMenuItem = new EventEmitter<MouseEvent>()
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  onClickSupport($event: MouseEvent) {
+    this.clickMenuItem.emit($event)
+  }
 }
