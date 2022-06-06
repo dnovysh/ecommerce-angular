@@ -32,22 +32,11 @@ export const validationErrorsSelector =
 export const badRequestWithoutDetailsSelector = createSelector(
   authFeatureSelector,
   (state: AuthStateInterface) => {
-    console.log(state)
     const err = state.apiError
-    console.log(err)
-    console.log(err?.errors)
     if (state.successfullyCompleted === false && err && err.status === 400 &&
       (err.errors === undefined || err.errors === null || err.errors.length === 0)) {
       return state.apiError
     }
-
-    console.log(state.successfullyCompleted === false)
-    console.log(err && err.status === 400)
-    console.log(err && (err.errors === undefined || err.errors === null || err.errors.length === 0))
-
-    console.log(state.successfullyCompleted === false && err && err.status === 400 &&
-      (err.errors === undefined || err.errors === null || err.errors.length === 0))
-
     return null
   }
 )

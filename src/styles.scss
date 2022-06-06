@@ -2,6 +2,7 @@
   --app-navbar-height: 90px;
   --app-content-padding: 91px;
   --app-navbar-fade-in-down-top: 53px;
+  --app-navbar-fade-in-down-overlay: 53px;
   --side-padding: 24px;
 }
 
@@ -10,6 +11,7 @@
     --app-navbar-height: 137px;
     --app-content-padding: 138px;
     --app-navbar-fade-in-down-top: 58px;
+    --app-navbar-fade-in-down-overlay: 47px;
   }
 }
 
@@ -121,4 +123,15 @@ a {
   min-width: 2.643rem !important;
   height: 2.643rem !important;
   border-radius: 50% !important;
+}
+
+.navbar-fade-in-down-menu.p-overlaypanel {
+  display: block!important;
+  position: fixed!important;
+  top: var(--app-navbar-fade-in-down-overlay, 53px)!important;
+  background-color: #FDFEFF;
+}
+
+.navbar-fade-in-down-menu.p-overlaypanel .p-overlaypanel-content {
+  padding: 0;
 }

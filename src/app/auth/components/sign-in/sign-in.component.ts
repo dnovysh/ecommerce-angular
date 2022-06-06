@@ -87,11 +87,11 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
       this.emailValidationErrors = ['Valid e-mail address required']
     }
     this.isPasswordInvalid = this.passwordControl.invalid
+    this.apiError = null
+    this.objectErrors = null
     if (this.form.invalid) {
       return
     }
-    this.apiError = null
-    this.objectErrors = null
 
     const formValue: SignInFormGroupInterface = this.form.value
 

@@ -3,7 +3,7 @@
     <div class="layout-navbar-left">
       <div class="layout-navbar-logo">
         <a routerLink="/" tabindex="0">
-          <img alt="" src="assets/layout/images/logo-shopocon.png">
+          <img alt="" src="../../../../../../assets/layout/images/logo-shopocon.png">
           <div>
             <span>Shopocon</span>
           </div>
@@ -93,30 +93,22 @@
           </a>
         </li>
         <li class="navbar-item user-profile" *ngIf="isAuthenticated$ | async">
-          <div class="user-profile-wrapper">
+          <div class="user-profile-wrapper" (click)="opNavbarProfileMenu.toggle($event)">
             <i class="pi pi-user"></i>
             <div class="profile-info" *ngIf="userAlias$ | async">
               <h6>{{userAlias$ | async}}</h6>
             </div>
           </div>
-          <ul class="fade-in-down-user-profile" style="display:none!important;">
-            <li class="layout-submenu-header">
-              <!--              <img-->
-              <!--                src="assets/layout/images/avatar-profile.png"-->
-              <!--                alt=""-->
-              <!--                class="profile-image"-->
-              <!--                style="display:none!important;"-->
-              <!--              >-->
-              <i class="pi pi-user"></i>
-              <div class="profile-info">
-                <h6>Edward Lindgren</h6>
-                <span>Favorite buyer</span>
-              </div>
-            </li>
-            <li role="menuitem"><a href="#"><i class="pi pi-cog"></i><h6>Settings</h6></a></li>
-            <li role="menuitem"><a href="#"><i class="pi pi-compass"></i><h6>Support</h6></a></li>
-            <li role="menuitem"><a href="#"><i class="pi pi-power-off"></i><h6>Logout</h6></a></li>
-          </ul>
+          <p-overlayPanel
+            #opNavbarProfileMenu
+            [dismissable]="true"
+            appendTo="body"
+            styleClass="navbar-fade-in-down-menu"
+          >
+            <ng-template pTemplate="navbarProfileMenu">
+              <ec-user-profile-menu></ec-user-profile-menu>
+            </ng-template>
+          </p-overlayPanel>
         </li>
       </ul>
     </div>
