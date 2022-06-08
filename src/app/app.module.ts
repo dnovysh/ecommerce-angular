@@ -20,6 +20,7 @@ import { IdentityModule } from "src/app/shared/modules/identity/identity.module"
 import { AuthModule } from "src/app/auth/auth.module";
 import { HttpXsrfInterceptor } from "src/app/shared/interceptors/http-xsrf.interceptor";
 import { SupportModule } from "src/app/general/support/support.module";
+import { ProfileSettingsModule } from "src/app/profile/profile-settings/profile-settings.module";
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { SupportModule } from "src/app/general/support/support.module";
     CategoriesModule,
     AuthModule,
     ProductListModule,
+    ProfileSettingsModule,
     LoadingModule,
     SupportModule,
     SharedModule,
