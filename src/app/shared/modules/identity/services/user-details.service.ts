@@ -14,7 +14,7 @@ export class UserDetailsService {
 
   refreshUserDetails(): Observable<UserDetailsInterface | null> {
     const url = `${environment.baseApiUrl}/auth/refresh`
-    return this.http.post<UserDetailsResponseInterface>(url, null)
+    return this.http.get<UserDetailsResponseInterface>(url)
       .pipe(map((response) => response.user))
   }
 

@@ -50,3 +50,20 @@ export const isUnknownErrorSelector = createSelector(
    badRequestWithoutDetails: ApiErrorInterface | null) =>
     isError && (validationErrors === null || validationErrors.length === 0) && badRequestWithoutDetails === null
 )
+
+export const signOutIsInProgressSelector = createSelector<AppStateInterface, AuthStateInterface, boolean>(
+  authFeatureSelector,
+  (state: AuthStateInterface) => state.signOutIsInProgress
+)
+
+export const signOutMessageSelector = createSelector<AppStateInterface, AuthStateInterface, string | null>(
+  authFeatureSelector,
+  (state: AuthStateInterface) => state.signOutMessage
+)
+
+export const signOutMessageIfSuccessfulSelector = createSelector(
+  signOutIsInProgressSelector,
+  signOutMessageSelector,
+  (signOutIsInProgress: boolean, message: string | null) =>
+    signOutIsInProgress ? null : message
+)

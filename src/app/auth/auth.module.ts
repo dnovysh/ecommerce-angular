@@ -19,6 +19,7 @@ import { SignOutComponent } from './components/sign-out/sign-out.component';
 import { AuthValidationErrorsComponent } from './components/auth-validation-errors/auth-validation-errors.component';
 import { AuthErrorComponent } from './components/auth-error/auth-error.component';
 import { SignInEffect } from "src/app/auth/store/effects/sign-in.effect";
+import { SignOutEffect } from "src/app/auth/store/effects/sign-out.effect";
 import { AuthService } from "src/app/auth/services/auth.service";
 import { reducer } from "src/app/auth/store/reducers";
 import { LoadingModule } from "src/app/shared/modules/loading/loading.module";
@@ -45,7 +46,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature('auth', reducer),
-    EffectsModule.forFeature([SignInEffect]),
+    EffectsModule.forFeature([SignInEffect, SignOutEffect]),
     FormsModule,
     ReactiveFormsModule,
     InputTextModule,

@@ -5,7 +5,7 @@ import { EffectsModule } from "@ngrx/effects";
 
 import { UserDetailsService } from "src/app/shared/modules/identity/services/user-details.service";
 import { reducer } from "src/app/shared/modules/identity/store/reducers";
-import { GetUserDetailsEffect } from "src/app/shared/modules/identity/store/effects/get-user-details.effect";
+import { RefreshUserDetailsEffect } from "src/app/shared/modules/identity/store/effects/refresh-user-details.effect";
 
 
 @NgModule({
@@ -14,7 +14,7 @@ import { GetUserDetailsEffect } from "src/app/shared/modules/identity/store/effe
     CommonModule,
     StoreModule.forFeature('identity', reducer),
     EffectsModule.forFeature([
-      GetUserDetailsEffect
+      RefreshUserDetailsEffect
     ])
   ],
   providers: [

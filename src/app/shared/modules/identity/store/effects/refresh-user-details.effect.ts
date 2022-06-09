@@ -4,30 +4,30 @@ import { catchError, map, of, switchMap } from "rxjs";
 
 import { UserDetailsService } from "src/app/shared/modules/identity/services/user-details.service";
 import {
-  getUserDetailsAction,
-  getUserDetailsFailureAction,
-  getUserDetailsSuccessAction
-} from "src/app/shared/modules/identity/store/actions/get-user-details.action";
+  refreshUserDetailsAction,
+  refreshUserDetailsFailureAction,
+  refreshUserDetailsSuccessAction
+} from "src/app/shared/modules/identity/store/actions/refresh-user-details.action";
 import { UserDetailsInterface } from "src/app/shared/modules/identity/types/user-details.interface";
 
 
 @Injectable()
-export class GetUserDetailsEffect {
+export class RefreshUserDetailsEffect {
   constructor(private actions$: Actions,
               private userDetailsService: UserDetailsService) {
   }
 
-  getUserDetails$ = createEffect(() => this.actions$.pipe(
-    ofType(getUserDetailsAction),
+  refreshUserDetails$ = createEffect(() => this.actions$.pipe(
+    ofType(refreshUserDetailsAction),
     switchMap(() => {
       return this.userDetailsService.refreshUserDetails().pipe(
         map((userDetails: UserDetailsInterface | null) => {
           if (userDetails === null) {
-            return getUserDetailsFailureAction()
+            return refreshUserDetailsFailureAction()
           }
-          return getUserDetailsSuccessAction({ userDetails })
+          return refreshUserDetailsSuccessAction({ userDetails })
         }),
-        catchError(() => of(getUserDetailsFailureAction()))
+        catchError(() => of(refreshUserDetailsFailureAction()))
       )
     })
   ))

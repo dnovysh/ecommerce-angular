@@ -39,4 +39,3 @@ export const userAliasSelector =
     identityFeatureSelector,
     (state: IdentityStateInterface) => state.userDetails ? state.userDetails.userAlias : null
   )
-
