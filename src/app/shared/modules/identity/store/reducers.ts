@@ -7,6 +7,7 @@ import {
   refreshUserDetailsSuccessAction
 } from "src/app/shared/modules/identity/store/actions/refresh-user-details.action";
 import { signInSuccessAction } from "src/app/auth/store/actions/sign-in.action";
+import { signOutSuccessAction } from "src/app/auth/store/actions/sign-out.action";
 
 
 const initialState: IdentityStateInterface = {
@@ -36,5 +37,10 @@ export const reducer = createReducer<IdentityStateInterface, Action>(
     ...state,
     isLoggedIn: true,
     userDetails: action.userDetails
+  })),
+  on(signOutSuccessAction, (state, action): IdentityStateInterface => ({
+    ...state,
+    isLoggedIn: false,
+    userDetails: null
   }))
 )
