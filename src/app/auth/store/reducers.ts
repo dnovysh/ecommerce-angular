@@ -43,3 +43,6 @@ export const reducer = createReducer<AuthStateInterface, Action>(
     signOutMessage: null
   }))
 )
+
+
+// ToDo clear error state before next navigate to sigh-in component

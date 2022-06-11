@@ -7,6 +7,8 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { AuthService } from "src/app/auth/services/auth.service";
 import { signInAction, signInFailureAction, signInSuccessAction } from "src/app/auth/store/actions/sign-in.action";
 import { AuthResponseInterface } from "src/app/auth/types/auth-response.interface";
+import { refreshUserDetailsAction } from "src/app/shared/modules/identity/store/actions/refresh-user-details.action";
+import { noOperationAction } from "src/app/shared/types/no-operation.action";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -50,4 +52,15 @@ export class SignInEffect {
     ),
     { dispatch: false }
   )
+
+  refreshUserDetailsIfSignInFailureWithRequiredActionRefreshUser$ = createEffect(() => this.actions$.pipe(
+    ofType(signInFailureAction),
+    switchMap(({ error }) => {
+      if (error !== null && error.requiredAction === 'REFRESH_USER') {
+        return of(refreshUserDetailsAction())
+      } else {
+        return of(noOperationAction())
+      }
+    })
+  ))
 }

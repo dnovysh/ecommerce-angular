@@ -7,6 +7,11 @@ import { UserDetailsInterface } from "src/app/shared/modules/identity/types/user
 
 export const identityFeatureSelector = createFeatureSelector<IdentityStateInterface>('identity');
 
+export const isLoadingSelector = createSelector<AppStateInterface, IdentityStateInterface, boolean>(
+  identityFeatureSelector,
+  (state: IdentityStateInterface) => state.isLoading
+)
+
 export const isLoggedInSelector = createSelector<AppStateInterface, IdentityStateInterface, boolean | null>(
   identityFeatureSelector,
   (state: IdentityStateInterface) => state.isLoggedIn

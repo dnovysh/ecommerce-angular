@@ -31,7 +31,8 @@ export const reducer = createReducer<IdentityStateInterface, Action>(
   on(refreshUserDetailsFailureAction, (state): IdentityStateInterface => ({
     ...state,
     isLoading: false,
-    isLoggedIn: false
+    isLoggedIn: false,
+    userDetails: null
   })),
   on(signInSuccessAction, (state, action): IdentityStateInterface => ({
     ...state,
