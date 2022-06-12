@@ -25,3 +25,7 @@ export const signInFailureAction = createAction(
   ActionTypes.SIGN_IN_FAILURE,
   props<{ error: ApiErrorInterface | null }>()
 )
+
+export const signInRouterNavigationAction = createAction(
+  ActionTypes.SIGN_IN_ROUTER_NAVIGATION
+)

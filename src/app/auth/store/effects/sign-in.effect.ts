@@ -1,14 +1,20 @@
 import { Injectable } from "@angular/core"
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Router } from "@angular/router";
-import { catchError, map, of, switchMap, tap } from "rxjs";
+import { catchError, filter, map, of, switchMap, tap } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 
 import { AuthService } from "src/app/auth/services/auth.service";
-import { signInAction, signInFailureAction, signInSuccessAction } from "src/app/auth/store/actions/sign-in.action";
+import {
+  signInAction,
+  signInFailureAction,
+  signInRouterNavigationAction,
+  signInSuccessAction
+} from "src/app/auth/store/actions/sign-in.action";
 import { AuthResponseInterface } from "src/app/auth/types/auth-response.interface";
 import { refreshUserDetailsAction } from "src/app/shared/modules/identity/store/actions/refresh-user-details.action";
 import { noOperationAction } from "src/app/shared/types/no-operation.action";
+import { routerNavigationAction } from "@ngrx/router-store";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -62,5 +68,11 @@ export class SignInEffect {
         return of(noOperationAction())
       }
     })
+  ))
+
+  navigateSignInRoute$ = createEffect(() => this.actions$.pipe(
+    ofType(routerNavigationAction),
+    filter(({ payload }) => payload.event.urlAfterRedirects.startsWith('/login')),
+    switchMap(() => of(signInRouterNavigationAction()))
   ))
 }

@@ -1,6 +1,11 @@
 import { Action, createReducer, on } from "@ngrx/store";
 import { AuthStateInterface } from "src/app/auth/types/auth-state.interface";
-import { signInAction, signInFailureAction, signInSuccessAction } from "src/app/auth/store/actions/sign-in.action";
+import {
+  signInAction,
+  signInFailureAction,
+  signInRouterNavigationAction,
+  signInSuccessAction
+} from "src/app/auth/store/actions/sign-in.action";
 import { signOutAction, signOutFailureAction, signOutSuccessAction } from "src/app/auth/store/actions/sign-out.action";
 
 const initialState: AuthStateInterface = {
@@ -28,6 +33,11 @@ export const reducer = createReducer<AuthStateInterface, Action>(
     successfullyCompleted: false,
     apiError: action.error
   })),
+  on(signInRouterNavigationAction, (state): AuthStateInterface => ({
+    ...state,
+    successfullyCompleted: null,
+    apiError: null
+  })),
   on(signOutAction, (state): AuthStateInterface => ({
     ...state,
     signOutIsInProgress: true,
@@ -43,6 +53,3 @@ export const reducer = createReducer<AuthStateInterface, Action>(
     signOutMessage: null
   }))
 )
-
-
-// ToDo clear error state before next navigate to sigh-in component

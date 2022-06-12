@@ -2,6 +2,7 @@ export enum ActionTypes {
   SIGN_IN = '[Auth] Sign-in',
   SIGN_IN_SUCCESS = '[Auth] Sign-in success',
   SIGN_IN_FAILURE = '[Auth] Sign-in failure',
+  SIGN_IN_ROUTER_NAVIGATION = '[Auth] Sign-in router navigation',
 
   SIGN_OUT = '[Auth] Sign-out',
   SIGN_OUT_SUCCESS = '[Auth] Sign-out success',
