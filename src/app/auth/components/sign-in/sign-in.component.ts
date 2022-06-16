@@ -151,6 +151,7 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
     this.passwordControl.updateValueAndValidity()
   }
 
+  // noinspection DuplicatedCode
   private initializeListeners() {
     this.validationErrorsSubscription = this.store
       .pipe(select(validationErrorsSelector), filter(Boolean))
