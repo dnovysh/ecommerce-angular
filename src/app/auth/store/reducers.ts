@@ -7,6 +7,13 @@ import {
   signInSuccessAction
 } from "src/app/auth/store/actions/sign-in.action";
 import { signOutAction, signOutFailureAction, signOutSuccessAction } from "src/app/auth/store/actions/sign-out.action";
+import {
+  signUpAction,
+  signUpFailureAction,
+  signUpRouterNavigationAction,
+  signUpSuccessAction
+} from "src/app/auth/store/actions/sign-up.action";
+
 
 const initialState: AuthStateInterface = {
   isSubmitting: false,
@@ -18,6 +25,7 @@ const initialState: AuthStateInterface = {
 
 export const reducer = createReducer<AuthStateInterface, Action>(
   initialState,
+  // signIn
   on(signInAction, (): AuthStateInterface => ({
     ...initialState,
     isSubmitting: true
@@ -38,6 +46,28 @@ export const reducer = createReducer<AuthStateInterface, Action>(
     successfullyCompleted: null,
     apiError: null
   })),
+  // signUp
+  on(signUpAction, (): AuthStateInterface => ({
+    ...initialState,
+    isSubmitting: true
+  })),
+  on(signUpSuccessAction, (state): AuthStateInterface => ({
+    ...state,
+    isSubmitting: false,
+    successfullyCompleted: true
+  })),
+  on(signUpFailureAction, (state, action): AuthStateInterface => ({
+    ...state,
+    isSubmitting: false,
+    successfullyCompleted: false,
+    apiError: action.error
+  })),
+  on(signUpRouterNavigationAction, (state): AuthStateInterface => ({
+    ...state,
+    successfullyCompleted: null,
+    apiError: null
+  })),
+  // signOut
   on(signOutAction, (state): AuthStateInterface => ({
     ...state,
     signOutIsInProgress: true,

@@ -18,6 +18,7 @@ import {
   validationErrorsSelector
 } from "src/app/auth/store/selectors";
 import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
+import { signUpAction } from "src/app/auth/store/actions/sign-up.action";
 
 
 // noinspection DuplicatedCode
@@ -74,6 +75,17 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    if (this.isSubmitting) {
+      this.messageService.add({
+        key: 'signUpErrorToast',
+        severity: 'error',
+        summary: 'Error',
+        detail: 'The previous authentication process has not been completed, please wait for it to complete',
+        life: 3000
+      })
+      return
+    }
+
     this.isAliasInvalid = this.aliasControl.invalid
     this.isEmailInvalid = this.emailControl.invalid
     if (this.emailControl.errors && this.emailControl.errors['email'] === true) {

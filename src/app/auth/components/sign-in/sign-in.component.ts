@@ -25,6 +25,7 @@ import { FocusNode } from "src/app/shared/helpers/focus/focus-node";
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 
 
+// noinspection DuplicatedCode
 @Component({
   selector: 'ec-sign-in',
   templateUrl: './sign-in.component.html',
@@ -82,6 +83,17 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onSubmit(): void {
+    if (this.isSubmitting) {
+      this.messageService.add({
+        key: 'signUpErrorToast',
+        severity: 'error',
+        summary: 'Error',
+        detail: 'The previous authentication process has not been completed, please wait for it to complete',
+        life: 3000
+      })
+      return
+    }
+
     this.isEmailInvalid = this.emailControl.invalid
     if (this.emailControl.errors && this.emailControl.errors['email'] === true) {
       this.emailValidationErrors = ['Valid e-mail address required']

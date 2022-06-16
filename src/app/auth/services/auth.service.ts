@@ -5,6 +5,7 @@ import { SignInRequestInterface } from "src/app/auth/types/sign-in-request.inter
 import { AuthResponseInterface } from "src/app/auth/types/auth-response.interface";
 import { environment } from "src/environments/environment";
 import { SignOutResponseInterface } from "src/app/auth/types/sign-out-response.interface";
+import { SignUpRequestInterface } from "src/app/auth/types/sign-up-request.interface";
 
 
 @Injectable()
@@ -14,6 +15,12 @@ export class AuthService {
 
   signIn = (data: SignInRequestInterface): Observable<AuthResponseInterface> => {
     const url = `${environment.baseApiUrl}/auth/signin`
+
+    return this.http.post<AuthResponseInterface>(url, data)
+  }
+
+  signUp = (data: SignUpRequestInterface): Observable<AuthResponseInterface> => {
+    const url = `${environment.baseApiUrl}/auth/signup`
 
     return this.http.post<AuthResponseInterface>(url, data)
   }
