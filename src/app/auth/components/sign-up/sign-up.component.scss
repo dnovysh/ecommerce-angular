@@ -33,7 +33,7 @@
   z-index: 1109;
   width: 100%;
   padding: 1.5rem;
-  border-radius: 24px;
+  border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 0 2px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.12);
   background-color: var(--surface-card);
 }
@@ -62,7 +62,7 @@
 }
 
 .register-wrapper .register-panel .register-form .register-password-wrapper {
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
 }
 
 :host ::ng-deep .register-wrapper .register-panel .register-form .p-password {

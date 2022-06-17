@@ -29,7 +29,8 @@
         <div class="text-3xl font-medium mb-3">Welcome back to Shopocon</div>
         <span class="text-600 font-medium line-height-3">Don't have an account?</span>
         <a
-          routerLink="/"
+          routerLink="/signup"
+          [queryParams]="signInQueryParams"
           #signUpHref
           (keydown)="onKeydownFormField($event, 'signUpHref')"
           (focus)="onFocus($event, 'signUpHref')"

@@ -8,6 +8,7 @@ import {
 } from "src/app/shared/modules/identity/store/actions/refresh-user-details.action";
 import { signInSuccessAction } from "src/app/auth/store/actions/sign-in.action";
 import { signOutSuccessAction } from "src/app/auth/store/actions/sign-out.action";
+import { signUpSuccessAction } from "src/app/auth/store/actions/sign-up.action";
 
 
 const initialState: IdentityStateInterface = {
@@ -35,6 +36,11 @@ export const reducer = createReducer<IdentityStateInterface, Action>(
     userDetails: null
   })),
   on(signInSuccessAction, (state, action): IdentityStateInterface => ({
+    ...state,
+    isLoggedIn: true,
+    userDetails: action.userDetails
+  })),
+  on(signUpSuccessAction, (state, action): IdentityStateInterface => ({
     ...state,
     isLoggedIn: true,
     userDetails: action.userDetails

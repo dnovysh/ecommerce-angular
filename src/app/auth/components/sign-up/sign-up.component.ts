@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Params } from "@angular/router";
 import { select, Store } from "@ngrx/store";
@@ -19,6 +19,7 @@ import {
 } from "src/app/auth/store/selectors";
 import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
 import { signUpAction } from "src/app/auth/store/actions/sign-up.action";
+import { Password } from "primeng/password";
 
 
 // noinspection DuplicatedCode
@@ -28,6 +29,9 @@ import { signUpAction } from "src/app/auth/store/actions/sign-up.action";
   styleUrls: ['./sign-up.component.scss']
 })
 export class SignUpComponent implements OnInit, OnDestroy {
+  @ViewChild("signUpEmail") signUpEmail: ElementRef;
+  @ViewChild("signUpPassword") signUpPassword: Password;
+  @ViewChild("signUpSubmitButton") signUpSubmitButton: ElementRef;
 
   isSubmittingSubscription: Subscription
   validationErrorsSubscription: Subscription
@@ -128,6 +132,17 @@ export class SignUpComponent implements OnInit, OnDestroy {
   onPasswordInput(): void {
     if (this.isPasswordInvalid) {
       this.resetPasswordErrors()
+    }
+  }
+
+  onKeydownEnterFocusNext($event: KeyboardEvent, nextElement: HTMLInputElement | HTMLButtonElement | Password): void {
+    if ($event.key === 'Enter') {
+      $event.preventDefault()
+      if (nextElement instanceof Password) {
+        nextElement.input.nativeElement.focus()
+        return
+      }
+      nextElement.focus()
     }
   }
 
