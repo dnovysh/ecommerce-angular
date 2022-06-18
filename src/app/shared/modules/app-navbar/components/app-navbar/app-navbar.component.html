@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="layout-navbar-right">
-      <div class="menu-button">
+      <div class="menu-button" (click)="onSidebarToggle()" *ngIf="hasAnyRole$ | async">
         <i class="pi pi-bars"></i>
       </div>
       <div class="layout-navbar-search-action">
@@ -114,3 +114,4 @@
     </div>
   </div>
 </div>
+<ec-shared-sidebar [(visible)]="sidebarVisible"></ec-shared-sidebar>

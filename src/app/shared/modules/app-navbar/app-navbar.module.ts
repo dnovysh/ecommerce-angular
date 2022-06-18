@@ -8,6 +8,7 @@ import { OverlayPanelModule } from "primeng/overlaypanel";
 
 import { AppNavbarComponent } from 'src/app/shared/modules/app-navbar/components/app-navbar/app-navbar.component';
 import { UserProfileMenuComponent } from './components/user-profile-menu/user-profile-menu.component';
+import { SharedSidebarModule } from "src/app/shared/modules/shared-sidebar/shared-sidebar.module";
 
 
 @NgModule({
@@ -15,14 +16,15 @@ import { UserProfileMenuComponent } from './components/user-profile-menu/user-pr
     AppNavbarComponent,
     UserProfileMenuComponent
   ],
-  imports: [
-    CommonModule,
-    RouterModule,
-    InputTextModule,
-    BadgeModule,
-    FormsModule,
-    OverlayPanelModule
-  ],
+    imports: [
+        CommonModule,
+        RouterModule,
+        InputTextModule,
+        BadgeModule,
+        FormsModule,
+        OverlayPanelModule,
+        SharedSidebarModule
+    ],
   exports: [
     AppNavbarComponent
   ]

@@ -14,6 +14,7 @@ import {
   signUpRouterNavigationAction,
   signUpSuccessAction
 } from "src/app/auth/store/actions/sign-up.action";
+import { UserDetailsMapper } from "src/app/shared/modules/identity/mappers/user-details.mapper";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -21,7 +22,8 @@ import {
 export class SignUpEffect {
   constructor(private actions$: Actions,
               private authService: AuthService,
-              private router: Router) {
+              private router: Router,
+              private mapper: UserDetailsMapper) {
   }
 
   signUp$ = createEffect(() => this.actions$.pipe(
@@ -33,7 +35,7 @@ export class SignUpEffect {
             return signUpFailureAction({ error: null })
           }
           return signUpSuccessAction({
-            userDetails: authResponse.user,
+            userDetails: this.mapper.mapFromUserDetailsDto(authResponse.user),
             returnUrl: returnUrl
           })
         }),

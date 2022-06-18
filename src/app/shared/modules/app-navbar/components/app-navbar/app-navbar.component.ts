@@ -3,6 +3,7 @@ import { NavigationEnd, Params, Router } from "@angular/router";
 import { filter, Observable, Subscription } from "rxjs";
 import { select, Store } from "@ngrx/store";
 import {
+  hasAnyRoleSelector,
   isAuthenticatedSelector,
   isGuestSelector,
   userAliasSelector
@@ -21,12 +22,15 @@ export class AppNavbarComponent implements OnInit, OnDestroy {
   isGuest$: Observable<boolean>
   isAuthenticated$: Observable<boolean>
   userAlias$: Observable<string>
+  hasAnyRole$: Observable<boolean>
   navigationEndSubscription: Subscription
 
   searchText: string | null
   navigationEnd: NavigationEnd
   loginUrl: string = '/login'
   loginQueryParams: Params
+
+  sidebarVisible: boolean
 
   constructor(private router: Router,
               private store: Store<AppStateInterface>) {
@@ -37,6 +41,8 @@ export class AppNavbarComponent implements OnInit, OnDestroy {
     this.isGuest$ = this.store.pipe(select(isGuestSelector))
     this.isAuthenticated$ = this.store.pipe(select(isAuthenticatedSelector))
     this.userAlias$ = this.store.pipe(select(userAliasSelector), filter(Boolean))
+    this.hasAnyRole$ = this.store.pipe(select(hasAnyRoleSelector))
+    this.sidebarVisible = false
   }
 
   ngOnDestroy(): void {
@@ -47,6 +53,10 @@ export class AppNavbarComponent implements OnInit, OnDestroy {
     if (this.searchText) {
       this.router.navigate(['products/search'], { queryParams: { name: this.searchText } })
     }
+  }
+
+  onSidebarToggle() {
+    this.sidebarVisible = !this.sidebarVisible
   }
 
   private subscribeToNavigationEnd(): void {

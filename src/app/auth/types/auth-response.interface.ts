@@ -1,5 +1,5 @@
-import { UserDetailsInterface } from "src/app/shared/modules/identity/types/user-details.interface";
+import { UserDetailsDtoInterface } from "src/app/shared/modules/identity/types/user-details-dto.interface";
 
 export interface AuthResponseInterface {
-  user: UserDetailsInterface | null
+  user: UserDetailsDtoInterface | null
 }

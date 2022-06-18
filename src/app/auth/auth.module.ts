@@ -24,6 +24,7 @@ import { SignOutEffect } from "src/app/auth/store/effects/sign-out.effect";
 import { AuthService } from "src/app/auth/services/auth.service";
 import { reducer } from "src/app/auth/store/reducers";
 import { LoadingModule } from "src/app/shared/modules/loading/loading.module";
+import { UserDetailsMapper } from "src/app/shared/modules/identity/mappers/user-details.mapper";
 
 
 const routes: Routes = [
@@ -41,7 +42,8 @@ const routes: Routes = [
     AuthErrorComponent
   ],
   providers: [
-    AuthService
+    AuthService,
+    UserDetailsMapper
   ],
   imports: [
     CommonModule,

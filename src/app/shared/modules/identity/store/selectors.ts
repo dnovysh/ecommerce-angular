@@ -44,3 +44,9 @@ export const userAliasSelector =
     identityFeatureSelector,
     (state: IdentityStateInterface) => state.userDetails ? state.userDetails.userAlias : null
   )
+
+export const hasAnyRoleSelector = createSelector<AppStateInterface, IdentityStateInterface, boolean>(
+  identityFeatureSelector,
+  (state: IdentityStateInterface) =>
+    state.userDetails?.roles ? state.userDetails.roles.size > 0 : false
+)

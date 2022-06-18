@@ -10,6 +10,6 @@ export interface UserDetailsInterface {
   dealerRepresentative: boolean
   dealer: DealerInterface | null
   userAlias: string
-  roles?: Set<string>
-  authorities?: Set<string>
+  roles: Set<string>
+  authorities: Set<string>
 }

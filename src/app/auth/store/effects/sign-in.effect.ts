@@ -15,6 +15,7 @@ import { AuthResponseInterface } from "src/app/auth/types/auth-response.interfac
 import { refreshUserDetailsAction } from "src/app/shared/modules/identity/store/actions/refresh-user-details.action";
 import { noOperationAction } from "src/app/shared/types/no-operation.action";
 import { routerNavigationAction } from "@ngrx/router-store";
+import { UserDetailsMapper } from "src/app/shared/modules/identity/mappers/user-details.mapper";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -22,7 +23,8 @@ import { routerNavigationAction } from "@ngrx/router-store";
 export class SignInEffect {
   constructor(private actions$: Actions,
               private authService: AuthService,
-              private router: Router) {
+              private router: Router,
+              private mapper: UserDetailsMapper) {
   }
 
   signIn$ = createEffect(() => this.actions$.pipe(
@@ -34,7 +36,7 @@ export class SignInEffect {
             return signInFailureAction({ error: null })
           }
           return signInSuccessAction({
-            userDetails: authResponse.user,
+            userDetails: this.mapper.mapFromUserDetailsDto(authResponse.user),
             returnUrl: returnUrl
           })
         }),

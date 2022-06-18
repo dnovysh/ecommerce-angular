@@ -1,0 +1,26 @@
+<p-sidebar
+  [(visible)]="visibleProperties"
+  (onHide)="onVisibleChange()"
+  (onShow)="onVisibleChange()"
+  [baseZIndex]="10000"
+>
+  <div class="side-menu-wrapper">
+    <ul>
+      <li>
+        <span>Catalog</span>
+        <ul>
+          <li>
+            <a href="">
+              Categories
+            </a>
+          </li>
+          <li>
+            <a href="">
+              Products
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</p-sidebar>
