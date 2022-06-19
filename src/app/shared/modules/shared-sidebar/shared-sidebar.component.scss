@@ -1,0 +1,69 @@
+a {
+  text-decoration: none;
+}
+
+:host ::ng-deep .p-sidebar-left {
+  width: 250px;
+}
+
+.side-menu-wrapper {
+  background-color: var(--surface-overlay, #fff);
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  padding: 0 1rem 1rem;
+}
+
+.side-menu-groups {
+  list-style-type: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  padding-inline-start: 0;
+}
+
+.side-menu-groups > li {
+  padding: 0 0 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-menu-groups > li > span {
+  user-select: none;
+  font-size: .857rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.5rem 0.25rem;
+  color: var(--surface-900, #212121);
+}
+
+.side-menu-groups > li > ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.side-menu-groups > li > ul > li {
+  margin: 0;
+}
+
+.side-menu-groups > li > ul > li > a {
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-color, #495057);
+  font-weight: 400;
+  background: var(--surface-overlay, #fff);
+  transition: all .15s ease 0s;
+}
+
+.side-menu-groups > li > ul > li > a:hover,
+.side-menu-groups > li > ul > li > a:focus,
+.side-menu-groups > li > ul > li > a.active {
+  background-color: rgba(232, 241, 248, 0.7);
+}
+
+.active-route {
+  font-weight: 700!important;
+  color: var(--blue-500, #2196f3)!important;
+}
