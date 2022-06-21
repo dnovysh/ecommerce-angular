@@ -2,10 +2,12 @@ import { ProductListStateInterface } from "src/app/catalog/product-list/types/pr
 import { CategoriesStateInterface } from "src/app/shared/modules/categories/types/categories-state.interface";
 import { IdentityStateInterface } from "src/app/shared/modules/identity/types/identity-state.interface";
 import { AuthStateInterface } from "src/app/auth/types/auth-state.interface";
+import { AuthorityStateInterface } from "src/app/admin/authority-grouping-report/types/authority-state.interface";
 
 export interface AppStateInterface {
   productList: ProductListStateInterface
   categories: CategoriesStateInterface
   identity: IdentityStateInterface
   auth: AuthStateInterface
+  authorities: AuthorityStateInterface
 }
