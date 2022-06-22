@@ -21,6 +21,9 @@ import { AuthModule } from "src/app/auth/auth.module";
 import { HttpXsrfInterceptor } from "src/app/shared/interceptors/http-xsrf.interceptor";
 import { SupportModule } from "src/app/general/support/support.module";
 import { ProfileSettingsModule } from "src/app/profile/profile-settings/profile-settings.module";
+import {
+  AuthorityGroupingReportModule
+} from "src/app/admin/authority-grouping-report/authority-grouping-report.module";
 
 
 @NgModule({
@@ -41,6 +44,7 @@ import { ProfileSettingsModule } from "src/app/profile/profile-settings/profile-
     AuthModule,
     ProductListModule,
     ProfileSettingsModule,
+    AuthorityGroupingReportModule,
     LoadingModule,
     SupportModule,
     SharedModule,

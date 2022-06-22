@@ -1,1 +1,32 @@
-<p>authority-grouping-report works!</p>
+<div class="authorities-wrapper">
+  <div class="authorities-body">
+    <div class="spinner-container" *ngIf="(isLoading$ | async) && !authorities">
+      <ec-loading></ec-loading>
+    </div>
+    <div class="authorities-container" *ngIf="authorities">
+      <h3>Authorities</h3>
+      <p-table [value]="authorities" rowGroupMode="rowspan" groupRowsBy="groupingField"
+               sortField="permission" sortMode="single" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width:3rem">#</th>
+            <th>Permission group</th>
+            <th>Permission</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-authority let-rowIndex="rowIndex" let-rowgroup="rowgroup"
+                     let-rowspan="rowspan">
+          <tr>
+            <td>{{rowIndex}}</td>
+            <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+              <span class="font-bold ml-2">{{authority.groupingField}}</span>
+            </td>
+            <td>
+              {{authority.permission}}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

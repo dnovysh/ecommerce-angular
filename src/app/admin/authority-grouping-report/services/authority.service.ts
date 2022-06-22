@@ -14,7 +14,7 @@ export class AuthorityService {
   constructor(private http: HttpClient) { }
 
   getAllAuthorities(): Observable<AuthorityInterface[]> {
-    const fullUrl = `${environment.baseApiUrl}/identity-authorities/search/findAllByOrderByPermission`
+    const fullUrl = `${environment.baseApiUrl}/identity-authorities/search/findAllByOrderById`
 
     return this.http.get<AuthorityResponseInterface>(fullUrl)
       .pipe(map((response) => response._embedded.authorities))

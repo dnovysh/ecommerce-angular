@@ -4,6 +4,7 @@ import { AuthorityStateInterface } from "src/app/admin/authority-grouping-report
 import {
   AuthorityWithGroupingFieldInterface
 } from "src/app/admin/authority-grouping-report/types/authority-with-grouping-field.interface";
+import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 
 export const authoritiesFeatureSelector =
   createFeatureSelector<AuthorityStateInterface>('authorities');
@@ -19,7 +20,7 @@ export const authoritiesSelector = createSelector<AppStateInterface,
   (state: AuthorityStateInterface) => state.data
 )
 
-export const errorSelector = createSelector<AppStateInterface, AuthorityStateInterface, string | null>(
+export const errorSelector = createSelector<AppStateInterface, AuthorityStateInterface, ApiErrorInterface | null>(
   authoritiesFeatureSelector,
   (state: AuthorityStateInterface) => state.error
 )

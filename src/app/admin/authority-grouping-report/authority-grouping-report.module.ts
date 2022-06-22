@@ -10,6 +10,7 @@ import { AuthGuard } from "src/app/shared/impl/auth-guard.class";
 import { AuthorityService } from "src/app/admin/authority-grouping-report/services/authority.service";
 import { GetCategoriesEffect } from "src/app/admin/authority-grouping-report/store/get-authorities.effect";
 import { reducer } from "src/app/admin/authority-grouping-report/store/reducers";
+import { TableModule } from "primeng/table";
 
 
 const routes: Routes = [
@@ -28,14 +29,15 @@ const routes: Routes = [
     AuthorityService,
     AuthGuard
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    EffectsModule.forFeature([
-      GetCategoriesEffect
-    ]),
-    StoreModule.forFeature('authorities', reducer),
-    LoadingModule,
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        EffectsModule.forFeature([
+            GetCategoriesEffect
+        ]),
+        StoreModule.forFeature('authorities', reducer),
+        LoadingModule,
+        TableModule,
+    ]
 })
 export class AuthorityGroupingReportModule {}
