@@ -24,8 +24,10 @@ export const reducer = createReducer<AuthorityStateInterface, Action>(
     isLoading: false,
     data: action.authorities
   })),
-  on(getAuthoritiesFailureAction, (state): AuthorityStateInterface => ({
+  on(getAuthoritiesFailureAction, (state, action): AuthorityStateInterface => ({
     ...state,
-    isLoading: false
+    isLoading: false,
+    error: action.error,
+    data: null
   }))
 )

@@ -1,0 +1,56 @@
+<ec-access-denied *ngIf="!accessAllowed"></ec-access-denied>
+<div class="roles-wrapper" *ngIf="accessAllowed">
+  <div class="roles-body">
+    <div class="spinner-container" *ngIf="(isLoading$ | async) && !roles">
+      <ec-loading></ec-loading>
+    </div>
+    <div class="roles-container" *ngIf="roles">
+      <h3>Roles</h3>
+      <p-accordion [multiple]="true">
+        <p-accordionTab
+          *ngFor="let role of roles"
+          header="{{role.name}}"
+        >
+          <ng-container *ngTemplateOutlet="authoritiesTemplate; context:role"></ng-container>
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+  </div>
+</div>
+
+<ng-template #authoritiesTemplate let-authorities="authorities">
+  <div class="authorities-wrapper">
+    <div class="authorities-body">
+      <div class="spinner-container" *ngIf="(isLoading$ | async) && !authorities">
+        <ec-loading></ec-loading>
+      </div>
+      <div class="authorities-container" *ngIf="authorities">
+        <h3>Authorities</h3>
+        <p-table [value]="authorities"
+                 rowGroupMode="rowspan"
+                 groupRowsBy="group"
+                 sortMode="multiple"
+                 [multiSortMeta]="[{field: 'group', order: 1}, {field: 'id', order: 1}]"
+                 responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr>
+              <th style="min-width:3rem;width:3%">Id</th>
+              <th style="width:27%">Group</th>
+              <th style="width:70%">Permission</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-authority let-rowgroup="rowgroup"
+                       let-rowspan="rowspan">
+            <tr>
+              <td>{{authority.id}}</td>
+              <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                <span class="font-bold ml-3 mr-3">{{authority.group}}</span>
+              </td>
+              <td class="ml-3">{{authority.permission}}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+</ng-template>

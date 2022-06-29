@@ -7,13 +7,12 @@ import {
   getAuthoritiesFailureAction,
   getAuthoritiesSuccessAction
 } from "src/app/admin/authority-grouping-report/store/get-authorities.action";
-import {
-  AuthorityWithGroupingFieldInterface
-} from "src/app/admin/authority-grouping-report/types/authority-with-grouping-field.interface";
+import { AuthorityInterface } from "src/app/admin/authority-grouping-report/types/authority.interface";
+import { HttpErrorResponse } from "@angular/common/http";
 
 
 @Injectable()
-export class GetCategoriesEffect {
+export class GetAuthoritiesEffect {
   constructor(private actions$: Actions,
               private authorityService: AuthorityService) {
   }
@@ -21,11 +20,12 @@ export class GetCategoriesEffect {
   getAuthorities$ = createEffect(() => this.actions$.pipe(
     ofType(getAuthoritiesAction),
     switchMap(() => {
-      return this.authorityService.getAllAuthoritiesWithGroupingField().pipe(
-        map((authorities: AuthorityWithGroupingFieldInterface[]) =>
+      return this.authorityService.getAllAuthorities().pipe(
+        map((authorities: AuthorityInterface[]) =>
           getAuthoritiesSuccessAction({ authorities })
         ),
-        catchError(() => of(getAuthoritiesFailureAction()))
+        catchError((errorResponse: HttpErrorResponse) =>
+          of(getAuthoritiesFailureAction({ error: errorResponse.error })))
       )
     })
   ))

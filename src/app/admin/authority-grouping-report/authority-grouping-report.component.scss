@@ -17,3 +17,7 @@
   text-align: center;
   margin: 130px 0;
 }
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.25rem 1rem;
+}

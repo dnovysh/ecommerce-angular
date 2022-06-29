@@ -3,6 +3,7 @@ import { CategoriesStateInterface } from "src/app/shared/modules/categories/type
 import { IdentityStateInterface } from "src/app/shared/modules/identity/types/identity-state.interface";
 import { AuthStateInterface } from "src/app/auth/types/auth-state.interface";
 import { AuthorityStateInterface } from "src/app/admin/authority-grouping-report/types/authority-state.interface";
+import { RoleStateInterface } from "src/app/admin/role-administration/types/role-state.interface";
 
 export interface AppStateInterface {
   productList: ProductListStateInterface
@@ -10,4 +11,5 @@ export interface AppStateInterface {
   identity: IdentityStateInterface
   auth: AuthStateInterface
   authorities: AuthorityStateInterface
+  roles: RoleStateInterface
 }

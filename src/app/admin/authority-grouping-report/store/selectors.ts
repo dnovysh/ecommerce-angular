@@ -1,10 +1,8 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
 import { AuthorityStateInterface } from "src/app/admin/authority-grouping-report/types/authority-state.interface";
-import {
-  AuthorityWithGroupingFieldInterface
-} from "src/app/admin/authority-grouping-report/types/authority-with-grouping-field.interface";
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
+import { AuthorityInterface } from "src/app/admin/authority-grouping-report/types/authority.interface";
 
 export const authoritiesFeatureSelector =
   createFeatureSelector<AuthorityStateInterface>('authorities');
@@ -15,7 +13,7 @@ export const isLoadingSelector = createSelector<AppStateInterface, AuthorityStat
 )
 
 export const authoritiesSelector = createSelector<AppStateInterface,
-  AuthorityStateInterface, AuthorityWithGroupingFieldInterface[] | null>(
+  AuthorityStateInterface, AuthorityInterface[] | null>(
   authoritiesFeatureSelector,
   (state: AuthorityStateInterface) => state.data
 )

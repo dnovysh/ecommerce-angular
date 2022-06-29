@@ -8,9 +8,10 @@ import { AuthorityGroupingReportComponent } from './authority-grouping-report.co
 import { LoadingModule } from "src/app/shared/modules/loading/loading.module";
 import { AuthGuard } from "src/app/shared/impl/auth-guard.class";
 import { AuthorityService } from "src/app/admin/authority-grouping-report/services/authority.service";
-import { GetCategoriesEffect } from "src/app/admin/authority-grouping-report/store/get-authorities.effect";
+import { GetAuthoritiesEffect } from "src/app/admin/authority-grouping-report/store/get-authorities.effect";
 import { reducer } from "src/app/admin/authority-grouping-report/store/reducers";
 import { TableModule } from "primeng/table";
+import { AccessDeniedModule } from "src/app/shared/modules/access-denied/access-denied.module";
 
 
 const routes: Routes = [
@@ -33,11 +34,12 @@ const routes: Routes = [
         CommonModule,
         RouterModule.forChild(routes),
         EffectsModule.forFeature([
-            GetCategoriesEffect
+            GetAuthoritiesEffect
         ]),
         StoreModule.forFeature('authorities', reducer),
         LoadingModule,
         TableModule,
+        AccessDeniedModule,
     ]
 })
 export class AuthorityGroupingReportModule {}

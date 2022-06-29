@@ -24,6 +24,7 @@ import { ProfileSettingsModule } from "src/app/profile/profile-settings/profile-
 import {
   AuthorityGroupingReportModule
 } from "src/app/admin/authority-grouping-report/authority-grouping-report.module";
+import { RoleAdministrationModule } from "src/app/admin/role-administration/role-administration.module";
 
 
 @NgModule({
@@ -45,6 +46,7 @@ import {
     ProductListModule,
     ProfileSettingsModule,
     AuthorityGroupingReportModule,
+    RoleAdministrationModule,
     LoadingModule,
     SupportModule,
     SharedModule,
