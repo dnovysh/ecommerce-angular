@@ -4,6 +4,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule } from "@angu
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
+import { EntityDataModule } from "@ngrx/data";
 import { routerReducer, StoreRouterConnectingModule } from "@ngrx/router-store";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { SharedModule } from "primeng/api";
@@ -25,6 +26,8 @@ import {
   AuthorityGroupingReportModule
 } from "src/app/admin/authority-grouping-report/authority-grouping-report.module";
 import { RoleAdministrationModule } from "src/app/admin/role-administration/role-administration.module";
+import { entityConfig } from "src/app/data/entity-metadata";
+import { EntityStoreModule } from "src/app/data/entity-store.module";
 
 
 @NgModule({
@@ -38,6 +41,8 @@ import { RoleAdministrationModule } from "src/app/admin/role-administration/role
     BrowserAnimationsModule,
     StoreModule.forRoot({ router: routerReducer }, {}),
     EffectsModule.forRoot([]),
+    EntityDataModule.forRoot(entityConfig),
+    EntityStoreModule,
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
     IdentityModule,
