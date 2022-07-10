@@ -47,9 +47,9 @@ export class AuthorityGroupingReportComponent implements OnInit, OnDestroy {
       .subscribe((authorities) => {
         if (authorities) {
           this.authorities = [...authorities]
-          return
+        } else {
+          this.authorities = null
         }
-        return null
       })
   }
 

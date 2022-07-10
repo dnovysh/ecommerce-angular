@@ -25,7 +25,7 @@ export class CategoryDataService implements EntityCollectionDataService<Category
 
   add(entity: Category): Observable<Category> {
     return this.http.post<SaveCategoryResponseInterface>(this.categoriesUrl, entity)
-      .pipe(map((response: SaveCategoryResponseInterface) => response._embedded.category))
+      .pipe(map((response: SaveCategoryResponseInterface) => response.category))
   }
 
   delete(id: number | string): Observable<number | string> {
@@ -53,14 +53,17 @@ export class CategoryDataService implements EntityCollectionDataService<Category
     const url = `${this.categoriesUrl}/${update.id}`
     let patchCommands: patchCommandInterface[] = []
     Object.keys(update.changes).forEach(key => {
-      patchCommands.push({
-        op: "replace",
-        path: `/${key}`,
-        value: (update.changes as any) [key]
-      })
+      if (key !== 'id' && key !== '_links') {
+        patchCommands.push({
+          op: "replace",
+          path: `/${key}`,
+          value: (update.changes as any) [key]
+        })
+      }
     })
-    return this.http.patch<SaveCategoryResponseInterface>(url, patchCommands)
-      .pipe(map((response: SaveCategoryResponseInterface) => response._embedded.category))
+    return this.http.patch<SaveCategoryResponseInterface>(
+      url, patchCommands, { headers: { "Content-Type": "application/json-patch+json" } }
+    ).pipe(map((response: SaveCategoryResponseInterface) => response.category))
   }
 
   upsert(entity: Category): Observable<Category> {
@@ -68,7 +71,7 @@ export class CategoryDataService implements EntityCollectionDataService<Category
       return this.add(entity)
     }
     return this.http.put<SaveCategoryResponseInterface>(this.categoriesUrl, entity)
-      .pipe(map((response: SaveCategoryResponseInterface) => response._embedded.category))
+      .pipe(map((response: SaveCategoryResponseInterface) => response.category))
   }
 }
 

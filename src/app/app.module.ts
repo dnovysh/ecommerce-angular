@@ -28,6 +28,7 @@ import {
 import { RoleAdministrationModule } from "src/app/admin/role-administration/role-administration.module";
 import { entityConfig } from "src/app/data/entity-metadata";
 import { EntityStoreModule } from "src/app/data/entity-store.module";
+import { CategoryManagementModule } from "src/app/management/category-management/category-management.module";
 
 
 @NgModule({
@@ -52,6 +53,7 @@ import { EntityStoreModule } from "src/app/data/entity-store.module";
     ProfileSettingsModule,
     AuthorityGroupingReportModule,
     RoleAdministrationModule,
+    CategoryManagementModule,
     LoadingModule,
     SupportModule,
     SharedModule,

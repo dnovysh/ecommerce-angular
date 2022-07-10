@@ -1,12 +1,10 @@
+<p-toast></p-toast>
 <ec-access-denied *ngIf="!accessAllowed"></ec-access-denied>
 <div class="authorities-wrapper" *ngIf="accessAllowed">
   <div class="authorities-body">
-    <div class="authorities-container" *ngIf="categories$ | async">
+    <div class="authorities-container">
       <h3>Categories</h3>
-
-
-
-      <p-table [value]="categories$ | async" dataKey="id" editMode="row" responsiveLayout="scroll">
+      <p-table [value]="categories" dataKey="id" editMode="row" responsiveLayout="scroll">
         <ng-template pTemplate="header">
           <tr>
             <th>Id</th>
@@ -14,39 +12,60 @@
             <th style="width:8rem"></th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-product let-editing="editing" let-ri="rowIndex">
-          <tr [pEditableRow]="product">
+        <ng-template pTemplate="body" let-category let-editing="editing" let-ri="rowIndex">
+          <tr [pEditableRow]="category">
             <td>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="product.code">
+                  {{category.id}}
                 </ng-template>
                 <ng-template pTemplate="output">
-                  {{product.code}}
+                  {{category.id}}
                 </ng-template>
               </p-cellEditor>
             </td>
             <td>
               <p-cellEditor>
                 <ng-template pTemplate="input">
-                  <input pInputText type="text" [(ngModel)]="product.name" required>
+                  <input pInputText type="text" [(ngModel)]="category.name" required>
                 </ng-template>
                 <ng-template pTemplate="output">
-                  {{product.name}}
+                  {{category.name}}
                 </ng-template>
               </p-cellEditor>
             </td>
             <td style="text-align:center">
-              <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(product)" class="p-button-rounded p-button-text"></button>
-              <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(product)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
-              <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(product, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+              <button
+                *ngIf="!editing"
+                pButton
+                pRipple
+                type="button"
+                pInitEditableRow
+                icon="pi pi-pencil"
+                (click)="onRowEditInit(category)"
+                class="p-button-rounded p-button-text"
+              ></button>
+              <button
+                *ngIf="editing"
+                pButton pRipple
+                type="button"
+                pSaveEditableRow
+                icon="pi pi-check"
+                (click)="onRowEditSave(category)"
+                class="p-button-rounded p-button-text p-button-success mr-2"
+              ></button>
+              <button
+                *ngIf="editing"
+                pButton pRipple
+                type="button"
+                pCancelEditableRow
+                icon="pi pi-times"
+                (click)="onRowEditCancel(category, ri)"
+                class="p-button-rounded p-button-text p-button-danger"></button>
             </td>
           </tr>
         </ng-template>
       </p-table>
-
-
-
     </div>
   </div>
 </div>

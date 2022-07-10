@@ -1,11 +1,17 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes } from "@angular/router";
+import { RouterModule, Routes } from "@angular/router";
+import { TableModule } from "primeng/table";
+import { FormsModule } from "@angular/forms";
+import { InputTextModule } from "primeng/inputtext";
+import { ButtonModule } from "primeng/button";
+import { RippleModule } from "primeng/ripple";
 
 import { CategoryManagementComponent } from './components/category-management/category-management.component';
 import { AuthGuard } from "src/app/shared/impl/auth-guard.class";
 import { AccessDeniedModule } from "src/app/shared/modules/access-denied/access-denied.module";
-import { TableModule } from "primeng/table";
+import { CategoryService } from "src/app/shared/services/category.service";
+import { ToastModule } from "primeng/toast";
 
 
 const routes: Routes = [
@@ -21,12 +27,19 @@ const routes: Routes = [
     CategoryManagementComponent
   ],
   providers: [
+    CategoryService,
     AuthGuard
   ],
-  imports: [
-    CommonModule,
-    AccessDeniedModule,
-    TableModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        AccessDeniedModule,
+        TableModule,
+        FormsModule,
+        InputTextModule,
+        ButtonModule,
+        RippleModule,
+        ToastModule
+    ]
 })
 export class CategoryManagementModule { }
