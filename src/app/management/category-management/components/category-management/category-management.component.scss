@@ -1,0 +1,19 @@
+.categories-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.categories-body {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  width: 100%;
+  justify-content: left;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  background-color: var(--surface-card);
+}
+
+.categories-container {
+  width: 100%;
+  padding: 0 24px;
+}

@@ -1,6 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from "rxjs";
+import { filter, Subscription } from "rxjs";
 import { MessageService } from "primeng/api";
+import { Actions } from "@ngrx/effects";
+import { EntityAction, EntityOp, ofEntityOp, OP_ERROR } from "@ngrx/data";
+import { HttpErrorResponse } from "@angular/common/http";
 
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 import { Category } from "src/app/management/domain/Category";
@@ -15,42 +18,23 @@ import { CategoryCollectionService } from "src/app/management/services/category-
 export class CategoryManagementComponent implements OnInit, OnDestroy {
   loadingSubscription: Subscription;
   categorySubscription: Subscription;
+  dataErrorSubscription: Subscription;
   loading: boolean;
   categories: Category[];
   dbCategories: Category[];
 
   clonedCategories: { [s: string]: Category; } = {};
-  updatingId: number | null
 
   error: ApiErrorInterface | null
   accessDenied: boolean
   accessAllowed: boolean = true
 
   constructor(private categoryService: CategoryCollectionService,
-              private messageService: MessageService) {
-    this.categorySubscription = categoryService.entities$.subscribe((categories) => {
-      this.dbCategories = categories
-      const resultCategories = new Array<Category>()
-      categories.forEach((category) => {
-        resultCategories.push({ ...category })
-      })
-      this.categories = resultCategories
-    });
-    this.loadingSubscription = categoryService.loading$.subscribe((loading) => {
-      this.loading = loading
-      if (this.updatingId && !loading) {
-        let category = this.categories.find((category) => category.id === this.updatingId)
-        const dbCategory = this.dbCategories.find((category) => category.id === this.updatingId)
-        if (category && dbCategory && category.name !== dbCategory?.name) {
-          const index = this.categories.findIndex((category) => category.id === this.updatingId)
-          this.categories[index] = { ...dbCategory }
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Invalid name' })
-        }
-      }
-    });
+              private messageService: MessageService,
+              private actions$: Actions<EntityAction>) {
+    this.subscribeCategories()
+    this.subscribeLoading()
+    this.subscribeDataError()
   }
 
   ngOnInit(): void {
@@ -60,6 +44,7 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.categorySubscription.unsubscribe()
     this.loadingSubscription.unsubscribe()
+    this.dataErrorSubscription.unsubscribe()
   }
 
   onRowEditInit(category: Category) {
@@ -67,7 +52,6 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   onRowEditSave(category: Category) {
-    this.updatingId = category.id
     this.update(category)
     delete this.clonedCategories[category.id];
   }
@@ -75,6 +59,56 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   onRowEditCancel(category: Category, index: number) {
     this.categories[index] = this.clonedCategories[category.id];
     delete this.clonedCategories[category.id];
+  }
+
+  subscribeCategories(): void {
+    this.categorySubscription = this.categoryService.entities$.subscribe((categories) => {
+      this.dbCategories = categories
+      const resultCategories = new Array<Category>()
+      categories.forEach((category) => {
+        resultCategories.push({ ...category })
+      })
+      this.categories = resultCategories
+    })
+  }
+
+  subscribeLoading(): void {
+    this.loadingSubscription = this.categoryService.loading$.subscribe((loading) => {
+      this.loading = loading
+    })
+  }
+
+  subscribeDataError(): void {
+    this.dataErrorSubscription = this.actions$.pipe(
+      ofEntityOp(),
+      filter((ea: EntityAction) =>
+        ea.payload.entityOp.endsWith(OP_ERROR) &&
+        ea.payload.entityName === 'Category'
+      )
+    ).subscribe(action => {
+      const httpErrorResponse: HttpErrorResponse = action.payload.data.error.error
+      const httpErrorStatus = httpErrorResponse.status
+      const apiError: ApiErrorInterface = httpErrorResponse.error
+      if (httpErrorStatus === 403) {
+
+        //ToDo
+
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: apiError.message })
+      } else if (httpErrorStatus === 409) {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: apiError.message })
+      } else {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong' })
+      }
+      const originalActionEntityOp: EntityOp = action.payload.data.originalAction.payload.entityOp
+      if (originalActionEntityOp === EntityOp.SAVE_UPDATE_ONE) {
+        const id: number = action.payload.data.originalAction.payload.data.id
+        const categoryIndex = this.categories.findIndex((category) => category.id === id)
+        const dbCategoryIndex = this.dbCategories.findIndex((category) => category.id === id)
+        if (categoryIndex >= 0 && dbCategoryIndex >= 0) {
+          this.categories[categoryIndex] = { ...this.dbCategories[dbCategoryIndex] }
+        }
+      }
+    })
   }
 
   add(category: Category) {

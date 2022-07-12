@@ -51,6 +51,7 @@ export class RoleAdministrationComponent implements OnInit, OnDestroy {
             })
           })
           this.roles = resultRoles
+          return
         }
         this.roles = null
       })

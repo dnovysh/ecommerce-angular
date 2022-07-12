@@ -1,8 +1,8 @@
 <p-toast></p-toast>
 <ec-access-denied *ngIf="!accessAllowed"></ec-access-denied>
-<div class="authorities-wrapper" *ngIf="accessAllowed">
-  <div class="authorities-body">
-    <div class="authorities-container">
+<div class="categories-wrapper" *ngIf="accessAllowed">
+  <div class="categories-body">
+    <div class="categories-container">
       <h3>Categories</h3>
       <p-table [value]="categories" dataKey="id" editMode="row" responsiveLayout="scroll">
         <ng-template pTemplate="header">
