@@ -5,6 +5,7 @@ import {
   getRolesFailureAction,
   getRolesSuccessAction
 } from "src/app/admin/role-administration/store/get-roles.action";
+import { signOutAction } from "src/app/auth/store/actions/sign-out.action";
 
 
 const initialState: RoleStateInterface = {
@@ -30,5 +31,8 @@ export const reducer = createReducer<RoleStateInterface, Action>(
     isLoading: false,
     error: action.error,
     data: null
+  })),
+  on(signOutAction, () => ({
+    ...initialState
   }))
 )

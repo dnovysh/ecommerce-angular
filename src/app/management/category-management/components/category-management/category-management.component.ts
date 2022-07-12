@@ -27,11 +27,12 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
 
   error: ApiErrorInterface | null
   accessDenied: boolean
-  accessAllowed: boolean = true
+  accessAllowed: boolean
 
   constructor(private categoryService: CategoryCollectionService,
               private messageService: MessageService,
               private actions$: Actions<EntityAction>) {
+    this.accessAllowed = true
     this.subscribeCategories()
     this.subscribeLoading()
     this.subscribeDataError()
@@ -89,17 +90,20 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
       const httpErrorResponse: HttpErrorResponse = action.payload.data.error.error
       const httpErrorStatus = httpErrorResponse.status
       const apiError: ApiErrorInterface = httpErrorResponse.error
+      this.error = apiError
+      const originalActionEntityOp: EntityOp = action.payload.data.originalAction.payload.entityOp
       if (httpErrorStatus === 403) {
-
-        //ToDo
-
+        if (originalActionEntityOp === EntityOp.QUERY_ALL) {
+          this.accessDenied = true
+          this.accessAllowed = !this.accessDenied
+          return
+        }
         this.messageService.add({ severity: 'error', summary: 'Error', detail: apiError.message })
       } else if (httpErrorStatus === 409) {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: apiError.message })
       } else {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong' })
       }
-      const originalActionEntityOp: EntityOp = action.payload.data.originalAction.payload.entityOp
       if (originalActionEntityOp === EntityOp.SAVE_UPDATE_ONE) {
         const id: number = action.payload.data.originalAction.payload.data.id
         const categoryIndex = this.categories.findIndex((category) => category.id === id)

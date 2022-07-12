@@ -5,6 +5,7 @@ import {
   getAuthoritiesFailureAction,
   getAuthoritiesSuccessAction
 } from "src/app/admin/authority-grouping-report/store/get-authorities.action";
+import { signOutAction } from "src/app/auth/store/actions/sign-out.action";
 
 const initialState: AuthorityStateInterface = {
   isLoading: false,
@@ -29,5 +30,8 @@ export const reducer = createReducer<AuthorityStateInterface, Action>(
     isLoading: false,
     error: action.error,
     data: null
+  })),
+  on(signOutAction, () => ({
+    ...initialState
   }))
 )

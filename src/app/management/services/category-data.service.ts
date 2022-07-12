@@ -34,7 +34,7 @@ export class CategoryDataService implements EntityCollectionDataService<Category
   }
 
   getAll(): Observable<Category[]> {
-    const fullUrl = `${this.categoriesUrl}/search/findAllByOrderByName`
+    const fullUrl = `${this.categoriesUrl}/search/findAllPreAuthorizedByOrderByName`
     return this.http.get<GetAllCategoryResponseInterface>(fullUrl)
       .pipe(map((response: GetAllCategoryResponseInterface) => response._embedded.categories))
   }
