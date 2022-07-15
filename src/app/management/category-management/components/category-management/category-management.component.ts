@@ -1,13 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { filter, Subscription } from "rxjs";
 import { MessageService } from "primeng/api";
+import { select, Store } from "@ngrx/store";
 import { Actions } from "@ngrx/effects";
 import { EntityAction, EntityOp, ofEntityOp, OP_ERROR } from "@ngrx/data";
 import { HttpErrorResponse } from "@angular/common/http";
+import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 import { Category } from "src/app/management/domain/Category";
 import { CategoryCollectionService } from "src/app/management/services/category-collection.service";
+import { authoritiesSelector } from "src/app/shared/modules/identity/store/selectors";
+import { AppStateInterface } from "src/app/shared/types/app-state.interface";
+import { NewCategoryFormGroupInterface } from "src/app/management/types/new-category-form-group.interface";
 
 
 @Component({
@@ -19,6 +24,7 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   loadingSubscription: Subscription;
   categorySubscription: Subscription;
   dataErrorSubscription: Subscription;
+  authoritiesSubscription: Subscription;
   loading: boolean;
   categories: Category[];
   dbCategories: Category[];
@@ -27,22 +33,39 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
 
   error: ApiErrorInterface | null
   accessDenied: boolean
-  accessAllowed: boolean
+  accessAllowed: boolean | null
 
-  constructor(private categoryService: CategoryCollectionService,
+  adding: boolean
+  newCategoryForm: FormGroup
+  newCategoryNameControl: AbstractControl
+  lastNewCategoryName: string = ''
+
+  constructor(private fb: FormBuilder,
+              private store: Store<AppStateInterface>,
+              private categoryService: CategoryCollectionService,
               private messageService: MessageService,
               private actions$: Actions<EntityAction>) {
-    this.accessAllowed = true
+    this.subscribeAuthorities()
     this.subscribeCategories()
     this.subscribeLoading()
     this.subscribeDataError()
   }
 
   ngOnInit(): void {
-    this.getCategories()
+    const newCategoryInitialValue: NewCategoryFormGroupInterface = {
+      newCategoryName: ''
+    }
+    this.newCategoryForm = this.fb.group(newCategoryInitialValue, { updateOn: 'submit' })
+    this.newCategoryNameControl = this.newCategoryForm.controls['newCategoryName']
+    this.newCategoryNameControl.addValidators([Validators.required]);
+    this.newCategoryNameControl.updateValueAndValidity()
+    this.newCategoryForm.controls['newCategoryName'].valueChanges.subscribe((value) => {
+      this.newCategoryForm.controls['newCategoryName'].setValue((value || '').trim(), { emitEvent: false })
+    })
   }
 
   ngOnDestroy(): void {
+    this.authoritiesSubscription.unsubscribe()
     this.categorySubscription.unsubscribe()
     this.loadingSubscription.unsubscribe()
     this.dataErrorSubscription.unsubscribe()
@@ -60,6 +83,43 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   onRowEditCancel(category: Category, index: number) {
     this.categories[index] = this.clonedCategories[category.id];
     delete this.clonedCategories[category.id];
+  }
+
+  openNew(): void {
+    this.adding = true
+    this.newCategoryForm.controls['newCategoryName'].setValue(this.lastNewCategoryName);
+    this.newCategoryNameControl.markAsPristine()
+  }
+
+  addNew(): void {
+    this.newCategoryNameControl.markAsDirty()
+    if (this.newCategoryForm.invalid) {
+      return
+    }
+    const addingCategoryName = this.newCategoryForm.value.newCategoryName
+    this.add({ id: 0, name: addingCategoryName })
+    this.adding = false
+  }
+
+  cancelNew(): void {
+    this.adding = false
+  }
+
+  onNewCategoryNameInput($event: Event) {
+    const value = ($event.target as HTMLInputElement).value
+    if (this.lastNewCategoryName !== value) {
+      this.lastNewCategoryName = value
+    }
+  }
+
+  subscribeAuthorities(): void {
+    this.authoritiesSubscription = this.store.pipe(select(authoritiesSelector))
+      .subscribe((authorities) => {
+        this.setAccessAllowed(authorities.has('category.read'))
+        if (this.accessAllowed) {
+          this.getCategories()
+        }
+      })
   }
 
   subscribeCategories(): void {
@@ -94,8 +154,7 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
       const originalActionEntityOp: EntityOp = action.payload.data.originalAction.payload.entityOp
       if (httpErrorStatus === 403) {
         if (originalActionEntityOp === EntityOp.QUERY_ALL) {
-          this.accessDenied = true
-          this.accessAllowed = !this.accessDenied
+          this.setAccessAllowed(false)
           return
         }
         this.messageService.add({ severity: 'error', summary: 'Error', detail: apiError.message })
@@ -129,5 +188,10 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
 
   update(category: Category) {
     this.categoryService.update(category)
+  }
+
+  setAccessAllowed(value: boolean): void {
+    this.accessAllowed = value
+    this.accessDenied = !this.accessAllowed
   }
 }

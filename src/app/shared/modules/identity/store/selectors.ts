@@ -50,3 +50,9 @@ export const hasAnyRoleSelector = createSelector<AppStateInterface, IdentityStat
   (state: IdentityStateInterface) =>
     state.userDetails?.roles ? state.userDetails.roles.size > 0 : false
 )
+
+export const authoritiesSelector = createSelector<AppStateInterface, IdentityStateInterface, Set<string>>(
+  identityFeatureSelector,
+  (state: IdentityStateInterface) =>
+    state.userDetails?.authorities ? state.userDetails.authorities : new Set<string>()
+)

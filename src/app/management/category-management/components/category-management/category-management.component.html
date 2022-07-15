@@ -3,7 +3,26 @@
 <div class="categories-wrapper" *ngIf="accessAllowed">
   <div class="categories-body">
     <div class="categories-container">
-      <h3>Categories</h3>
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <form [formGroup]="newCategoryForm" (ngSubmit)="addNew()">
+            <button pButton pRipple label="New" icon="pi pi-plus"
+                    *ngIf="!adding" class="p-button-success mr-2"
+                    (click)="openNew()"
+            ></button>
+            <label class="font-medium" *ngIf="adding">New category name
+              <input formControlName="newCategoryName" pInputText type="text" class="ml-2 mr-2"
+                     (input)="onNewCategoryNameInput($event)">
+            </label>
+            <button *ngIf="adding" pButton pRipple type="submit" icon="pi pi-check"
+                    class="p-button-rounded p-button-text p-button-success mr-2"
+            ></button>
+            <button *ngIf="adding" pButton pRipple type="button" icon="pi pi-times"
+                    (click)="cancelNew()" class="p-button-rounded p-button-text p-button-danger"
+            ></button>
+          </form>
+        </ng-template>
+      </p-toolbar>
       <p-table
         [value]="categories"
         dataKey="id"
@@ -11,6 +30,11 @@
         responsiveLayout="scroll"
         [loading]="loading"
       >
+        <ng-template pTemplate="caption">
+          <div class="flex align-items-center justify-content-between">
+            <h5 class="m-0">Manage Categories</h5>
+          </div>
+        </ng-template>
         <ng-template pTemplate="header">
           <tr>
             <th>Id</th>

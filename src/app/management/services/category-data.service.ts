@@ -25,7 +25,11 @@ export class CategoryDataService implements EntityCollectionDataService<Category
 
   add(entity: Category): Observable<Category> {
     return this.http.post<SaveCategoryResponseInterface>(this.categoriesUrl, entity)
-      .pipe(map((response: SaveCategoryResponseInterface) => response.category))
+      .pipe(map((response: SaveCategoryResponseInterface): Category => ({
+          id: response.id,
+          name: response.name
+        })
+      ))
   }
 
   delete(id: number | string): Observable<number | string> {
@@ -63,7 +67,11 @@ export class CategoryDataService implements EntityCollectionDataService<Category
     })
     return this.http.patch<SaveCategoryResponseInterface>(
       url, patchCommands, { headers: { "Content-Type": "application/json-patch+json" } }
-    ).pipe(map((response: SaveCategoryResponseInterface) => response.category))
+    ).pipe(map((response: SaveCategoryResponseInterface): Category => ({
+        id: response.id,
+        name: response.name
+      })
+    ))
   }
 
   upsert(entity: Category): Observable<Category> {
@@ -71,7 +79,11 @@ export class CategoryDataService implements EntityCollectionDataService<Category
       return this.add(entity)
     }
     return this.http.put<SaveCategoryResponseInterface>(this.categoriesUrl, entity)
-      .pipe(map((response: SaveCategoryResponseInterface) => response.category))
+      .pipe(map((response: SaveCategoryResponseInterface): Category => ({
+          id: response.id,
+          name: response.name
+        })
+      ))
   }
 }
 
