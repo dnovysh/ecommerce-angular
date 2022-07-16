@@ -5,10 +5,10 @@
     <div class="categories-container">
       <p-toolbar styleClass="mb-4">
         <ng-template pTemplate="left">
-          <form [formGroup]="newCategoryForm" (ngSubmit)="addNew()">
+          <form [formGroup]="newCategoryForm" (ngSubmit)="onAddNew()">
             <button pButton pRipple label="New" icon="pi pi-plus"
                     *ngIf="!adding" class="p-button-success mr-2"
-                    (click)="openNew()"
+                    (click)="onOpenNew()"
             ></button>
             <label class="font-medium" *ngIf="adding">New category name
               <input formControlName="newCategoryName" pInputText type="text" class="ml-2 mr-2"
@@ -18,9 +18,15 @@
                     class="p-button-rounded p-button-text p-button-success mr-2"
             ></button>
             <button *ngIf="adding" pButton pRipple type="button" icon="pi pi-times"
-                    (click)="cancelNew()" class="p-button-rounded p-button-text p-button-danger"
+                    (click)="onCancelNew()" class="p-button-rounded p-button-text p-button-danger"
             ></button>
           </form>
+        </ng-template>
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Refresh" icon="pi pi-refresh"
+                  class="p-button-rounded p-button-text p-button-secondary"
+                  (click)="onRefresh()"
+          ></button>
         </ng-template>
       </p-toolbar>
       <p-table
@@ -73,7 +79,7 @@
                 pInitEditableRow
                 icon="pi pi-pencil"
                 (click)="onRowEditInit(category)"
-                class="p-button-rounded p-button-text"
+                class="p-button-rounded p-button-success mr-2"
               ></button>
               <button
                 *ngIf="editing"
@@ -91,7 +97,15 @@
                 pCancelEditableRow
                 icon="pi pi-times"
                 (click)="onRowEditCancel(category, ri)"
-                class="p-button-rounded p-button-text p-button-danger"></button>
+                class="p-button-rounded p-button-text p-button-danger"
+              ></button>
+              <button
+                *ngIf="!editing"
+                pButton pRipple
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-warning"
+                (click)="onDeleteCategory(category)"
+              ></button>
             </td>
           </tr>
         </ng-template>

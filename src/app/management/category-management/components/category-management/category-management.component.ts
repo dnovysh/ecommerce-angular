@@ -71,6 +71,40 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
     this.dataErrorSubscription.unsubscribe()
   }
 
+  // create
+  onOpenNew(): void {
+    this.adding = true
+    this.newCategoryForm.controls['newCategoryName'].setValue(this.lastNewCategoryName);
+    this.newCategoryNameControl.markAsPristine()
+  }
+
+  onAddNew(): void {
+    this.newCategoryNameControl.markAsDirty()
+    if (this.newCategoryForm.invalid) {
+      return
+    }
+    const addingCategoryName = this.newCategoryForm.value.newCategoryName
+    this.add({ id: 0, name: addingCategoryName })
+    this.adding = false
+  }
+
+  onCancelNew(): void {
+    this.adding = false
+  }
+
+  onNewCategoryNameInput($event: Event) {
+    const value = ($event.target as HTMLInputElement).value
+    if (this.lastNewCategoryName !== value) {
+      this.lastNewCategoryName = value
+    }
+  }
+
+  // read
+  onRefresh(): void {
+    this.getCategories()
+  }
+
+  // update
   onRowEditInit(category: Category) {
     this.clonedCategories[category.id] = { ...category };
   }
@@ -85,31 +119,9 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
     delete this.clonedCategories[category.id];
   }
 
-  openNew(): void {
-    this.adding = true
-    this.newCategoryForm.controls['newCategoryName'].setValue(this.lastNewCategoryName);
-    this.newCategoryNameControl.markAsPristine()
-  }
-
-  addNew(): void {
-    this.newCategoryNameControl.markAsDirty()
-    if (this.newCategoryForm.invalid) {
-      return
-    }
-    const addingCategoryName = this.newCategoryForm.value.newCategoryName
-    this.add({ id: 0, name: addingCategoryName })
-    this.adding = false
-  }
-
-  cancelNew(): void {
-    this.adding = false
-  }
-
-  onNewCategoryNameInput($event: Event) {
-    const value = ($event.target as HTMLInputElement).value
-    if (this.lastNewCategoryName !== value) {
-      this.lastNewCategoryName = value
-    }
+  //delete
+  onDeleteCategory(category: Category): void {
+    this.delete(category)
   }
 
   subscribeAuthorities(): void {
@@ -175,19 +187,24 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   }
 
   add(category: Category) {
-    this.categoryService.add(category);
+    this.categoryService.add(category, { isOptimistic: false });
   }
 
   delete(category: Category) {
-    this.categoryService.delete(category.id);
+    this.categoryService.delete(category.id, { isOptimistic: false });
   }
 
   getCategories() {
+    this.clearDataCache()
     this.categoryService.getAll();
   }
 
   update(category: Category) {
-    this.categoryService.update(category)
+    this.categoryService.update(category, { isOptimistic: false })
+  }
+
+  clearDataCache() {
+    this.categoryService.clearCache()
   }
 
   setAccessAllowed(value: boolean): void {

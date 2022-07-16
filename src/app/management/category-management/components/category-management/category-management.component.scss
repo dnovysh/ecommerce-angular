@@ -1,6 +1,7 @@
 h5 {
   font-size: 1.25rem;
 }
+
 h1, h2, h3, h4, h5, h6 {
   margin: 1.5rem 0 1rem;
   font-family: inherit;
@@ -27,4 +28,9 @@ h1, h2, h3, h4, h5, h6 {
 .categories-container {
   width: 100%;
   padding: 0 24px;
+}
+
+:host::ng-deep .p-button.p-button-text:enabled:hover {
+  background: rgba(232, 241, 248, 0.7);
+  transition: background-color 0.2s;
 }
