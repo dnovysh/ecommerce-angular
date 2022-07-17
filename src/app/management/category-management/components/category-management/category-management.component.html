@@ -7,7 +7,8 @@
         <ng-template pTemplate="left">
           <form [formGroup]="newCategoryForm" (ngSubmit)="onAddNew()">
             <button pButton pRipple label="New" icon="pi pi-plus"
-                    *ngIf="!adding" class="p-button-success mr-2"
+                    *ngIf="!adding && hasCreatePermission"
+                    class="p-button-success mr-2"
                     (click)="onOpenNew()"
             ></button>
             <label class="font-medium" *ngIf="adding">New category name
@@ -72,7 +73,7 @@
             </td>
             <td style="text-align:center">
               <button
-                *ngIf="!editing"
+                *ngIf="!editing && hasUpdatePermission"
                 pButton
                 pRipple
                 type="button"
@@ -100,7 +101,7 @@
                 class="p-button-rounded p-button-text p-button-danger"
               ></button>
               <button
-                *ngIf="!editing"
+                *ngIf="!editing && hasDeletePermission"
                 pButton pRipple
                 icon="pi pi-trash"
                 class="p-button-rounded p-button-warning"

@@ -7,9 +7,9 @@ import { Update } from "@ngrx/entity";
 
 import { Category } from "src/app/management/domain/Category";
 import { environment } from "src/environments/environment";
-import { GetAllCategoryResponseInterface } from "src/app/management/types/get-all-category-response.interface";
-import { SaveCategoryResponseInterface } from "src/app/management/types/save-category-response.interface";
-import { CategoryResponseInterface } from "src/app/management/types/category-response.interface";
+import { GetAllCategoryResponseInterface } from "src/app/management/category-management/data/types/get-all-category-response.interface";
+import { SaveCategoryResponseInterface } from "src/app/management/category-management/data/types/save-category-response.interface";
+import { CategoryResponseInterface } from "src/app/management/category-management/data/types/category-response.interface";
 
 
 @Injectable()

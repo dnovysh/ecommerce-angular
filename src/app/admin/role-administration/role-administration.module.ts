@@ -5,7 +5,7 @@ import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { TableModule } from "primeng/table";
 
-import { AuthGuard } from "src/app/shared/impl/auth-guard.class";
+import { AuthGuard } from "src/app/shared/guards/auth-guard.class";
 import { GetRolesEffect } from "src/app/admin/role-administration/store/get-roles.effect";
 import { reducer } from "src/app/admin/role-administration/store/reducers";
 import { LoadingModule } from "src/app/shared/modules/loading/loading.module";

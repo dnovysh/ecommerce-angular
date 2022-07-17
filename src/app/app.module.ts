@@ -29,6 +29,8 @@ import { RoleAdministrationModule } from "src/app/admin/role-administration/role
 import { entityConfig } from "src/app/data/entity-metadata";
 import { EntityStoreModule } from "src/app/data/entity-store.module";
 import { CategoryManagementModule } from "src/app/management/category-management/category-management.module";
+import { ForbiddenModule } from "src/app/shared/modules/forbidden/forbidden.module";
+import { ProductManagementModule } from "src/app/management/product-management/product-management.module";
 
 
 @NgModule({
@@ -54,12 +56,14 @@ import { CategoryManagementModule } from "src/app/management/category-management
     AuthorityGroupingReportModule,
     RoleAdministrationModule,
     CategoryManagementModule,
+    ProductManagementModule,
     LoadingModule,
     SupportModule,
     SharedModule,
     AppFooterModule,
     AppRoutingModule,
     AppNavbarModule,
+    ForbiddenModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true }

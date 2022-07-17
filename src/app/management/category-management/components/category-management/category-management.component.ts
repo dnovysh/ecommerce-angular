@@ -9,10 +9,10 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/fo
 
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 import { Category } from "src/app/management/domain/Category";
-import { CategoryCollectionService } from "src/app/management/services/category-collection.service";
+import { CategoryCollectionService } from "src/app/management/category-management/data/services/category-collection.service";
 import { authoritiesSelector } from "src/app/shared/modules/identity/store/selectors";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
-import { NewCategoryFormGroupInterface } from "src/app/management/types/new-category-form-group.interface";
+import { NewCategoryFormGroupInterface } from "src/app/management/category-management/data/types/new-category-form-group.interface";
 
 
 @Component({
@@ -34,6 +34,9 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
   error: ApiErrorInterface | null
   accessDenied: boolean
   accessAllowed: boolean | null
+  hasCreatePermission: boolean
+  hasUpdatePermission: boolean
+  hasDeletePermission: boolean
 
   adding: boolean
   newCategoryForm: FormGroup
@@ -128,6 +131,9 @@ export class CategoryManagementComponent implements OnInit, OnDestroy {
     this.authoritiesSubscription = this.store.pipe(select(authoritiesSelector))
       .subscribe((authorities) => {
         this.setAccessAllowed(authorities.has('category.read'))
+        this.hasCreatePermission = authorities.has('category.create')
+        this.hasUpdatePermission = authorities.has('category.update')
+        this.hasDeletePermission = authorities.has('category.delete')
         if (this.accessAllowed) {
           this.getCategories()
         }

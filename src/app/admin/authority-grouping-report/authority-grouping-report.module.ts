@@ -6,7 +6,7 @@ import { StoreModule } from "@ngrx/store";
 
 import { AuthorityGroupingReportComponent } from './authority-grouping-report.component';
 import { LoadingModule } from "src/app/shared/modules/loading/loading.module";
-import { AuthGuard } from "src/app/shared/impl/auth-guard.class";
+import { AuthGuard } from "src/app/shared/guards/auth-guard.class";
 import { AuthorityService } from "src/app/admin/authority-grouping-report/services/authority.service";
 import { GetAuthoritiesEffect } from "src/app/admin/authority-grouping-report/store/get-authorities.effect";
 import { reducer } from "src/app/admin/authority-grouping-report/store/reducers";
