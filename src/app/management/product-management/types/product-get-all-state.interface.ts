@@ -4,8 +4,8 @@ import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interfac
 
 export interface ProductGetAllStateInterface {
   isLoading: boolean
-  products: Product[]
-  page: PageInterface
+  products: Product[] | null
+  page: PageInterface | null
   isError: boolean
   error: ApiErrorInterface | null
 }
