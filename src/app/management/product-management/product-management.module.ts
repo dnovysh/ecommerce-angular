@@ -8,8 +8,18 @@ import { ProductManagementComponent } from './components/product-management/prod
 import { AuthGuard } from "src/app/shared/guards/auth-guard.class";
 import { ProductManagementGuard } from "src/app/shared/guards/product-management-guard.class";
 import { GetProductsEffect } from "src/app/management/product-management/store/effects/get-products.effect";
-import { ProductManagementService } from "src/app/management/product-management/service/product-management.service";
+import { ProductManagementService } from "src/app/management/product-management/services/product-management.service";
 import { reducer } from "src/app/management/product-management/store/reducers";
+import { ToastModule } from "primeng/toast";
+import { ToolbarModule } from "primeng/toolbar";
+import { TableModule } from "primeng/table";
+import { ButtonModule } from "primeng/button";
+import { RippleModule } from "primeng/ripple";
+import { FormsModule } from "@angular/forms";
+import { InputTextModule } from "primeng/inputtext";
+import { ImagePreloadModule } from "src/app/shared/directives/image-preload/image-preload.module";
+import { DealersModule } from "src/app/shared/modules/dealers/dealers.module";
+import { DropdownModule } from "primeng/dropdown";
 
 const routes: Routes = [
   {
@@ -23,7 +33,7 @@ const routes: Routes = [
   declarations: [
     ProductManagementComponent
   ],
-  providers:[
+  providers: [
     ProductManagementService,
     AuthGuard,
     ProductManagementGuard
@@ -32,7 +42,17 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     StoreModule.forFeature('productGetAll', reducer),
-    EffectsModule.forFeature([GetProductsEffect])
+    EffectsModule.forFeature([GetProductsEffect]),
+    DealersModule,
+    ToastModule,
+    ToolbarModule,
+    TableModule,
+    ButtonModule,
+    RippleModule,
+    FormsModule,
+    InputTextModule,
+    ImagePreloadModule,
+    DropdownModule
   ]
 })
-export class ProductManagementModule { }
+export class ProductManagementModule {}

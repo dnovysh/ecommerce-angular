@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
-import { MessageService } from "primeng/api";
-import { catchError, map, of, switchMap, tap } from "rxjs";
+import { catchError, map, of, switchMap } from "rxjs";
+import { HttpErrorResponse } from "@angular/common/http";
 
-import { ProductManagementService } from "src/app/management/product-management/service/product-management.service";
+import { ProductManagementService } from "src/app/management/product-management/services/product-management.service";
 import {
   getProductsAction,
   getProductsFailureAction,
@@ -12,14 +12,12 @@ import {
 import {
   ProductGetAllResponseInterface
 } from "src/app/management/product-management/types/product-get-all-response.interface";
-import { HttpErrorResponse } from "@angular/common/http";
 
 
 @Injectable()
 export class GetProductsEffect {
   constructor(private actions$: Actions,
-              private productManagementService: ProductManagementService,
-              private messageService: MessageService) {
+              private productManagementService: ProductManagementService) {
   }
 
   getProducts$ = createEffect(() => this.actions$.pipe(
@@ -35,23 +33,4 @@ export class GetProductsEffect {
       )
     })
   ))
-
-  // ToDo Move to selector and component
-  showErrorToast$ = createEffect(() => this.actions$.pipe(
-      ofType(getProductsFailureAction),
-      tap(({ error }) => {
-        const errorMessage = error ? error.message
-          : 'Something went wrong while loading products, please try again later or contact support'
-
-        this.messageService.add({
-          key: 'productsErrorToast',
-          severity: 'error',
-          summary: 'Error',
-          detail: errorMessage,
-          life: 3000
-        });
-      })
-    ),
-    { dispatch: false }
-  )
 }

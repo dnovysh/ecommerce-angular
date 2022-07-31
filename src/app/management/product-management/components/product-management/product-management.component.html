@@ -1,1 +1,122 @@
-<p>product-management works!</p>
+<p-toast key="productsToast"></p-toast>
+<div class="products-wrapper">
+  <div class="products-container">
+    <p-toolbar styleClass="mb-4">
+      <ng-template pTemplate="left">
+        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                (click)="openNew()"></button>
+        <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                (click)="deleteSelectedProducts()"
+                [disabled]="!selectedProducts || !selectedProducts.length"></button>
+      </ng-template>
+
+      <ng-template pTemplate="right">
+        <button pButton pRipple label="Refresh" icon="pi pi-refresh"
+                class="p-button-rounded p-button-text p-button-secondary"
+                (click)="onRefresh()"
+        ></button>
+      </ng-template>
+    </p-toolbar>
+    <p-toolbar styleClass="mb-4">
+      <ng-template pTemplate="left">
+        <div class="products-filter">
+          <p-dropdown [options]="dealers$ | async" [(ngModel)]="filterByDealer"
+                      placeholder="Select a Dealer" optionLabel="name" [showClear]="true"
+          ></p-dropdown>
+        </div>
+        <span class="p-float-label">
+          <input id="skuFilterId" type="text" pInputText [(ngModel)]="filterBySku">
+          <label for="skuFilterId">Sku</label>
+        </span>
+        <span class="p-float-label">
+          <input id="nameFilterId" type="text" pInputText [(ngModel)]="filterByName">
+          <label for="nameFilterId">Sku</label>
+        </span>
+
+      </ng-template>
+      <ng-template pTemplate="right">
+        <button pButton pRipple label="Search" icon="pi pi-search"
+                class="p-button-rounded p-button-text p-button-primary"
+                (click)="onSearch()"
+        ></button>
+      </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="products" [rows]="10" [paginator]="true"
+             [globalFilterFields]="['name','country.name','representative.name','status']" responsiveLayout="scroll"
+             [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+             [showCurrentPageReport]="true">
+      <ng-template pTemplate="caption">
+        <div class="flex align-items-center justify-content-between">
+          <h5 class="m-0">Manage Products</h5>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 3rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th pSortableColumn="id">Id
+            <p-sortIcon field="id"></p-sortIcon>
+          </th>
+          <th pSortableColumn="sku">Sku
+            <p-sortIcon field="sku"></p-sortIcon>
+          </th>
+          <th pSortableColumn="name">Name
+            <p-sortIcon field="name"></p-sortIcon>
+          </th>
+          <th>Image</th>
+          <th pSortableColumn="unitsInStock">Stock
+            <p-sortIcon field="unitsInStock"></p-sortIcon>
+          </th>
+          <th pSortableColumn="unitPrice">Price
+            <p-sortIcon field="unitPrice"></p-sortIcon>
+          </th>
+          <th pSortableColumn="category.name">Category
+            <p-sortIcon field="category.name"></p-sortIcon>
+          </th>
+          <th pSortableColumn="rating">Rating
+            <p-sortIcon field="rating"></p-sortIcon>
+          </th>
+          <th></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="product"></p-tableCheckbox>
+          </td>
+          <td>{{product.id}}</td>
+          <td>{{product.sku}}</td>
+          <td>{{product.name}}</td>
+          <td>
+            <img
+              [src]="getProductImageSrc(product.image)"
+              [default]="getDefaultProductImage()"
+              [defaultAlt]="product.name"
+              alt=""
+              width="100"
+              class="shadow-4"
+            />
+          </td>
+          <td>{{product.unitsInStock}}</td>
+          <td>{{product.unitPrice | currency:'USD'}}</td>
+          <td>{{product.category.name}}</td>
+          <td>{{product.rating}}</td>
+          <td>
+            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                    (click)="editProduct(product)"></button>
+            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                    (click)="deleteProduct(product)"></button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+        <div class="flex align-items-center justify-content-between">
+          In total there are {{page ? page.totalElements : 0 }} products.
+        </div>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

@@ -31,6 +31,7 @@ import { EntityStoreModule } from "src/app/data/entity-store.module";
 import { CategoryManagementModule } from "src/app/management/category-management/category-management.module";
 import { ForbiddenModule } from "src/app/shared/modules/forbidden/forbidden.module";
 import { ProductManagementModule } from "src/app/management/product-management/product-management.module";
+import { DealersModule } from "src/app/shared/modules/dealers/dealers.module";
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { ProductManagementModule } from "src/app/management/product-management/p
     StoreRouterConnectingModule.forRoot(),
     IdentityModule,
     CategoriesModule,
+    DealersModule,
     AuthModule,
     ProductListModule,
     ProfileSettingsModule,

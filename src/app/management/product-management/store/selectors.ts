@@ -3,9 +3,8 @@ import { AppStateInterface } from "src/app/shared/types/app-state.interface";
 import {
   ProductGetAllStateInterface
 } from "src/app/management/product-management/types/product-get-all-state.interface";
-import { Product } from "src/app/management/domain/Product";
-import { PageInterface } from "src/app/shared/types/page.interface";
-import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
+import { ProductGetAllDataInterface } from "src/app/management/product-management/types/product-get-all-data.interface";
+import { ErrorInterface } from "src/app/management/product-management/types/error.interface";
 
 export const productGetAllFeatureSelector =
   createFeatureSelector<ProductGetAllStateInterface>('productGetAll');
@@ -15,27 +14,15 @@ export const isLoadingSelector = createSelector<AppStateInterface, ProductGetAll
   (state) => state.isLoading
 )
 
-export const productsSelector =
-  createSelector<AppStateInterface, ProductGetAllStateInterface, Product[] | null>(
+export const dataSelector =
+  createSelector<AppStateInterface, ProductGetAllStateInterface, ProductGetAllDataInterface>(
     productGetAllFeatureSelector,
-    (state) => state.products
+    (state) => ({ products: state.products, page: state.page })
   )
-
-export const pageSelector =
-  createSelector<AppStateInterface, ProductGetAllStateInterface, PageInterface | null>(
-    productGetAllFeatureSelector,
-    (state) => state.page
-  )
-
-
-export const isErrorSelector = createSelector<AppStateInterface, ProductGetAllStateInterface, boolean>(
-  productGetAllFeatureSelector,
-  (state) => state.isError
-)
 
 export const errorSelector =
-  createSelector<AppStateInterface, ProductGetAllStateInterface, ApiErrorInterface | null>
+  createSelector<AppStateInterface, ProductGetAllStateInterface, ErrorInterface>
   (
     productGetAllFeatureSelector,
-    (state) => state.error
+    (state) => ({ isError: state.isError, error: state.error })
   )
