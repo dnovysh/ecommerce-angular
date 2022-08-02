@@ -25,6 +25,35 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 24px;
 }
 
+.products-filter {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.filter-control {
+  display: flex;
+  flex-direction: row;
+}
+
+.products-filter > span {
+  display: flex;
+  flex-direction: column;
+  margin-top: 9px;
+  margin-right: 1rem;
+}
+
+.products-filter > span > label {
+  padding-left: 0.5rem;
+  margin-bottom: 3px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+:host::ng-deep .products-filter > span .p-inputnumber-input {
+  width: 100px;
+}
+
 :host::ng-deep .p-button.p-button-text:enabled:hover {
   background: rgba(232, 241, 248, 0.7);
   transition: background-color 0.2s;

@@ -5,7 +5,6 @@ import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
 
 import { ProductManagementComponent } from './components/product-management/product-management.component';
-import { AuthGuard } from "src/app/shared/guards/auth-guard.class";
 import { ProductManagementGuard } from "src/app/shared/guards/product-management-guard.class";
 import { GetProductsEffect } from "src/app/management/product-management/store/effects/get-products.effect";
 import { ProductManagementService } from "src/app/management/product-management/services/product-management.service";
@@ -20,12 +19,13 @@ import { InputTextModule } from "primeng/inputtext";
 import { ImagePreloadModule } from "src/app/shared/directives/image-preload/image-preload.module";
 import { DealersModule } from "src/app/shared/modules/dealers/dealers.module";
 import { DropdownModule } from "primeng/dropdown";
+import { InputNumberModule } from "primeng/inputnumber";
 
 const routes: Routes = [
   {
     path: 'management/products',
     component: ProductManagementComponent,
-    canActivate: [AuthGuard, ProductManagementGuard]
+    canActivate: [ProductManagementGuard]
   }
 ]
 
@@ -35,7 +35,6 @@ const routes: Routes = [
   ],
   providers: [
     ProductManagementService,
-    AuthGuard,
     ProductManagementGuard
   ],
   imports: [
@@ -52,7 +51,8 @@ const routes: Routes = [
     FormsModule,
     InputTextModule,
     ImagePreloadModule,
-    DropdownModule
+    DropdownModule,
+    InputNumberModule
   ]
 })
 export class ProductManagementModule {}

@@ -56,3 +56,10 @@ export const authoritiesSelector = createSelector<AppStateInterface, IdentitySta
   (state: IdentityStateInterface) =>
     state.userDetails?.authorities ? state.userDetails.authorities : new Set<string>()
 )
+
+export const identityStateSelector =
+  createSelector<AppStateInterface, IdentityStateInterface, IdentityStateInterface>
+  (
+    identityFeatureSelector,
+    (state: IdentityStateInterface) => state
+  )

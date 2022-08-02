@@ -1,6 +1,59 @@
 <p-toast key="productsToast"></p-toast>
 <div class="products-wrapper">
   <div class="products-container">
+    <p-toolbar styleClass="mb-4 pt-0 flex-nowrap align-items-start">
+      <ng-template pTemplate="left">
+        <div class="products-filter">
+          <span>
+            <label for="dealerFilterId">Dealer</label>
+            <p-dropdown *ngIf="dealerList" [options]="dealerList" [(ngModel)]="filterByDealer"
+                        placeholder="Select a Dealer" optionLabel="name" [showClear]="true"
+                        inputId="dealerFilterId"
+            ></p-dropdown>
+          </span>
+          <span>
+            <label for="skuFilterId">Sku</label>
+            <input id="skuFilterId" type="text" pInputText [(ngModel)]="filterBySku">
+          </span>
+          <span>
+            <label for="nameFilterId">Name</label>
+            <input id="nameFilterId" type="text" pInputText [(ngModel)]="filterByName">
+          </span>
+          <span>
+            <label for="categoryFilterId">Category</label>
+            <p-dropdown *ngIf="categoryList" [options]="categoryList" [(ngModel)]="filterByCategory"
+                        placeholder="Select a Category" optionLabel="name" [showClear]="true"
+                        inputId="categoryFilterId"
+            ></p-dropdown>
+          </span>
+          <span>
+            <label for="minStockFilterId">Min stock</label>
+            <p-inputNumber [(ngModel)]="filterByMinUnitsInStock" mode="decimal"
+                           inputId="minStockFilterId" [useGrouping]="false"
+            ></p-inputNumber>
+          </span>
+          <span>
+            <label for="maxStockFilterId">Max stock</label>
+            <p-inputNumber [(ngModel)]="filterByMaxUnitsInStock" mode="decimal"
+                           inputId="maxStockFilterId" [useGrouping]="false"
+            ></p-inputNumber>
+          </span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="right">
+        <div class="filter-control mt-5">
+          <button pButton pRipple label="Clear" icon="pi pi-times"
+                  class="p-button-secondary  mr-2"
+                  (click)="onClearFilter()"
+          ></button>
+          <button pButton pRipple label="Search" icon="pi pi-search"
+                  class="p-button"
+                  (click)="onSearch()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-toolbar>
+
     <p-toolbar styleClass="mb-4">
       <ng-template pTemplate="left">
         <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
@@ -9,40 +62,15 @@
                 (click)="deleteSelectedProducts()"
                 [disabled]="!selectedProducts || !selectedProducts.length"></button>
       </ng-template>
-
       <ng-template pTemplate="right">
         <button pButton pRipple label="Refresh" icon="pi pi-refresh"
-                class="p-button-rounded p-button-text p-button-secondary"
+                class="p-button-text p-button-secondary"
                 (click)="onRefresh()"
         ></button>
       </ng-template>
     </p-toolbar>
-    <p-toolbar styleClass="mb-4">
-      <ng-template pTemplate="left">
-        <div class="products-filter">
-          <p-dropdown [options]="dealers$ | async" [(ngModel)]="filterByDealer"
-                      placeholder="Select a Dealer" optionLabel="name" [showClear]="true"
-          ></p-dropdown>
-        </div>
-        <span class="p-float-label">
-          <input id="skuFilterId" type="text" pInputText [(ngModel)]="filterBySku">
-          <label for="skuFilterId">Sku</label>
-        </span>
-        <span class="p-float-label">
-          <input id="nameFilterId" type="text" pInputText [(ngModel)]="filterByName">
-          <label for="nameFilterId">Sku</label>
-        </span>
 
-      </ng-template>
-      <ng-template pTemplate="right">
-        <button pButton pRipple label="Search" icon="pi pi-search"
-                class="p-button-rounded p-button-text p-button-primary"
-                (click)="onSearch()"
-        ></button>
-      </ng-template>
-    </p-toolbar>
-
-    <p-table #dt [value]="products" [rows]="10" [paginator]="true"
+    <p-table #dt *ngIf="products" [value]="products" [rows]="10" [paginator]="true"
              [globalFilterFields]="['name','country.name','representative.name','status']" responsiveLayout="scroll"
              [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -79,7 +107,7 @@
           <th pSortableColumn="rating">Rating
             <p-sortIcon field="rating"></p-sortIcon>
           </th>
-          <th></th>
+          <th style="min-width: 7.5rem"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-product>

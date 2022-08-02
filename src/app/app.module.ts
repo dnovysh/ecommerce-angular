@@ -53,19 +53,19 @@ import { DealersModule } from "src/app/shared/modules/dealers/dealers.module";
     CategoriesModule,
     DealersModule,
     AuthModule,
+    CategoryManagementModule,
+    ProductManagementModule,
     ProductListModule,
     ProfileSettingsModule,
     AuthorityGroupingReportModule,
     RoleAdministrationModule,
-    CategoryManagementModule,
-    ProductManagementModule,
     LoadingModule,
     SupportModule,
     SharedModule,
     AppFooterModule,
-    AppRoutingModule,
     AppNavbarModule,
-    ForbiddenModule
+    ForbiddenModule,
+    AppRoutingModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: HttpXsrfInterceptor, multi: true }
