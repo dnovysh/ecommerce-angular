@@ -70,11 +70,20 @@
       </ng-template>
     </p-toolbar>
 
-    <p-table #dt *ngIf="products" [value]="products" [rows]="10" [paginator]="true"
-             [globalFilterFields]="['name','country.name','representative.name','status']" responsiveLayout="scroll"
+    <p-table #dt *ngIf="products" [value]="products"
+             [lazy]="true"
+             (onLazyLoad)="onLazyLoadProducts($event)"
+             [lazyLoadOnInit]="false"
+             [loading]="isLoading"
+             sortMode="multiple" [multiSortMeta]="multiSortMeta"
+             [paginator]="true"
+             [first]="page.number * page.size" [rows]="page.size" [totalRecords]="page.totalElements"
              [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+             [selectionPageOnly]="true"
              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-             [showCurrentPageReport]="true">
+             [showCurrentPageReport]="true"
+             responsiveLayout="scroll"
+    >
       <ng-template pTemplate="caption">
         <div class="flex align-items-center justify-content-between">
           <h5 class="m-0">Manage Products</h5>

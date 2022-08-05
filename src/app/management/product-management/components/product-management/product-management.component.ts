@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from "rxjs";
 import { select, Store } from "@ngrx/store";
-import { MessageService } from "primeng/api";
-import { ActivatedRoute, ParamMap } from "@angular/router";
+import { LazyLoadEvent, MessageService, SortMeta } from "primeng/api";
+import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
 
 import { Product } from "src/app/management/domain/Product";
 import { PageInterface } from "src/app/shared/types/page.interface";
@@ -19,6 +19,7 @@ import { ProductCategoryInterface } from "src/app/shared/types/catalog/product-c
 import { categoriesSelector } from "src/app/shared/modules/categories/store/selectors";
 
 
+// noinspection JSIgnoredPromiseFromCall
 @Component({
   selector: 'ec-product-management',
   templateUrl: './product-management.component.html',
@@ -33,7 +34,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   queryParamMapSubscription: Subscription
 
   emptyPage: PageInterface = {
-    size: 20,
+    size: 10,
     totalElements: 0,
     totalPages: 0,
     number: 0
@@ -41,7 +42,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   isLoading: boolean
   products: Product[] | null
-  page: PageInterface | null
+  page: PageInterface
   isError: boolean
   error: ApiErrorInterface | null
 
@@ -61,10 +62,12 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   filterByCategory: ProductCategoryInterface | null;
   filterByMinUnitsInStock: number | null
   filterByMaxUnitsInStock: number | null
+  multiSortMeta: { field: string; order: number } []
 
   constructor(private store: Store<AppStateInterface>,
               private messageService: MessageService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private router: Router) {
     this.store.dispatch(getDealersAction())
   }
 
@@ -83,6 +86,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   private initializeValues() {
+    this.multiSortMeta = []
   }
 
   private initializeListeners(): void {
@@ -151,6 +155,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   private subscribeToQueryParamMap(): void {
     this.queryParamMapSubscription = this.route.queryParamMap
       .subscribe((queryParamMap) => {
+        this.selectedProducts = []
         this.queryParamMap = queryParamMap
         this.store.dispatch(getProductsAction({ params: queryParamMap }))
       })
@@ -180,11 +185,50 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   onSearch(): void {
+    const currentParams: Params = this.convertParamMapToParams(this.queryParamMap)
+    const page = currentParams['page']
+    const sort = currentParams['sort']
+    let params: Params = {}
+    if (page) {
+      params = { ...params, page: page }
+    }
+    if (sort) {
+      params = { ...params, sort: sort }
+    }
+    console.log(params)
+    if (this.filterByDealer) params = { ...params, dealerId: this.filterByDealer.id }
+    if (this.filterBySku) params = { ...params, sku: this.filterBySku }
+    if (this.filterByName) params = { ...params, name: this.filterByName }
+    if (this.filterByCategory) params = { ...params, categoryId: this.filterByCategory.id }
+    if (this.filterByMinUnitsInStock) params = { ...params, minUnitsInStock: this.filterByMinUnitsInStock }
+    if (this.filterByMaxUnitsInStock) params = { ...params, maxUnitsInStock: this.filterByMaxUnitsInStock }
+    this.router.navigate(['management/products'], { queryParams: params })
+  }
 
+  onLazyLoadProducts($event: LazyLoadEvent) {
+    let params: Params = this.convertParamMapToParams(this.queryParamMap)
+    if ($event.first !== undefined && $event.rows !== undefined) {
+      const page = $event.first / $event.rows
+      params = { ...params, page: page, size: $event.rows }
+    }
+    if ($event.multiSortMeta !== undefined) {
+      if ($event.multiSortMeta.length > 1) {
+        params = { ...params, sort: [] }
+        for (const sort of $event.multiSortMeta) {
+          (params['sort'] as string[]).push(this.convertSortMetaToQueryString(sort))
+        }
+      } else if ($event.multiSortMeta.length === 1) {
+        params = { ...params, sort: this.convertSortMetaToQueryString($event.multiSortMeta[0]) }
+      } else {
+        params = { ...params, sort: 'id' }
+      }
+    }
+    this.router.navigate(['management/products'], { queryParams: params })
   }
 
   onRefresh(): void {
-
+    this.router.navigate(['management/products'],
+      { queryParams: this.convertParamMapToParams(this.queryParamMap) })
   }
 
   openNew(): void {
@@ -201,6 +245,25 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   deleteSelectedProducts(): void {
 
+  }
+
+  private convertParamMapToParams(paramMap: ParamMap): Params {
+    let params: Params = {}
+    for (const key of this.queryParamMap.keys) {
+      if (this.queryParamMap.getAll(key).length > 1) {
+        params = { ...params, [key]: this.queryParamMap.getAll(key) }
+      } else {
+        params = { ...params, [key]: this.queryParamMap.get(key) }
+      }
+    }
+    return params
+  }
+
+  private convertSortMetaToQueryString(sortMeta: SortMeta): string {
+    if (sortMeta.order < 0) {
+      return sortMeta.field + ',desc'
+    }
+    return sortMeta.field
   }
 
 }

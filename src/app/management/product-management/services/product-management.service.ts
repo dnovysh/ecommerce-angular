@@ -19,7 +19,7 @@ export class ProductManagementService {
   getAllProducts(paramMap: ParamMap): Observable<ProductGetAllResponseInterface> {
     let params = new HttpParams()
     for (const key of paramMap.keys) {
-      params = params.appendAll({ key: paramMap.getAll(key) })
+      params = params.appendAll({ [key]: paramMap.getAll(key) })
     }
     return this.http.get<ProductGetAllResponseInterface>(this.baseUrl, { params })
   }
