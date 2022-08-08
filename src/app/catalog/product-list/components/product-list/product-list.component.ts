@@ -17,7 +17,7 @@ import { PageInterface } from "src/app/shared/types/page.interface";
 import { getProductListAction } from "src/app/catalog/product-list/store/actions/get-product-list.action";
 import { InventoryStatusEnum } from "src/app/shared/types/catalog/inventory-status.enum";
 import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
-import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
+import { CommonHelpers } from "src/app/shared/helpers/common-helpers";
 import { environment } from "src/environments/environment";
 import {
   setProductListPageSettingsAction
@@ -235,7 +235,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       if (pageSettings === null || pageSettings.isLoading) {
         return;
       }
-      const paramPageSize = CommonHelperClass.parseIntParameter(queryParamMap.get('size'))
+      const paramPageSize = CommonHelpers.parseIntParameter(queryParamMap.get('size'))
       if (pageSettings.size && !paramPageSize) {
         if (this.pageSize !== pageSettings.size) {
           this.pageSize = pageSettings.size
@@ -261,9 +261,9 @@ export class ProductListComponent implements OnInit, OnDestroy {
       const name = queryParamMap.get('name')
       let categoryId: number | null = null
       if (this.route.snapshot.url[0].path === 'category') {
-        categoryId = CommonHelperClass.parseIntParameter(paramMap.get('categoryId'))
+        categoryId = CommonHelpers.parseIntParameter(paramMap.get('categoryId'))
       }
-      let page: number | null = CommonHelperClass.parseIntParameter(queryParamMap.get('page'))
+      let page: number | null = CommonHelpers.parseIntParameter(queryParamMap.get('page'))
       if (page !== null) {
         page = page - 1
       }

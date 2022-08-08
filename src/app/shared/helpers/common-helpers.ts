@@ -1,6 +1,7 @@
-import { Params } from "@angular/router";
+import { ParamMap, Params } from "@angular/router";
+import { SortMeta } from "primeng/api";
 
-export class CommonHelperClass {
+export class CommonHelpers {
   public static parseIntParameter(value: string | null): number | null {
     if (value === null) {
       return null
@@ -38,10 +39,34 @@ export class CommonHelperClass {
         queryParams: queryParams
       }
     } catch (e) {
-      console.log(CommonHelperClass.getErrorMessage(e))
+      console.log(CommonHelpers.getErrorMessage(e))
       return parseFailed
     }
   }
+}
+
+export function convertParamMapToParams(paramMap: ParamMap | null, excludeKeys?: string[]): Params {
+  const params: Params = {}
+  if (paramMap === undefined || paramMap === null) {
+    return params
+  }
+  for (const key of paramMap.keys) {
+    if (excludeKeys && excludeKeys.includes(key)) continue
+    const values = paramMap.getAll(key)
+    if (values.length > 1) {
+      params[key] = values
+    } else {
+      params[key] = paramMap.get(key)
+    }
+  }
+  return params
+}
+
+export function convertSortMetaToQueryString(sortMeta: SortMeta): string {
+  if (sortMeta.order < 0) {
+    return sortMeta.field + ',desc'
+  }
+  return sortMeta.field
 }
 
 export interface ParsedUrl {

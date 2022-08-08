@@ -3,6 +3,7 @@ import { DealersStateInterface } from "src/app/shared/modules/dealers/types/deal
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 import { DealerInterface } from "src/app/shared/modules/identity/types/dealer.interface";
+import { LoadingDealersSliceInterface } from "src/app/shared/modules/dealers/types/loading-dealers-slice.interface";
 
 export const dealersFeatureSelector =
   createFeatureSelector<DealersStateInterface>('dealers');
@@ -21,4 +22,13 @@ export const dealersSelector = createSelector<AppStateInterface,
   DealersStateInterface, DealerInterface[] | null>(
   dealersFeatureSelector,
   (dealersState: DealersStateInterface) => dealersState.data
+)
+
+export const loadingDealersSliceSelector = createSelector<AppStateInterface,
+  DealersStateInterface, LoadingDealersSliceInterface>(
+  dealersFeatureSelector,
+  (dealersState: DealersStateInterface) => ({
+    isLoading: dealersState.isLoading,
+    dealers: dealersState.data
+  })
 )

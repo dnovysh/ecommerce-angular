@@ -3,6 +3,7 @@ import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { IdentityStateInterface } from "src/app/shared/modules/identity/types/identity-state.interface";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
 import { UserDetailsInterface } from "src/app/shared/modules/identity/types/user-details.interface";
+import { LoadingLoggedSliceInterface } from "src/app/shared/modules/identity/types/loading-logged-slice.interface";
 
 
 export const identityFeatureSelector = createFeatureSelector<IdentityStateInterface>('identity');
@@ -56,6 +57,12 @@ export const authoritiesSelector = createSelector<AppStateInterface, IdentitySta
   (state: IdentityStateInterface) =>
     state.userDetails?.authorities ? state.userDetails.authorities : new Set<string>()
 )
+
+export const loadingLoggedSliceSelector =
+  createSelector<AppStateInterface, IdentityStateInterface, LoadingLoggedSliceInterface>(
+    identityFeatureSelector,
+    (state: IdentityStateInterface) => ({ isLoading: state.isLoading, isLoggedIn: state.isLoggedIn })
+  )
 
 export const identityStateSelector =
   createSelector<AppStateInterface, IdentityStateInterface, IdentityStateInterface>

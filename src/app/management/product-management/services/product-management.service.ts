@@ -19,8 +19,14 @@ export class ProductManagementService {
   getAllProducts(paramMap: ParamMap): Observable<ProductGetAllResponseInterface> {
     let params = new HttpParams()
     for (const key of paramMap.keys) {
-      params = params.appendAll({ [key]: paramMap.getAll(key) })
+      const values = paramMap.getAll(key)
+      if (values.length === 1) {
+        params = params.set(key, values[0])
+      } else {
+        params = params.appendAll({ [key]: values })
+      }
     }
+
     return this.http.get<ProductGetAllResponseInterface>(this.baseUrl, { params })
   }
 }

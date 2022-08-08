@@ -26,3 +26,9 @@ export const errorSelector =
     productGetAllFeatureSelector,
     (state) => ({ isError: state.isError, error: state.error })
   )
+
+export const stateSelector =
+  createSelector<AppStateInterface, ProductGetAllStateInterface, ProductGetAllStateInterface>(
+    productGetAllFeatureSelector,
+    (state) => state
+  )

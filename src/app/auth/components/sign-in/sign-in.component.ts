@@ -5,7 +5,7 @@ import { ActivatedRoute, Params } from "@angular/router";
 import { select, Store } from "@ngrx/store";
 
 import { SignInRouteQueryParamsInterface } from "src/app/auth/types/sign-in-route-query-params.interface";
-import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
+import { CommonHelpers } from "src/app/shared/helpers/common-helpers";
 import { SignInRequestInterface } from "src/app/auth/types/sign-in-request.interface";
 import { SignInFormGroupInterface } from "src/app/auth/types/sign-in-form-group.interface";
 import { signInAction } from "src/app/auth/store/actions/sign-in.action";
@@ -202,7 +202,7 @@ export class SignInComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setBackToShopValues(returnUrl: string): void {
-    const parsedUrl = CommonHelperClass.parseUrl(returnUrl)
+    const parsedUrl = CommonHelpers.parseUrl(returnUrl)
     if (parsedUrl.successfullyParsed) {
       this.backToShopLink = parsedUrl.pathname
       this.backToShopQueryParams = parsedUrl.queryParams

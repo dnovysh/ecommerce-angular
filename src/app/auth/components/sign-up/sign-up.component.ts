@@ -17,7 +17,7 @@ import {
   isUnknownErrorSelector,
   validationErrorsSelector
 } from "src/app/auth/store/selectors";
-import { CommonHelperClass } from "src/app/shared/helpers/common-helper.class";
+import { CommonHelpers } from "src/app/shared/helpers/common-helpers";
 import { signUpAction } from "src/app/auth/store/actions/sign-up.action";
 import { Password } from "primeng/password";
 
@@ -216,7 +216,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   private setBackToShopValues(returnUrl: string): void {
-    const parsedUrl = CommonHelperClass.parseUrl(returnUrl)
+    const parsedUrl = CommonHelpers.parseUrl(returnUrl)
     if (parsedUrl.successfullyParsed) {
       this.backToShopLink = parsedUrl.pathname
       this.backToShopQueryParams = parsedUrl.queryParams

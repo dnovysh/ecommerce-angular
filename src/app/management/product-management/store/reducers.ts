@@ -15,16 +15,18 @@ const initialState: ProductGetAllStateInterface = {
   products: null,
   page: null,
   isError: false,
-  error: null
+  error: null,
+  paramMap: null
 }
 
 export const reducer = createReducer<ProductGetAllStateInterface, Action>(
   initialState,
-  on(getProductsAction, (state): ProductGetAllStateInterface => ({
+  on(getProductsAction, (state, action): ProductGetAllStateInterface => ({
     ...state,
     isLoading: true,
     isError: false,
-    error: null
+    error: null,
+    paramMap: action.params
   })),
   on(getProductsSuccessAction, (state, action): ProductGetAllStateInterface => ({
     ...state,
@@ -33,9 +35,8 @@ export const reducer = createReducer<ProductGetAllStateInterface, Action>(
     page: action.data.page
   })),
   on(getProductsFailureAction, (state, action): ProductGetAllStateInterface => ({
+    ...state,
     isLoading: false,
-    products: null,
-    page: null,
     isError: true,
     error: action.error
   }))

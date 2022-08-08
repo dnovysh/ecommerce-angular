@@ -1,22 +1,30 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from "rxjs";
+import { combineLatestWith, filter, map, Subscription } from "rxjs";
 import { select, Store } from "@ngrx/store";
-import { LazyLoadEvent, MessageService, SortMeta } from "primeng/api";
+import { LazyLoadEvent, MessageService } from "primeng/api";
 import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
 
 import { Product } from "src/app/management/domain/Product";
 import { PageInterface } from "src/app/shared/types/page.interface";
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
-import { dataSelector, errorSelector, isLoadingSelector } from "src/app/management/product-management/store/selectors";
-import { ProductGetAllDataInterface } from "src/app/management/product-management/types/product-get-all-data.interface";
+import { errorSelector, isLoadingSelector, stateSelector } from "src/app/management/product-management/store/selectors";
 import { getProductsAction } from "src/app/management/product-management/store/actions/get-products.action";
 import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
 import { getDealersAction } from "src/app/shared/modules/dealers/store/get-dealers.action";
-import { dealersSelector } from "src/app/shared/modules/dealers/store/selectors";
+import { loadingDealersSliceSelector } from "src/app/shared/modules/dealers/store/selectors";
 import { DealerInterface } from "src/app/shared/modules/identity/types/dealer.interface";
 import { ProductCategoryInterface } from "src/app/shared/types/catalog/product-category.interface";
 import { categoriesSelector } from "src/app/shared/modules/categories/store/selectors";
+import {
+  SelectedDealerWithDealersListInterface
+} from "src/app/management/product-management/types/selected-dealer-with-dealers-list.interface";
+import {
+  CommonHelpers,
+  convertParamMapToParams,
+  convertSortMetaToQueryString
+} from "src/app/shared/helpers/common-helpers";
+import { LoadingDealersSliceInterface } from "src/app/shared/modules/dealers/types/loading-dealers-slice.interface";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -49,12 +57,15 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   dealerList: DealerInterface[]
   categoryList: ProductCategoryInterface[];
 
-  queryParamMap: ParamMap
+  queryParamMap: ParamMap | null
 
   selectedProducts: Product[]
 
+  suppressingLazyLoadingProducts: boolean
+
   getProductImageSrc = CatalogHelpers.getProductImageSrc
   getDefaultProductImage = CatalogHelpers.getDefaultProductImage
+  parseInt = CommonHelpers.parseIntParameter
 
   filterByDealer: DealerInterface | null;
   filterBySku: string | null;
@@ -86,7 +97,10 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   private initializeValues() {
-    this.multiSortMeta = []
+    this.suppressingLazyLoadingProducts = false
+    this.products = [] as Product[]
+    this.dealerList = [] as DealerInterface[]
+    this.categoryList = [] as ProductCategoryInterface[]
   }
 
   private initializeListeners(): void {
@@ -106,18 +120,45 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToData(): void {
-    this.dataSubscription = this.store.pipe(select(dataSelector))
-      .subscribe((data: ProductGetAllDataInterface) => {
-        if (data.products) {
-          this.products = data.products
+    this.dataSubscription = this.store
+      .pipe(select(stateSelector), filter(state => !state.isLoading && !state.isError))
+      .subscribe((state) => {
+        this.suppressingLazyLoadingProducts = true
+        this.queryParamMap = state.paramMap
+        this.clearNonDropDownFilterFields()
+        if (this.queryParamMap) {
+          this.filterBySku = this.queryParamMap.get('sku')
+          this.filterByName = this.queryParamMap.get('name')
+          const minUnitsInStock = this.queryParamMap.get('minUnitsInStock')
+          this.filterByMinUnitsInStock = minUnitsInStock ? Number(minUnitsInStock) : null
+          const maxUnitsInStock = this.queryParamMap.get('maxUnitsInStock')
+          this.filterByMaxUnitsInStock = maxUnitsInStock ? Number(maxUnitsInStock) : null
+        }
+        this.multiSortMeta = []
+        if (this.queryParamMap?.has('sort')) {
+          for (const sort of this.queryParamMap.getAll('sort')) {
+            const sortSplit = sort.split(',')
+            const field = sortSplit[0]
+            const sortOrder = (sortSplit.length === 2 && sortSplit[1].toLowerCase() === 'desc') ? -1 : 1
+            this.multiSortMeta.push({ field: field, order: sortOrder })
+          }
+        }
+        if (state.products) {
+          this.products = state.products
         } else {
           this.products = [] as Product[]
         }
-        if (data.page) {
-          this.page = data.page
+        if (state.page) {
+          this.page = state.page
         } else {
           this.page = this.emptyPage
         }
+
+
+        console.log('data subscription')
+        console.log(this.products)
+
+
       })
   }
 
@@ -131,13 +172,22 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToDealers(): void {
-    this.dealersSubscription = this.store.pipe(select(dealersSelector))
-      .subscribe((dealers) => {
-        if (dealers) {
-          this.dealerList = dealers
-        } else {
-          this.dealerList = [] as DealerInterface[]
+    this.dealersSubscription = this.store
+      .pipe(select(loadingDealersSliceSelector),
+        filter(slice => !slice.isLoading && slice.dealers !== null))
+      .pipe(combineLatestWith(
+        this.route.queryParamMap.pipe(map((queryParamMap => queryParamMap.get('dealerId'))))))
+      .pipe(map(([slice, dealerId]: [LoadingDealersSliceInterface, string | null]) => {
+        const foundDealer = slice.dealers?.find(dealer => dealer.id === this.parseInt(dealerId))
+        const dealer = foundDealer ? foundDealer : null
+        const dealers = slice.dealers
+        return { dealer, dealers } as SelectedDealerWithDealersListInterface
+      }))
+      .subscribe((selectedDealerWithDealersList: SelectedDealerWithDealersListInterface) => {
+        if (selectedDealerWithDealersList.dealers) {
+          this.dealerList = selectedDealerWithDealersList.dealers
         }
+        this.filterByDealer = selectedDealerWithDealersList.dealer
       })
   }
 
@@ -156,7 +206,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.queryParamMapSubscription = this.route.queryParamMap
       .subscribe((queryParamMap) => {
         this.selectedProducts = []
-        this.queryParamMap = queryParamMap
         this.store.dispatch(getProductsAction({ params: queryParamMap }))
       })
   }
@@ -176,26 +225,19 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   onClearFilter(): void {
-    this.filterByDealer = null
-    this.filterBySku = null
-    this.filterByName = null
-    this.filterByCategory = null
-    this.filterByMinUnitsInStock = null
-    this.filterByMaxUnitsInStock = null
+    this.clearDropDownFilterFields()
+    this.clearNonDropDownFilterFields()
   }
 
   onSearch(): void {
-    const currentParams: Params = this.convertParamMapToParams(this.queryParamMap)
+    const currentParams: Params = this.convertParamMapToParamsExcludeRefreshKey()
     const page = currentParams['page']
+    const size = currentParams['size']
     const sort = currentParams['sort']
     let params: Params = {}
-    if (page) {
-      params = { ...params, page: page }
-    }
-    if (sort) {
-      params = { ...params, sort: sort }
-    }
-    console.log(params)
+    if (page) params = { ...params, page: page }
+    if (size) params = { ...params, size: size }
+    if (sort) params = { ...params, sort: sort }
     if (this.filterByDealer) params = { ...params, dealerId: this.filterByDealer.id }
     if (this.filterBySku) params = { ...params, sku: this.filterBySku }
     if (this.filterByName) params = { ...params, name: this.filterByName }
@@ -206,7 +248,14 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   onLazyLoadProducts($event: LazyLoadEvent) {
-    let params: Params = this.convertParamMapToParams(this.queryParamMap)
+
+    if (this.suppressingLazyLoadingProducts) {
+      console.log('onLazyLoadProducts return')
+      this.suppressingLazyLoadingProducts = false
+      return
+    }
+
+    let params: Params = this.convertParamMapToParamsExcludeRefreshKey()
     if ($event.first !== undefined && $event.rows !== undefined) {
       const page = $event.first / $event.rows
       params = { ...params, page: page, size: $event.rows }
@@ -215,20 +264,24 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       if ($event.multiSortMeta.length > 1) {
         params = { ...params, sort: [] }
         for (const sort of $event.multiSortMeta) {
-          (params['sort'] as string[]).push(this.convertSortMetaToQueryString(sort))
+          (params['sort'] as string[]).push(convertSortMetaToQueryString(sort))
         }
       } else if ($event.multiSortMeta.length === 1) {
-        params = { ...params, sort: this.convertSortMetaToQueryString($event.multiSortMeta[0]) }
+        params = { ...params, sort: convertSortMetaToQueryString($event.multiSortMeta[0]) }
       } else {
         params = { ...params, sort: 'id' }
       }
     }
+
+    console.log('onLazyLoadProducts navigate')
+
     this.router.navigate(['management/products'], { queryParams: params })
   }
 
   onRefresh(): void {
-    this.router.navigate(['management/products'],
-      { queryParams: this.convertParamMapToParams(this.queryParamMap) })
+    const params = this.convertParamMapToParamsExcludeRefreshKey()
+    params['refresh'] = +new Date()
+    this.router.navigate(['management/products'], { queryParams: params })
   }
 
   openNew(): void {
@@ -247,23 +300,20 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   }
 
-  private convertParamMapToParams(paramMap: ParamMap): Params {
-    let params: Params = {}
-    for (const key of this.queryParamMap.keys) {
-      if (this.queryParamMap.getAll(key).length > 1) {
-        params = { ...params, [key]: this.queryParamMap.getAll(key) }
-      } else {
-        params = { ...params, [key]: this.queryParamMap.get(key) }
-      }
-    }
-    return params
+  private clearDropDownFilterFields(): void {
+    this.filterByDealer = null
+    this.filterByCategory = null
   }
 
-  private convertSortMetaToQueryString(sortMeta: SortMeta): string {
-    if (sortMeta.order < 0) {
-      return sortMeta.field + ',desc'
-    }
-    return sortMeta.field
+  private clearNonDropDownFilterFields(): void {
+    this.filterBySku = null
+    this.filterByName = null
+    this.filterByMinUnitsInStock = null
+    this.filterByMaxUnitsInStock = null
+  }
+
+  private convertParamMapToParamsExcludeRefreshKey(): Params {
+    return convertParamMapToParams(this.queryParamMap, ['refresh'])
   }
 
 }

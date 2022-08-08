@@ -3,6 +3,6 @@ import { DealerInterface } from "src/app/shared/modules/identity/types/dealer.in
 
 export interface DealersStateInterface {
   isLoading: boolean
-  error: ApiErrorInterface | null,
   data: DealerInterface[] | null
+  error: ApiErrorInterface | null
 }
