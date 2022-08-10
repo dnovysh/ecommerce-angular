@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatestWith, filter, map, Subscription } from "rxjs";
+import { combineLatestWith, filter, map, skip, Subscription } from "rxjs";
 import { select, Store } from "@ngrx/store";
 import { LazyLoadEvent, MessageService } from "primeng/api";
 import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
@@ -15,7 +15,7 @@ import { getDealersAction } from "src/app/shared/modules/dealers/store/get-deale
 import { loadingDealersSliceSelector } from "src/app/shared/modules/dealers/store/selectors";
 import { DealerInterface } from "src/app/shared/modules/identity/types/dealer.interface";
 import { ProductCategoryInterface } from "src/app/shared/types/catalog/product-category.interface";
-import { categoriesSelector } from "src/app/shared/modules/categories/store/selectors";
+import { loadingCategoriesSliceSelector } from "src/app/shared/modules/categories/store/selectors";
 import {
   SelectedDealerWithDealersListInterface
 } from "src/app/management/product-management/types/selected-dealer-with-dealers-list.interface";
@@ -25,6 +25,12 @@ import {
   convertSortMetaToQueryString
 } from "src/app/shared/helpers/common-helpers";
 import { LoadingDealersSliceInterface } from "src/app/shared/modules/dealers/types/loading-dealers-slice.interface";
+import {
+  LoadingCategoriesSliceInterface
+} from "src/app/shared/modules/categories/types/loading-categories-slice.interface";
+import {
+  SelectedCategoryIdWithCategoriesListInterface
+} from "src/app/management/product-management/types/selected-category-id-with-categories-list.interface";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -96,9 +102,10 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.queryParamMapSubscription.unsubscribe()
   }
 
-  private initializeValues() {
+  private initializeValues(): void {
     this.suppressingLazyLoadingProducts = false
     this.products = [] as Product[]
+    this.page = this.emptyPage
     this.dealerList = [] as DealerInterface[]
     this.categoryList = [] as ProductCategoryInterface[]
   }
@@ -121,8 +128,23 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   private subscribeToData(): void {
     this.dataSubscription = this.store
-      .pipe(select(stateSelector), filter(state => !state.isLoading && !state.isError))
+      .pipe(select(stateSelector),
+        skip(1),
+        filter(state => !state.isLoading && !state.isError))
       .subscribe((state) => {
+
+        console.log('data subscription')
+        console.log(state.paramMap)
+        console.log(state.page)
+
+        if (state.page && state.page.number > 0 && state.page.number >= state.page.totalPages) {
+          const params = convertParamMapToParams(state.paramMap)
+          params['page'] = state.page.totalPages > 0 ? state.page.totalPages - 1 : 0
+          this.router.navigate(['management/products'], { queryParams: params })
+          return
+        }
+
+
         this.suppressingLazyLoadingProducts = true
         this.queryParamMap = state.paramMap
         this.clearNonDropDownFilterFields()
@@ -153,12 +175,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         } else {
           this.page = this.emptyPage
         }
-
-
-        console.log('data subscription')
-        console.log(this.products)
-
-
       })
   }
 
@@ -192,13 +208,23 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToCategories(): void {
-    this.categoriesSubscription = this.store.pipe(select(categoriesSelector))
-      .subscribe((categories) => {
-        if (categories) {
-          this.categoryList = categories
-        } else {
-          this.categoryList = [] as ProductCategoryInterface[]
+    this.categoriesSubscription = this.store
+      .pipe(select(loadingCategoriesSliceSelector),
+        filter(slice => !slice.isLoading && slice.categories !== null))
+      .pipe(combineLatestWith(
+        this.route.queryParamMap.pipe(map((queryParamMap => queryParamMap.get('categoryId'))))))
+      .pipe(map(([slice, id]: [LoadingCategoriesSliceInterface, string | null]) => {
+        const categoryId = id ? BigInt(id) : null
+        const categories = slice.categories
+        return { categoryId, categories } as SelectedCategoryIdWithCategoriesListInterface
+      }))
+      .subscribe((next: SelectedCategoryIdWithCategoriesListInterface) => {
+        if (next.categories && this.categoryList.length === 0) {
+          this.categoryList = next.categories
+            .map((category => ({ ...category, id: BigInt(category.id) })))
         }
+        const foundCategory = this.categoryList.find(category => category.id === next.categoryId)
+        this.filterByCategory = foundCategory ? foundCategory : null
       })
   }
 
@@ -231,12 +257,10 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   onSearch(): void {
     const currentParams: Params = this.convertParamMapToParamsExcludeRefreshKey()
-    const page = currentParams['page']
     const size = currentParams['size']
     const sort = currentParams['sort']
-    let params: Params = {}
-    if (page) params = { ...params, page: page }
-    if (size) params = { ...params, size: size }
+    let params: Params = { page: 0 }
+    params = size ? { ...params, size: size } : { ...params, size: this.emptyPage.size };
     if (sort) params = { ...params, sort: sort }
     if (this.filterByDealer) params = { ...params, dealerId: this.filterByDealer.id }
     if (this.filterBySku) params = { ...params, sku: this.filterBySku }
@@ -244,18 +268,18 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     if (this.filterByCategory) params = { ...params, categoryId: this.filterByCategory.id }
     if (this.filterByMinUnitsInStock) params = { ...params, minUnitsInStock: this.filterByMinUnitsInStock }
     if (this.filterByMaxUnitsInStock) params = { ...params, maxUnitsInStock: this.filterByMaxUnitsInStock }
+    params['refresh'] = +new Date()
     this.router.navigate(['management/products'], { queryParams: params })
   }
 
   onLazyLoadProducts($event: LazyLoadEvent) {
-
     if (this.suppressingLazyLoadingProducts) {
       console.log('onLazyLoadProducts return')
       this.suppressingLazyLoadingProducts = false
       return
     }
 
-    let params: Params = this.convertParamMapToParamsExcludeRefreshKey()
+    let params: Params = convertParamMapToParams(this.queryParamMap, ['sort', 'refresh'])
     if ($event.first !== undefined && $event.rows !== undefined) {
       const page = $event.first / $event.rows
       params = { ...params, page: page, size: $event.rows }
@@ -268,8 +292,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         }
       } else if ($event.multiSortMeta.length === 1) {
         params = { ...params, sort: convertSortMetaToQueryString($event.multiSortMeta[0]) }
-      } else {
-        params = { ...params, sort: 'id' }
       }
     }
 
