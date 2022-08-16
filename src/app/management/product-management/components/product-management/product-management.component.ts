@@ -132,19 +132,12 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         skip(1),
         filter(state => !state.isLoading && !state.isError))
       .subscribe((state) => {
-
-        console.log('data subscription')
-        console.log(state.paramMap)
-        console.log(state.page)
-
         if (state.page && state.page.number > 0 && state.page.number >= state.page.totalPages) {
           const params = convertParamMapToParams(state.paramMap)
           params['page'] = state.page.totalPages > 0 ? state.page.totalPages - 1 : 0
           this.router.navigate(['management/products'], { queryParams: params })
           return
         }
-
-
         this.suppressingLazyLoadingProducts = true
         this.queryParamMap = state.paramMap
         this.clearNonDropDownFilterFields()
@@ -274,11 +267,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   onLazyLoadProducts($event: LazyLoadEvent) {
     if (this.suppressingLazyLoadingProducts) {
-      console.log('onLazyLoadProducts return')
       this.suppressingLazyLoadingProducts = false
       return
     }
-
     let params: Params = convertParamMapToParams(this.queryParamMap, ['sort', 'refresh'])
     if ($event.first !== undefined && $event.rows !== undefined) {
       const page = $event.first / $event.rows
@@ -294,9 +285,6 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         params = { ...params, sort: convertSortMetaToQueryString($event.multiSortMeta[0]) }
       }
     }
-
-    console.log('onLazyLoadProducts navigate')
-
     this.router.navigate(['management/products'], { queryParams: params })
   }
 
