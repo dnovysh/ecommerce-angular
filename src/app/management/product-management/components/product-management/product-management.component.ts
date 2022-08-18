@@ -8,7 +8,11 @@ import { Product } from "src/app/management/domain/Product";
 import { PageInterface } from "src/app/shared/types/page.interface";
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
-import { errorSelector, isLoadingSelector, stateSelector } from "src/app/management/product-management/store/selectors";
+import {
+  errorSelector,
+  isLoadingSelector,
+  stateSelector
+} from "src/app/management/product-management/store/product-get-all.selectors";
 import { getProductsAction } from "src/app/management/product-management/store/actions/get-products.action";
 import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
 import { getDealersAction } from "src/app/shared/modules/dealers/store/get-dealers.action";
@@ -31,6 +35,7 @@ import {
 import {
   SelectedCategoryIdWithCategoriesListInterface
 } from "src/app/management/product-management/types/selected-category-id-with-categories-list.interface";
+import { ErrorInterface } from "src/app/management/product-management/types/error.interface";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -174,9 +179,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   private subscribeToError(): void {
     this.errorSubscription = this.store.pipe(select(errorSelector))
       .subscribe((error) => {
-        this.isError = error.isError
-        this.error = error.error
-        this.showErrorToast()
+        this.handleError(error)
       })
   }
 
@@ -308,6 +311,12 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   deleteSelectedProducts(): void {
 
+  }
+
+  private handleError(error: ErrorInterface): void {
+    this.isError = error.isError
+    this.error = error.error
+    this.showErrorToast()
   }
 
   private clearDropDownFilterFields(): void {

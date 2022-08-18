@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { ParamMap } from "@angular/router";
 import { Observable } from "rxjs";
 
@@ -28,5 +28,30 @@ export class ProductManagementService {
     }
 
     return this.http.get<ProductGetAllResponseInterface>(this.baseUrl, { params })
+  }
+
+  deleteProducts(ids: number[]): Observable<{}> {
+    if (ids.length === 1) {
+      return this.deleteProductById(ids[0])
+    } else {
+      return this.deleteAllProductsById(ids)
+    }
+  }
+
+  deleteProductById(id: number): Observable<{}> {
+    const url = `${this.baseUrl}/${id}`
+
+    return this.http.delete<{}>(url)
+  }
+
+  deleteAllProductsById(ids: number[]): Observable<{}> {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: ids
+    }
+
+    return this.http.delete<{}>(this.baseUrl, options)
   }
 }

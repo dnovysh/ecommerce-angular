@@ -1,8 +1,9 @@
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
 
 export interface ProductDeleteStateInterface {
-  isLoading: boolean
-  id: number
+  deletion: boolean
+  idsToRemove: number[]
+  removedProductIds: number[]
   isError: boolean
   error: ApiErrorInterface | null
 }
