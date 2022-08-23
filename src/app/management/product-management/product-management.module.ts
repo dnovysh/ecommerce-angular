@@ -22,6 +22,7 @@ import { reducer as productDeleteReducer } from "src/app/management/product-mana
 import { ImagePreloadModule } from "src/app/shared/directives/image-preload/image-preload.module";
 import { DealersModule } from "src/app/shared/modules/dealers/dealers.module";
 import { DeleteProductsEffect } from "src/app/management/product-management/store/effects/delete-products.effect";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
 
 
 const routes: Routes = [
@@ -40,23 +41,24 @@ const routes: Routes = [
     ProductManagementService,
     ProductManagementGuard
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    StoreModule.forFeature('productGetAll', productGetAllReducer),
-    StoreModule.forFeature('productDelete', productDeleteReducer),
-    EffectsModule.forFeature([GetProductsEffect, DeleteProductsEffect]),
-    DealersModule,
-    ToastModule,
-    ToolbarModule,
-    TableModule,
-    ButtonModule,
-    RippleModule,
-    FormsModule,
-    InputTextModule,
-    ImagePreloadModule,
-    DropdownModule,
-    InputNumberModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        StoreModule.forFeature('productGetAll', productGetAllReducer),
+        StoreModule.forFeature('productDelete', productDeleteReducer),
+        EffectsModule.forFeature([GetProductsEffect, DeleteProductsEffect]),
+        DealersModule,
+        ToastModule,
+        ToolbarModule,
+        TableModule,
+        ButtonModule,
+        RippleModule,
+        FormsModule,
+        InputTextModule,
+        ImagePreloadModule,
+        DropdownModule,
+        InputNumberModule,
+        ConfirmDialogModule
+    ]
 })
 export class ProductManagementModule {}

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatestWith, filter, map, skip, Subscription } from "rxjs";
 import { select, Store } from "@ngrx/store";
-import { LazyLoadEvent, MessageService } from "primeng/api";
+import { ConfirmationService, LazyLoadEvent, MessageService } from "primeng/api";
 import { ActivatedRoute, ParamMap, Params, Router } from "@angular/router";
 
 import { Product } from "src/app/management/domain/Product";
@@ -18,11 +18,10 @@ import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
 import { getDealersAction } from "src/app/shared/modules/dealers/store/get-dealers.action";
 import { loadingDealersSliceSelector } from "src/app/shared/modules/dealers/store/selectors";
 import { DealerInterface } from "src/app/shared/modules/identity/types/dealer.interface";
-import { ProductCategoryInterface } from "src/app/shared/types/catalog/product-category.interface";
 import { loadingCategoriesSliceSelector } from "src/app/shared/modules/categories/store/selectors";
 import {
-  SelectedDealerWithDealersListInterface
-} from "src/app/management/product-management/types/selected-dealer-with-dealers-list.interface";
+  SelectedDealerWithDealerListInterface
+} from "src/app/management/product-management/types/selected-dealer-with-dealer-list.interface";
 import {
   CommonHelpers,
   convertParamMapToParams,
@@ -33,9 +32,15 @@ import {
   LoadingCategoriesSliceInterface
 } from "src/app/shared/modules/categories/types/loading-categories-slice.interface";
 import {
-  SelectedCategoryIdWithCategoriesListInterface
-} from "src/app/management/product-management/types/selected-category-id-with-categories-list.interface";
+  SelectedCategoryIdWithCategoryListInterface
+} from "src/app/management/product-management/types/selected-category-id-with-category-list.interface";
 import { ErrorInterface } from "src/app/management/product-management/types/error.interface";
+import { deleteProductsAction } from "src/app/management/product-management/store/actions/delete-products.action";
+import {
+  deletionSelector,
+  stateSelector as productDeleteStateSelector
+} from "src/app/management/product-management/store/product-delete.selectors";
+import { Category } from "src/app/management/domain/Category";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -52,6 +57,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   categoriesSubscription: Subscription
   queryParamMapSubscription: Subscription
 
+  deletionSubscription: Subscription
+  productDeleteStateSubscription: Subscription
+
   emptyPage: PageInterface = {
     size: 10,
     totalElements: 0,
@@ -66,13 +74,16 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   error: ApiErrorInterface | null
 
   dealerList: DealerInterface[]
-  categoryList: ProductCategoryInterface[];
+  categoryList: Category[];
 
   queryParamMap: ParamMap | null
 
   selectedProducts: Product[]
+  deletion: boolean
 
   suppressingLazyLoadingProducts: boolean
+
+  loading = () => this.isLoading || this.deletion
 
   getProductImageSrc = CatalogHelpers.getProductImageSrc
   getDefaultProductImage = CatalogHelpers.getDefaultProductImage
@@ -81,13 +92,14 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   filterByDealer: DealerInterface | null;
   filterBySku: string | null;
   filterByName: string | null;
-  filterByCategory: ProductCategoryInterface | null;
+  filterByCategory: Category | null;
   filterByMinUnitsInStock: number | null
   filterByMaxUnitsInStock: number | null
   multiSortMeta: { field: string; order: number } []
 
   constructor(private store: Store<AppStateInterface>,
               private messageService: MessageService,
+              private confirmationService: ConfirmationService,
               private route: ActivatedRoute,
               private router: Router) {
     this.store.dispatch(getDealersAction())
@@ -105,6 +117,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.dealersSubscription.unsubscribe()
     this.categoriesSubscription.unsubscribe()
     this.queryParamMapSubscription.unsubscribe()
+
+    this.deletionSubscription.unsubscribe()
+    this.productDeleteStateSubscription.unsubscribe()
   }
 
   private initializeValues(): void {
@@ -112,7 +127,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.products = [] as Product[]
     this.page = this.emptyPage
     this.dealerList = [] as DealerInterface[]
-    this.categoryList = [] as ProductCategoryInterface[]
+    this.categoryList = [] as Category[]
   }
 
   private initializeListeners(): void {
@@ -122,6 +137,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.subscribeToDealers()
     this.subscribeToCategories()
     this.subscribeToQueryParamMap()
+
+    this.subscribeToDeletionStatus()
+    this.subscribeToDeleteState()
   }
 
   private subscribeToLoadingStatus(): void {
@@ -193,9 +211,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
         const foundDealer = slice.dealers?.find(dealer => dealer.id === this.parseInt(dealerId))
         const dealer = foundDealer ? foundDealer : null
         const dealers = slice.dealers
-        return { dealer, dealers } as SelectedDealerWithDealersListInterface
+        return { dealer, dealers } as SelectedDealerWithDealerListInterface
       }))
-      .subscribe((selectedDealerWithDealersList: SelectedDealerWithDealersListInterface) => {
+      .subscribe((selectedDealerWithDealersList: SelectedDealerWithDealerListInterface) => {
         if (selectedDealerWithDealersList.dealers) {
           this.dealerList = selectedDealerWithDealersList.dealers
         }
@@ -210,14 +228,17 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       .pipe(combineLatestWith(
         this.route.queryParamMap.pipe(map((queryParamMap => queryParamMap.get('categoryId'))))))
       .pipe(map(([slice, id]: [LoadingCategoriesSliceInterface, string | null]) => {
-        const categoryId = id ? BigInt(id) : null
-        const categories = slice.categories
-        return { categoryId, categories } as SelectedCategoryIdWithCategoriesListInterface
+        const categoryId = this.parseInt(id)
+        const categories = slice.categories ? slice.categories.map(
+          (category): Category => ({
+            id: Number(category.id),
+            name: category.name
+          })) : null
+        return { categoryId, categories } as SelectedCategoryIdWithCategoryListInterface
       }))
-      .subscribe((next: SelectedCategoryIdWithCategoriesListInterface) => {
+      .subscribe((next: SelectedCategoryIdWithCategoryListInterface) => {
         if (next.categories && this.categoryList.length === 0) {
-          this.categoryList = next.categories
-            .map((category => ({ ...category, id: BigInt(category.id) })))
+          this.categoryList = next.categories.map((category => ({ ...category })))
         }
         const foundCategory = this.categoryList.find(category => category.id === next.categoryId)
         this.filterByCategory = foundCategory ? foundCategory : null
@@ -229,6 +250,35 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       .subscribe((queryParamMap) => {
         this.selectedProducts = []
         this.store.dispatch(getProductsAction({ params: queryParamMap }))
+      })
+  }
+
+  private subscribeToDeletionStatus(): void {
+    this.deletionSubscription = this.store.pipe(select(deletionSelector))
+      .subscribe((deletion) => {
+        this.deletion = deletion
+      })
+  }
+
+  private subscribeToDeleteState() {
+    this.productDeleteStateSubscription = this.store
+      .pipe(select(productDeleteStateSelector), filter((
+        state => !state.deletion && !state.isError && state.removedProductIds.length > 0)))
+      .subscribe((state) => {
+        const removedProductCount = state.removedProductIds.length
+        if (this.products) {
+          this.products = this.products.filter(product => !state.removedProductIds.includes(product.id))
+        }
+        this.selectedProducts = [];
+        if (state.removedProductIds.length === 1) {
+          this.messageService.add({
+            severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000
+          });
+        } else {
+          this.messageService.add({
+            severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000
+          });
+        }
       })
   }
 
@@ -305,12 +355,29 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   }
 
-  deleteProduct(product: any): void {
-
+  deleteProduct(product: Product): void {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to delete ${product.sku} - ${product.name}?`,
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.store.dispatch(deleteProductsAction({ ids: [product.id] }))
+      }
+    });
   }
 
   deleteSelectedProducts(): void {
-
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the selected products?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        if (this.selectedProducts && this.selectedProducts.length > 0) {
+          const ids = this.selectedProducts.map((product => product.id))
+          this.store.dispatch(deleteProductsAction({ ids }))
+        }
+      }
+    });
   }
 
   private handleError(error: ErrorInterface): void {

@@ -1,6 +1,6 @@
 import { DealerInterface } from "src/app/shared/modules/identity/types/dealer.interface";
 
-export interface SelectedDealerWithDealersListInterface {
+export interface SelectedDealerWithDealerListInterface {
   dealer: DealerInterface | null
   dealers: DealerInterface[] | null
 }

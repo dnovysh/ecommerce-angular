@@ -60,7 +60,7 @@
                 (click)="openNew()"></button>
         <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
                 (click)="deleteSelectedProducts()"
-                [disabled]="!selectedProducts || !selectedProducts.length"></button>
+                [disabled]="!selectedProducts || !selectedProducts.length || loading()"></button>
       </ng-template>
       <ng-template pTemplate="right">
         <button pButton pRipple label="Refresh" icon="pi pi-refresh"
@@ -74,7 +74,7 @@
              [lazy]="true"
              (onLazyLoad)="onLazyLoadProducts($event)"
              [lazyLoadOnInit]="false"
-             [loading]="isLoading"
+             [loading]="loading()"
              sortMode="multiple" [multiSortMeta]="multiSortMeta"
              [paginator]="true"
              [first]="page.number * page.size" [rows]="page.size" [totalRecords]="page.totalElements"
@@ -158,3 +158,4 @@
     </p-table>
   </div>
 </div>
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
