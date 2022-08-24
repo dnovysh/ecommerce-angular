@@ -23,6 +23,7 @@ import { ImagePreloadModule } from "src/app/shared/directives/image-preload/imag
 import { DealersModule } from "src/app/shared/modules/dealers/dealers.module";
 import { DeleteProductsEffect } from "src/app/management/product-management/store/effects/delete-products.effect";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { ConfirmationService, MessageService } from "primeng/api";
 
 
 const routes: Routes = [
@@ -39,7 +40,8 @@ const routes: Routes = [
   ],
   providers: [
     ProductManagementService,
-    ProductManagementGuard
+    ProductManagementGuard,
+    ConfirmationService
   ],
     imports: [
         CommonModule,

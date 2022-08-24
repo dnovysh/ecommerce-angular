@@ -49,7 +49,7 @@ export class ProductManagementService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       }),
-      body: ids
+      body: { ids }
     }
 
     return this.http.delete<{}>(this.baseUrl, options)

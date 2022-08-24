@@ -38,6 +38,7 @@ import { ErrorInterface } from "src/app/management/product-management/types/erro
 import { deleteProductsAction } from "src/app/management/product-management/store/actions/delete-products.action";
 import {
   deletionSelector,
+  errorSelector as productDeleteErrorSelector,
   stateSelector as productDeleteStateSelector
 } from "src/app/management/product-management/store/product-delete.selectors";
 import { Category } from "src/app/management/domain/Category";
@@ -59,6 +60,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   deletionSubscription: Subscription
   productDeleteStateSubscription: Subscription
+  productDeleteErrorSubscription: Subscription
 
   emptyPage: PageInterface = {
     size: 10,
@@ -120,6 +122,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
     this.deletionSubscription.unsubscribe()
     this.productDeleteStateSubscription.unsubscribe()
+    this.productDeleteErrorSubscription.unsubscribe()
   }
 
   private initializeValues(): void {
@@ -139,7 +142,8 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.subscribeToQueryParamMap()
 
     this.subscribeToDeletionStatus()
-    this.subscribeToDeleteState()
+    this.subscribeToProductDeleteState()
+    this.subscribeToProductDeleteError()
   }
 
   private subscribeToLoadingStatus(): void {
@@ -260,40 +264,48 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
       })
   }
 
-  private subscribeToDeleteState() {
+  private subscribeToProductDeleteState() {
     this.productDeleteStateSubscription = this.store
       .pipe(select(productDeleteStateSelector), filter((
         state => !state.deletion && !state.isError && state.removedProductIds.length > 0)))
       .subscribe((state) => {
-        const removedProductCount = state.removedProductIds.length
+        const oneProductRemoved: boolean = state.removedProductIds.length === 1
         if (this.products) {
-          this.products = this.products.filter(product => !state.removedProductIds.includes(product.id))
+          if (oneProductRemoved) {
+            this.products = this.products.filter(product => product.id !== state.removedProductIds[0])
+          } else {
+            this.products = this.products.filter(product => !state.removedProductIds.includes(product.id))
+          }
         }
         this.selectedProducts = [];
-        if (state.removedProductIds.length === 1) {
+        if (oneProductRemoved) {
           this.messageService.add({
-            severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000
+            key: 'productsToast',
+            severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000
           });
         } else {
           this.messageService.add({
-            severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000
+            key: 'productsToast',
+            severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000
           });
+        }
+        if (this.products?.length === 0) {
+          this.onRefresh()
         }
       })
   }
 
-  private showErrorToast(): void {
-    if (this.isError) {
-      const errorMessage = this.error ? this.error.message
-        : 'Something went wrong while loading products, please try again later or contact support'
-      this.messageService.add({
-        key: 'productsToast',
-        severity: 'error',
-        summary: 'Error',
-        detail: errorMessage,
-        life: 3000
-      });
-    }
+  private subscribeToProductDeleteError() {
+    this.productDeleteErrorSubscription = this.store
+      .pipe(select(productDeleteErrorSelector), filter((error => error.isError)))
+      .subscribe((error) => {
+        const errorMessage = error.error ? error.error.message
+          : 'Something went wrong while deleting products, please try again later or contact support'
+        this.messageService.add({
+          key: 'productsToast',
+          severity: 'error', summary: 'Error', detail: errorMessage, life: 3000
+        });
+      })
   }
 
   onClearFilter(): void {
@@ -357,7 +369,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   deleteProduct(product: Product): void {
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete ${product.sku} - ${product.name}?`,
+      message: `Are you sure you want to delete [${product.sku}] - ${product.name}?`,
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
@@ -383,7 +395,18 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   private handleError(error: ErrorInterface): void {
     this.isError = error.isError
     this.error = error.error
-    this.showErrorToast()
+    this.showLoadingProductsErrorToast()
+  }
+
+  private showLoadingProductsErrorToast(): void {
+    if (this.isError) {
+      const errorMessage = this.error ? this.error.message
+        : 'Something went wrong while loading products, please try again later or contact support'
+      this.messageService.add({
+        key: 'productsToast',
+        severity: 'error', summary: 'Error', detail: errorMessage, life: 3000
+      });
+    }
   }
 
   private clearDropDownFilterFields(): void {
