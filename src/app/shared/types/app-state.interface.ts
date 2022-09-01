@@ -7,11 +7,12 @@ import { RoleStateInterface } from "src/app/admin/role-administration/types/role
 import {
   ProductGetAllStateInterface
 } from "src/app/management/product-management/types/product-get-all-state.interface";
-import { ProductSaveStateInterface } from "src/app/management/product-management/types/product-save-state.interface";
+import { ProductCreateStateInterface } from "src/app/management/product-create/types/product-create-state.interface";
 import {
   ProductDeleteStateInterface
 } from "src/app/management/product-management/types/product-delete-state.interface";
 import { DealersStateInterface } from "src/app/shared/modules/dealers/types/dealers-state.interface";
+
 
 export interface AppStateInterface {
   productList: ProductListStateInterface
@@ -22,6 +23,6 @@ export interface AppStateInterface {
   roles: RoleStateInterface
   dealers: DealersStateInterface
   productManagement: ProductGetAllStateInterface
-  productSave: ProductSaveStateInterface
+  productCreate: ProductCreateStateInterface
   productDelete: ProductDeleteStateInterface
 }

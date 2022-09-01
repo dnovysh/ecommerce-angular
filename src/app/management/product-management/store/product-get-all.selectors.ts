@@ -4,7 +4,7 @@ import {
   ProductGetAllStateInterface
 } from "src/app/management/product-management/types/product-get-all-state.interface";
 import { ProductGetAllDataInterface } from "src/app/management/product-management/types/product-get-all-data.interface";
-import { ErrorInterface } from "src/app/management/product-management/types/error.interface";
+import { ErrorInterface } from "src/app/shared/types/error/error.interface";
 
 export const productGetAllFeatureSelector =
   createFeatureSelector<ProductGetAllStateInterface>('productGetAll');

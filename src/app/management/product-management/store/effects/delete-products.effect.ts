@@ -7,7 +7,7 @@ import {
   deleteProductsFailureAction,
   deleteProductsSuccessAction
 } from "src/app/management/product-management/store/actions/delete-products.action";
-import { ProductManagementService } from "src/app/management/product-management/services/product-management.service";
+import { ProductManagementService } from "src/app/shared/services/product-management.service";
 
 
 @Injectable()

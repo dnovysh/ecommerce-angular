@@ -34,7 +34,7 @@ import {
 import {
   SelectedCategoryIdWithCategoryListInterface
 } from "src/app/management/product-management/types/selected-category-id-with-category-list.interface";
-import { ErrorInterface } from "src/app/management/product-management/types/error.interface";
+import { ErrorInterface } from "src/app/shared/types/error/error.interface";
 import { deleteProductsAction } from "src/app/management/product-management/store/actions/delete-products.action";
 import {
   deletionSelector,

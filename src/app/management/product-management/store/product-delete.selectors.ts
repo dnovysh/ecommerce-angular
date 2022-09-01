@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
-import { ErrorInterface } from "src/app/management/product-management/types/error.interface";
+import { ErrorInterface } from "src/app/shared/types/error/error.interface";
 import {
   ProductDeleteStateInterface
 } from "src/app/management/product-management/types/product-delete-state.interface";

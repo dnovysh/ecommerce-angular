@@ -1,12 +1,15 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { ParamMap } from "@angular/router";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 
 import { environment } from "src/environments/environment";
 import {
   ProductGetAllResponseInterface
 } from "src/app/management/product-management/types/product-get-all-response.interface";
+import { Product } from "src/app/management/domain/Product";
+import { ProductCreateModelInterface } from "src/app/management/product-create/types/product-create-model.interface";
+import { ProductResponseInterface } from "src/app/shared/types/management/product-response.interface";
 
 
 @Injectable()
@@ -29,6 +32,13 @@ export class ProductManagementService {
 
     return this.http.get<ProductGetAllResponseInterface>(this.baseUrl, { params })
   }
+
+  createProduct(productCreateModel: ProductCreateModelInterface): Observable<Product> {
+    return this.http
+      .post<ProductResponseInterface>(this.baseUrl, { productCreateModel })
+      .pipe(map((response: ProductResponseInterface) => response.product))
+  }
+
 
   deleteProducts(ids: number[]): Observable<{}> {
     if (ids.length === 1) {

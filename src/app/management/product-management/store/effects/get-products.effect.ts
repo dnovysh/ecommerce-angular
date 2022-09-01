@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { catchError, map, of, switchMap } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 
-import { ProductManagementService } from "src/app/management/product-management/services/product-management.service";
+import { ProductManagementService } from "src/app/shared/services/product-management.service";
 import {
   getProductsAction,
   getProductsFailureAction,
