@@ -1,9 +1,7 @@
-import { Category } from "src/app/management/domain/Category";
-
 export interface ProductCreateModelInterface {
   dealerId: number;
   sku: string;
-  category: Category;
+  categoryId: number;
   name: string;
   description: string | null;
   image: string | null;
