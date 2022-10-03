@@ -42,6 +42,9 @@ import {
   stateSelector as productDeleteStateSelector
 } from "src/app/management/product-management/store/product-delete.selectors";
 import { Category } from "src/app/management/domain/Category";
+import { UserDetailsInterface } from "src/app/shared/modules/identity/types/user-details.interface";
+import { identityStateSelector } from "src/app/shared/modules/identity/store/selectors";
+import { IdentityStateInterface } from "src/app/shared/modules/identity/types/identity-state.interface";
 
 
 // noinspection JSIgnoredPromiseFromCall
@@ -51,6 +54,7 @@ import { Category } from "src/app/management/domain/Category";
   styleUrls: ['./product-management.component.scss']
 })
 export class ProductManagementComponent implements OnInit, OnDestroy {
+  userSubscription: Subscription
   isLoadingSubscription: Subscription
   dataSubscription: Subscription
   errorSubscription: Subscription
@@ -69,6 +73,13 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     number: 0
   }
 
+  userDetails: UserDetailsInterface | null
+  dealerId: number | null
+  hasCreatePermission: boolean
+  hasUpdatePermission: boolean
+  hasDeletePermission: boolean
+  dealerSelection: boolean
+
   isLoading: boolean
   products: Product[] | null
   page: PageInterface
@@ -84,6 +95,9 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   deletion: boolean
 
   suppressingLazyLoadingProducts: boolean
+
+  productCreateDialog: boolean
+  productEditDialog: boolean
 
   loading = () => this.isLoading || this.deletion
 
@@ -113,6 +127,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.userSubscription.unsubscribe()
     this.isLoadingSubscription.unsubscribe()
     this.dataSubscription.unsubscribe()
     this.errorSubscription.unsubscribe()
@@ -134,6 +149,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   private initializeListeners(): void {
+    this.subscribeToUser()
     this.subscribeToLoadingStatus()
     this.subscribeToData()
     this.subscribeToError()
@@ -144,6 +160,32 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     this.subscribeToDeletionStatus()
     this.subscribeToProductDeleteState()
     this.subscribeToProductDeleteError()
+  }
+
+  private subscribeToUser(): void {
+    this.userSubscription = this.store
+      .pipe(select(identityStateSelector), filter(identityState =>
+        !identityState.isLoading && identityState.isLoggedIn !== null
+      ))
+      .subscribe((identityState: IdentityStateInterface) => {
+        this.userDetails = identityState.userDetails
+        if (!this.userDetails) {
+          return
+        }
+        if (this.userDetails.dealerRepresentative && this.userDetails.dealer !== null) {
+          this.dealerId = this.userDetails.dealer.id
+        }
+        const dealerRepresentative: boolean =
+          this.userDetails?.dealerRepresentative === true && this.userDetails.dealer !== null
+        const authorities = this.userDetails.authorities
+        this.hasCreatePermission = authorities.has('product.create') ||
+          (authorities.has('dealer.product.create') && dealerRepresentative)
+        this.hasUpdatePermission = authorities.has('product.update') ||
+          (authorities.has('dealer.product.update') && dealerRepresentative)
+        this.hasDeletePermission = authorities.has('product.delete') ||
+          (authorities.has('dealer.product.delete') && dealerRepresentative)
+        this.dealerSelection = authorities.has('product.create')
+      })
   }
 
   private subscribeToLoadingStatus(): void {
@@ -360,7 +402,19 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
   }
 
   openNew(): void {
+    this.productCreateDialog = true
+  }
 
+  onCreateProduct($event: Product | null): void {
+    this.productCreateDialog = false
+    if ($event) {
+      const product: Product = this.getProductDeepCopy($event)
+      if (this.products) {
+        this.products = [product, ...this.products]
+      } else {
+        this.products = [product]
+      }
+    }
   }
 
   editProduct(product: any): void {
@@ -425,4 +479,11 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     return convertParamMapToParams(this.queryParamMap, ['refresh'])
   }
 
+  private getProductDeepCopy(product: Product): Product {
+    const result: Product = { ...product }
+    if (product.category) {
+      result.category = { ...product.category }
+    }
+    return result
+  }
 }

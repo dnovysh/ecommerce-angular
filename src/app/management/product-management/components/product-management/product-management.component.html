@@ -57,10 +57,13 @@
     <p-toolbar styleClass="mb-4">
       <ng-template pTemplate="left">
         <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
-                (click)="openNew()"></button>
+                (click)="openNew()"
+        ></button>
         <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
                 (click)="deleteSelectedProducts()"
-                [disabled]="!selectedProducts || !selectedProducts.length || loading()"></button>
+                [disabled]="!selectedProducts || !selectedProducts.length || loading()"
+                *ngIf="hasDeletePermission"
+        ></button>
       </ng-template>
       <ng-template pTemplate="right">
         <button pButton pRipple label="Refresh" icon="pi pi-refresh"
@@ -117,7 +120,7 @@
           <th pSortableColumn="rating">Rating
             <p-sortIcon field="rating"></p-sortIcon>
           </th>
-          <th style="min-width: 7.5rem"></th>
+          <th></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-product>
@@ -143,10 +146,15 @@
           <td>{{product.category.name}}</td>
           <td>{{product.rating}}</td>
           <td>
-            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
-                    (click)="editProduct(product)"></button>
-            <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
-                    (click)="deleteProduct(product)"></button>
+            <div class="inline-flex">
+              <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                      (click)="editProduct(product)"
+              ></button>
+              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                      (click)="deleteProduct(product)"
+                      *ngIf="hasDeletePermission"
+              ></button>
+            </div>
           </td>
         </tr>
       </ng-template>
@@ -159,3 +167,8 @@
   </div>
 </div>
 <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+<ec-product-create *ngIf="productCreateDialog"
+                   [dealerId]="dealerId"
+                   [dealerSelection]="dealerSelection"
+                   (createProduct)="onCreateProduct($event)"
+></ec-product-create>

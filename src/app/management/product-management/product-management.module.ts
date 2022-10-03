@@ -24,6 +24,7 @@ import { DealersModule } from "src/app/shared/modules/dealers/dealers.module";
 import { DeleteProductsEffect } from "src/app/management/product-management/store/effects/delete-products.effect";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { ConfirmationService } from "primeng/api";
+import { ProductCreateModule } from "src/app/management/product-create/product-create.module";
 
 
 const routes: Routes = [
@@ -43,24 +44,25 @@ const routes: Routes = [
     ProductManagementGuard,
     ConfirmationService
   ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    StoreModule.forFeature('productGetAll', productGetAllReducer),
-    StoreModule.forFeature('productDelete', productDeleteReducer),
-    EffectsModule.forFeature([GetProductsEffect, DeleteProductsEffect]),
-    DealersModule,
-    ToastModule,
-    ToolbarModule,
-    TableModule,
-    ButtonModule,
-    RippleModule,
-    FormsModule,
-    InputTextModule,
-    ImagePreloadModule,
-    DropdownModule,
-    InputNumberModule,
-    ConfirmDialogModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        StoreModule.forFeature('productGetAll', productGetAllReducer),
+        StoreModule.forFeature('productDelete', productDeleteReducer),
+        EffectsModule.forFeature([GetProductsEffect, DeleteProductsEffect]),
+        DealersModule,
+        ToastModule,
+        ToolbarModule,
+        TableModule,
+        ButtonModule,
+        RippleModule,
+        FormsModule,
+        InputTextModule,
+        ImagePreloadModule,
+        DropdownModule,
+        InputNumberModule,
+        ConfirmDialogModule,
+        ProductCreateModule
+    ]
 })
 export class ProductManagementModule {}

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
 import { select, Store } from "@ngrx/store";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
@@ -6,7 +6,7 @@ import { DealerInterface } from "src/app/shared/modules/identity/types/dealer.in
 import { Category } from "src/app/management/domain/Category";
 import { ProductCreateInputInterface } from "src/app/management/product-create/types/product-create-input.interface";
 import { Product } from "src/app/management/domain/Product";
-import { filter, map, Subscription } from "rxjs";
+import { filter, map, skip, Subscription } from "rxjs";
 import { loadingDealersSliceSelector } from "src/app/shared/modules/dealers/store/selectors";
 import { LoadingDealersSliceInterface } from "src/app/shared/modules/dealers/types/loading-dealers-slice.interface";
 import { loadingCategoriesSliceSelector } from "src/app/shared/modules/categories/store/selectors";
@@ -24,9 +24,10 @@ import { MessageService } from "primeng/api";
   templateUrl: './product-create.component.html',
   styleUrls: ['./product-create.component.scss']
 })
-export class ProductCreateComponent implements OnInit, OnChanges, OnDestroy {
-  @Input("dealerId") dealerIdProps: number | null
-  @Output("productCreate") productCreateEvent = new EventEmitter<Product | null>()
+export class ProductCreateComponent implements OnInit, OnDestroy {
+  @Input("dealerId") dealerIdProps: number | null | undefined
+  @Input("dealerSelection") dealerSelectionProps: boolean
+  @Output("createProduct") productCreateEvent = new EventEmitter<Product | null>()
 
   dealersSubscription: Subscription
   categoriesSubscription: Subscription
@@ -54,29 +55,28 @@ export class ProductCreateComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit(): void {
     this.initializeValues()
     this.initializeListeners()
-
-    console.log('OnInit')
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('ngOnChanges')
-    console.log(changes)
   }
 
   private initializeValues(): void {
     this.submitted = false
+    this.dealerList = []
+    this.categoryList = []
     this.initializeInput()
   }
 
   private initializeListeners() {
-    this.subscribeToDealers()
+    if (this.dealerSelectionProps) {
+      this.subscribeToDealers()
+    }
     this.subscribeToCategories()
     this.subscribeToCreatedProduct()
     this.subscribeToError()
   }
 
   ngOnDestroy(): void {
-    this.dealersSubscription.unsubscribe()
+    if (this.dealerSelectionProps) {
+      this.dealersSubscription.unsubscribe()
+    }
     this.categoriesSubscription.unsubscribe()
     this.createdProductSubscription.unsubscribe()
     this.errorSubscription.unsubscribe()
@@ -113,7 +113,7 @@ export class ProductCreateComponent implements OnInit, OnChanges, OnDestroy {
 
   private initializeInput(): void {
     this.productInput = {
-      dealerId: this.dealerIdProps,
+      dealerId: this.dealerIdProps !== undefined ? this.dealerIdProps : null,
       dealer: null,
       sku: null,
       category: null,
@@ -154,6 +154,7 @@ export class ProductCreateComponent implements OnInit, OnChanges, OnDestroy {
   private subscribeToCreatedProduct(): void {
     this.createdProductSubscription = this.store
       .pipe(select(stateSelector),
+        skip(1),
         filter(state => !state.isLoading && !state.isError && state.product !== null))
       .pipe(map(state => state.product))
       .subscribe((product) => {
@@ -178,7 +179,7 @@ export class ProductCreateComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private setInitialDropDownDealer(): void {
-    if (this.dealerList) {
+    if (this.dealerList && this.dealerList.length > 0) {
       const foundDealer = this.dealerList.find(dealer => dealer.id === this.dealerIdProps)
       this.productInput.dealer = foundDealer ? foundDealer : null
     }
