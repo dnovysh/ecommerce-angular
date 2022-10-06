@@ -12,6 +12,7 @@ import {
   ProductDeleteStateInterface
 } from "src/app/management/product-management/types/product-delete-state.interface";
 import { DealersStateInterface } from "src/app/shared/modules/dealers/types/dealers-state.interface";
+import { ProductEditStateInterface } from "src/app/management/product-edit/types/product-edit-state.interface";
 
 
 export interface AppStateInterface {
@@ -24,5 +25,6 @@ export interface AppStateInterface {
   dealers: DealersStateInterface
   productManagement: ProductGetAllStateInterface
   productCreate: ProductCreateStateInterface
+  productEdit: ProductEditStateInterface
   productDelete: ProductDeleteStateInterface
 }

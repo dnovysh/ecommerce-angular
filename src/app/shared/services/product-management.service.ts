@@ -10,6 +10,7 @@ import {
 import { Product } from "src/app/management/domain/Product";
 import { ProductCreateModelInterface } from "src/app/management/product-create/types/product-create-model.interface";
 import { ProductResponseInterface } from "src/app/shared/types/management/product-response.interface";
+import { ProductUpdateModelInterface } from "src/app/management/product-edit/types/product-update-model.interface";
 
 
 @Injectable()
@@ -33,12 +34,26 @@ export class ProductManagementService {
     return this.http.get<ProductGetAllResponseInterface>(this.baseUrl, { params })
   }
 
+  getProductById(id: number): Observable<Product> {
+    const url = `${this.baseUrl}/${id}`
+    return this.http
+      .get<ProductResponseInterface>(url)
+      .pipe(map((response: ProductResponseInterface) => response.product))
+  }
+
   createProduct(productCreateModel: ProductCreateModelInterface): Observable<Product> {
     return this.http
       .post<ProductResponseInterface>(this.baseUrl, { productCreateModel })
       .pipe(map((response: ProductResponseInterface) => response.product))
   }
 
+  updateProduct(id: number, productUpdateModel: ProductUpdateModelInterface): Observable<Product> {
+    const url = `${this.baseUrl}/${id}`
+
+    return this.http
+      .put<ProductResponseInterface>(url, { productUpdateModel })
+      .pipe(map((response: ProductResponseInterface) => response.product))
+  }
 
   deleteProducts(ids: number[]): Observable<{}> {
     if (ids.length === 1) {

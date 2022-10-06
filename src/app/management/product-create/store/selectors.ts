@@ -4,23 +4,23 @@ import { AppStateInterface } from "src/app/shared/types/app-state.interface";
 import { ErrorInterface } from "src/app/shared/types/error/error.interface";
 
 
-export const createProductFeatureSelector =
+export const productCreateFeatureSelector =
   createFeatureSelector<ProductCreateStateInterface>('productCreate');
 
 export const isLoadingSelector =
   createSelector<AppStateInterface, ProductCreateStateInterface, boolean>(
-    createProductFeatureSelector,
+    productCreateFeatureSelector,
     (state: ProductCreateStateInterface) => state.isLoading
   )
 
 export const stateSelector =
   createSelector<AppStateInterface, ProductCreateStateInterface, ProductCreateStateInterface>(
-    createProductFeatureSelector,
+    productCreateFeatureSelector,
     (state: ProductCreateStateInterface) => ({ ...state })
   )
 
 export const errorSelector =
   createSelector<AppStateInterface, ProductCreateStateInterface, ErrorInterface>(
-    createProductFeatureSelector,
+    productCreateFeatureSelector,
     (state: ProductCreateStateInterface) => ({ isError: state.isError, error: state.error })
   )

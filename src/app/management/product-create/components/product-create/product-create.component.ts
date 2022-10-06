@@ -1,22 +1,22 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
 import { select, Store } from "@ngrx/store";
+import { filter, map, skip, Subscription } from "rxjs";
+import { MessageService } from "primeng/api";
+
+import { CatalogHelpers } from "src/app/shared/helpers/catalog-helpers.class";
 import { AppStateInterface } from "src/app/shared/types/app-state.interface";
 import { DealerInterface } from "src/app/shared/modules/identity/types/dealer.interface";
 import { Category } from "src/app/management/domain/Category";
 import { ProductCreateInputInterface } from "src/app/management/product-create/types/product-create-input.interface";
 import { Product } from "src/app/management/domain/Product";
-import { filter, map, skip, Subscription } from "rxjs";
 import { loadingDealersSliceSelector } from "src/app/shared/modules/dealers/store/selectors";
 import { LoadingDealersSliceInterface } from "src/app/shared/modules/dealers/types/loading-dealers-slice.interface";
 import { loadingCategoriesSliceSelector } from "src/app/shared/modules/categories/store/selectors";
-import { CommonHelpers } from "src/app/shared/helpers/common-helpers";
 import { getDealersAction } from "src/app/shared/modules/dealers/store/get-dealers.action";
 import { createProductAction } from "src/app/management/product-create/store/create-product.action";
 import { ProductCreateModelInterface } from "src/app/management/product-create/types/product-create-model.interface";
 import { errorSelector, stateSelector } from "src/app/management/product-create/store/selectors";
 import { ApiErrorInterface } from "src/app/shared/types/error/api-error.interface";
-import { MessageService } from "primeng/api";
 
 
 @Component({
@@ -46,7 +46,6 @@ export class ProductCreateComponent implements OnInit, OnDestroy {
 
   getProductImageSrc = CatalogHelpers.getProductImageSrc
   getDefaultProductImage = CatalogHelpers.getDefaultProductImage
-  parseInt = CommonHelpers.parseIntParameter
 
   constructor(private store: Store<AppStateInterface>, private messageService: MessageService) {
     this.store.dispatch(getDealersAction())

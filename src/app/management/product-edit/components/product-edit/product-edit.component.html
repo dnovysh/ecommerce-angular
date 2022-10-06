@@ -1,47 +1,39 @@
-<p-toast key="productCreateToast"></p-toast>
+<p-toast key="productEditToast"></p-toast>
 <p-dialog [visible]="true"
           (visibleChange)="hideDialog()"
           [style]="{width: '900px'}"
-          header="New Product"
+          header="Product Details"
           [modal]="true"
           styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <div class="product-create-container">
+    <div class="product-edit-container">
       <div class="left-panel">
-        <div class="field" *ngIf="dealerSelectionProps">
-          <label for="productCreationDealer">Dealer</label>
-          <p-dropdown *ngIf="dealerList" [options]="dealerList" [(ngModel)]="productInput.dealer"
-                      placeholder="Select a Dealer" optionLabel="name" [showClear]="true"
-                      inputId="productCreationDealer" [required]="true"
-          ></p-dropdown>
-          <small class="p-error" *ngIf="submitted && !productInput.dealer">Dealer is required.</small>
-        </div>
         <div class="field">
-          <label for="productCreationSku">Sku</label>
-          <input type="text" pInputText id="productCreationSku"
+          <label for="productEditingSku">Sku</label>
+          <input type="text" pInputText id="productEditingSku"
                  [(ngModel)]="productInput.sku" [required]="true" [autofocus]="true"
           />
           <small class="p-error" *ngIf="submitted && !productInput.sku">Sku is required.</small>
         </div>
         <div class="field">
-          <label for="productCreationCategory">Category</label>
+          <label for="productEditingCategory">Category</label>
           <p-dropdown *ngIf="categoryList" [options]="categoryList" [(ngModel)]="productInput.category"
                       placeholder="Select a Category" optionLabel="name" [showClear]="true"
-                      inputId="productCreationCategory" [required]="true"
+                      inputId="productEditingCategory" [required]="true"
           ></p-dropdown>
           <small class="p-error" *ngIf="submitted && !productInput.category">Category is required.</small>
         </div>
         <div class="field">
-          <label for="productCreationName">Name</label>
-          <input type="text" pInputText id="productCreationName" [(ngModel)]="productInput.name" [required]="true"/>
+          <label for="productEditingName">Name</label>
+          <input type="text" pInputText id="productEditingName" [(ngModel)]="productInput.name" [required]="true"/>
           <small class="p-error" *ngIf="submitted && !productInput.name">Name is required.</small>
         </div>
         <div class="field">
-          <label for="productCreationDescription">Description</label>
-          <textarea id="productCreationDescription" pInputTextarea
+          <label for="productEditingDescription">Description</label>
+          <textarea id="productEditingDescription" pInputTextarea
                     [(ngModel)]="productInput.description"
-                    [rows]="dealerSelectionProps ? 3 : 5" cols="20"
+                    rows="5" cols="20"
           ></textarea>
         </div>
       </div>
@@ -54,12 +46,12 @@
           class="product-image"
         />
         <div class="field">
-          <label for="productCreationImage">Image</label>
-          <input type="text" pInputText id="productCreationImage" [(ngModel)]="productInput.image"/>
+          <label for="productEditingImage">Image</label>
+          <input type="text" pInputText id="productEditingImage" [(ngModel)]="productInput.image"/>
         </div>
         <div class="field">
-          <label for="productCreationUnitsInStock">Quantity</label>
-          <p-inputNumber id="productCreationUnitsInStock" [required]="true"
+          <label for="productEditingUnitsInStock">Quantity</label>
+          <p-inputNumber id="productEditingUnitsInStock" [required]="true"
                          [(ngModel)]="productInput.unitsInStock"
           ></p-inputNumber>
           <small class="p-error" *ngIf="submitted && productInput.unitsInStock === null">
@@ -67,8 +59,8 @@
           </small>
         </div>
         <div class="field">
-          <label for="productCreationPrice">Price</label>
-          <p-inputNumber id="productCreationPrice" [(ngModel)]="productInput.unitPrice"
+          <label for="productEditingPrice">Price</label>
+          <p-inputNumber id="productEditingPrice" [(ngModel)]="productInput.unitPrice"
                          mode="currency" currency="USD" locale="en-US"
           ></p-inputNumber>
         </div>
@@ -78,6 +70,9 @@
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+            [disabled]="saveProductDisabled()"
+            (click)="saveProduct()"
+    ></button>
   </ng-template>
 </p-dialog>
