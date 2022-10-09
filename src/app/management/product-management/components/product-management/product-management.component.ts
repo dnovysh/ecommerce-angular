@@ -98,6 +98,7 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
 
   productCreateDialog: boolean
   productEditDialog: boolean
+  productEditProductId: number
 
   loading = () => this.isLoading || this.deletion
 
@@ -417,8 +418,27 @@ export class ProductManagementComponent implements OnInit, OnDestroy {
     }
   }
 
-  editProduct(product: any): void {
+  openEdit(product: Product): void {
+    if (!product || product.id === undefined) {
+      return
+    }
+    this.productEditProductId = product.id
+    this.productEditDialog = true
+  }
 
+  onUpdateProduct($event: Product | null): void {
+    this.productEditDialog = false
+    if ($event) {
+      const updatedProduct: Product = this.getProductDeepCopy($event)
+      if (this.products && this.products.length > 0) {
+        this.products = this.products.map(product => {
+          if (product.id === updatedProduct.id) {
+            return updatedProduct
+          }
+          return product
+        })
+      }
+    }
   }
 
   deleteProduct(product: Product): void {

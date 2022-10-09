@@ -15,8 +15,8 @@ import { ToastModule } from "primeng/toast";
 import { ProductManagementService } from "src/app/shared/services/product-management.service";
 import { ImagePreloadModule } from "src/app/shared/directives/image-preload/image-preload.module";
 import { ProductEditComponent } from './components/product-edit/product-edit.component';
-import { EditProductEffect } from "src/app/management/product-edit/store/update-product.effect";
 import { reducer } from 'src/app/management/product-edit/store/reducers';
+import { EditProductEffect } from "src/app/management/product-edit/store/edit-product.effect";
 
 
 @NgModule({

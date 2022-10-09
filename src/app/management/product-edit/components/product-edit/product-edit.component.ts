@@ -57,6 +57,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   private initializeValues(): void {
     this.submitted = false
     this.productInputInitialized = false
+    this.productInput= {
+      category: null,
+      description: null,
+      image: null,
+      name: null,
+      sku: null,
+      unitPrice: null,
+      unitsInStock: null
+    }
     this.categoryList = []
   }
 
