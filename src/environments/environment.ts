@@ -3,7 +3,13 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  pageSizeList:  [6, 12, 24, 48, 96],
+  defaultPageSizeIndex: 0,
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+  baseApiUrl: 'http://localhost:4200/api',
+  baseProductImageSource: 'assets/catalog/product/images/',
+  defaultProductImage: 'assets/catalog/product/images/placeholder.jpg'
 };
 
 /*

@@ -1,0 +1,25 @@
+.product-create-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.product-create-container .left-panel,
+.product-create-container .right-panel {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-create-container .right-panel {
+  padding-bottom: 4px;
+}
+
+.product-create-container .right-panel .product-image {
+  width: 300px;
+  height: 200px;
+  object-fit: contain;
+  align-self: center;
+  image-rendering: high-quality;
+  margin-bottom: 1rem;
+}

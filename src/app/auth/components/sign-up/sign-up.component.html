@@ -1,0 +1,122 @@
+<div class="register-body p-component-overlay"
+     id="registerBody1"
+>
+  <div class="register-wrapper"
+       id="registerWrapper1"
+  >
+    <div class="register-indent-top"></div>
+    <div class="register-panel">
+
+      <p-toast
+        key="signUpErrorToast"
+        position="bottom-left"
+        [baseZIndex]="1999"
+        [preventOpenDuplicates]="true"
+      ></p-toast>
+
+      <div class="register-header">
+        <a [routerLink]="backToShopLink"
+           [queryParams]="backToShopQueryParams"
+           class="no-underline cursor-pointer"
+        >
+          <img src="assets/layout/images/logo-shopocon-auth.png" alt="Logo" height="101" class="mt-2 mb-3">
+        </a>
+        <div class="text-3xl font-medium mb-3">Sign Up to Shopocon</div>
+        <span class="text-600 font-medium line-height-3">Already have an account?</span>
+        <a
+          routerLink="/login"
+          [queryParams]="signUpQueryParams"
+          class="font-medium no-underline ml-2 text-blue-500 cursor-pointer focus-a"
+        >
+          Sign in
+        </a>
+      </div>
+
+      <div class="register-errors" *ngIf="objectErrors">
+        <ec-auth-error [errors]="objectErrors"></ec-auth-error>
+      </div>
+
+      <div class="register-form">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+          <div class="register-alias-wrapper">
+            <label for="signUpAlias1" class="block text-900 font-medium mb-2">Name</label>
+            <input
+              id="signUpAlias1"
+              formControlName="alias"
+              type="text"
+              name="alias"
+              pInputText
+              (input)="onAliasInput()"
+              [ngClass]="{ 'ng-invalid ng-touched ng-dirty': isAliasInvalid }"
+              (keydown)="onKeydownEnterFocusNext($event, signUpEmail)"
+            >
+            <div class="validation-errors" *ngIf="isAliasInvalid && aliasValidationErrors">
+              <ec-auth-validation-errors [errors]="aliasValidationErrors"></ec-auth-validation-errors>
+            </div>
+          </div>
+
+          <div class="register-email-wrapper">
+            <label for="signUpEmail1" class="block text-900 font-medium mb-2">Email</label>
+            <input
+              #signUpEmail
+              id="signUpEmail1"
+              formControlName="email"
+              type="email"
+              name="email"
+              pInputText
+              (input)="onEmailInput()"
+              [ngClass]="{ 'ng-invalid ng-touched ng-dirty': isEmailInvalid }"
+              (keydown)="onKeydownEnterFocusNext($event, signUpPassword)"
+            >
+            <div class="validation-errors" *ngIf="isEmailInvalid && emailValidationErrors">
+              <ec-auth-validation-errors [errors]="emailValidationErrors"></ec-auth-validation-errors>
+            </div>
+          </div>
+
+          <div class="register-password-wrapper">
+            <label for="signUpPassword1" class="block text-900 font-medium mb-2">Password</label>
+            <p-password
+              #signUpPassword
+              inputId="signUpPassword1"
+              formControlName="password"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="p-password p-component p-inputwrapper p-input-icon-right"
+              inputStyleClass="p-inputtext p-component p-element p-password-input"
+              (input)="onPasswordInput()"
+              [ngClass]="{ 'ng-invalid ng-touched ng-dirty': isPasswordInvalid }"
+              (keydown)="onKeydownEnterFocusNext($event, signUpSubmitButton)"
+            ></p-password>
+            <div class="validation-errors" *ngIf="isPasswordInvalid && passwordValidationErrors">
+              <ec-auth-validation-errors [errors]="passwordValidationErrors"></ec-auth-validation-errors>
+            </div>
+          </div>
+
+          <button
+            #signUpSubmitButton
+            type="submit" [disabled]="isSubmitting"
+            pButton
+            pRipple
+            label="Sign Up"
+            class="w-full font-semibold"
+          ></button>
+
+        </form>
+      </div>
+
+      <div class="register-footer">
+        <span class="text-600 font-medium line-height-3">Don't want to sign up now?</span>
+        <a
+          [routerLink]="backToShopLink"
+          [queryParams]="backToShopQueryParams"
+          class="font-medium no-underline ml-2 text-blue-500 cursor-pointer focus-a"
+        >
+          Back to shop
+        </a>
+      </div>
+
+    </div>
+    <div class="register-indent-bottom"></div>
+  </div>
+</div>

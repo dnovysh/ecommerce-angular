@@ -1,0 +1,49 @@
+.roles-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.roles-body {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  width: 100%;
+  justify-content: left;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  background-color: var(--surface-card);
+}
+
+.roles-container {
+  width: 100%;
+  padding: 0 24px;
+}
+
+.spinner-container {
+  text-align: center;
+  margin: 130px 0;
+  width: 100%;
+}
+
+.authorities-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.authorities-body {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  width: 100%;
+  justify-content: left;
+  padding: 0 3rem;
+  margin-bottom: 1rem;
+  background-color: var(--surface-card);
+}
+
+.authorities-container {
+  width: 100%;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.25rem 1rem;
+}

@@ -1,0 +1,78 @@
+<p-toast key="productUpdateToast"></p-toast>
+<p-dialog [visible]="true"
+          (visibleChange)="hideDialog()"
+          [style]="{width: '900px'}"
+          header="Product Details"
+          [modal]="true"
+          styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="product-edit-container">
+      <div class="left-panel">
+        <div class="field">
+          <label for="productEditingSku">Sku</label>
+          <input type="text" pInputText id="productEditingSku"
+                 [(ngModel)]="productInput.sku" [required]="true" [autofocus]="true"
+          />
+          <small class="p-error" *ngIf="submitted && !productInput.sku">Sku is required.</small>
+        </div>
+        <div class="field">
+          <label for="productEditingCategory">Category</label>
+          <p-dropdown *ngIf="categoryList" [options]="categoryList" [(ngModel)]="productInput.category"
+                      placeholder="Select a Category" optionLabel="name" [showClear]="true"
+                      inputId="productEditingCategory" [required]="true"
+          ></p-dropdown>
+          <small class="p-error" *ngIf="submitted && !productInput.category">Category is required.</small>
+        </div>
+        <div class="field">
+          <label for="productEditingName">Name</label>
+          <input type="text" pInputText id="productEditingName" [(ngModel)]="productInput.name" [required]="true"/>
+          <small class="p-error" *ngIf="submitted && !productInput.name">Name is required.</small>
+        </div>
+        <div class="field">
+          <label for="productEditingDescription">Description</label>
+          <textarea id="productEditingDescription" pInputTextarea
+                    [(ngModel)]="productInput.description"
+                    rows="5" cols="20"
+          ></textarea>
+        </div>
+      </div>
+      <div class="right-panel">
+        <img
+          [src]="getProductImageSrc(productInput.image)"
+          [default]="getDefaultProductImage()"
+          [defaultAlt]="productInput.name? productInput.name : ''"
+          alt=""
+          class="product-image"
+        />
+        <div class="field">
+          <label for="productEditingImage">Image</label>
+          <input type="text" pInputText id="productEditingImage" [(ngModel)]="productInput.image"/>
+        </div>
+        <div class="field">
+          <label for="productEditingUnitsInStock">Quantity</label>
+          <p-inputNumber id="productEditingUnitsInStock" [required]="true"
+                         [(ngModel)]="productInput.unitsInStock"
+          ></p-inputNumber>
+          <small class="p-error" *ngIf="submitted && productInput.unitsInStock === null">
+            Quantity is required.
+          </small>
+        </div>
+        <div class="field">
+          <label for="productEditingPrice">Price</label>
+          <p-inputNumber id="productEditingPrice" [(ngModel)]="productInput.unitPrice"
+                         mode="currency" currency="USD" locale="en-US"
+          ></p-inputNumber>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text"
+            [disabled]="saveProductDisabled()"
+            (click)="saveProduct()"
+    ></button>
+  </ng-template>
+</p-dialog>

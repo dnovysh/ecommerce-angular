@@ -1,0 +1,103 @@
+.register-body {
+  z-index: 1106;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #69768D 0%, var(--surface-ground) 100%);
+}
+
+.register-wrapper {
+  z-index: 1107;
+  height: 100%;
+  width: 50%;
+  min-width: 380px;
+  max-width: 475px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.register-wrapper .register-indent-top {
+  width: 100%;
+  min-height: 24px;
+}
+
+.register-wrapper .register-indent-bottom {
+  width: 100%;
+  min-height: 24px;
+}
+
+.register-wrapper .register-panel {
+  z-index: 1109;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03), 0 0 2px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.12);
+  background-color: var(--surface-card);
+}
+
+.register-wrapper .register-panel .register-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+}
+
+.register-wrapper .register-panel .register-form {
+  margin-bottom: 3rem;
+}
+
+.register-wrapper .register-panel .register-form input {
+  width: 100%;
+  font-size: 1.125rem;
+}
+
+.register-wrapper .register-panel .register-form .register-alias-wrapper {
+  margin-bottom: 1rem;
+}
+
+.register-wrapper .register-panel .register-form .register-email-wrapper {
+  margin-bottom: 1rem;
+}
+
+.register-wrapper .register-panel .register-form .register-password-wrapper {
+  margin-bottom: 3rem;
+}
+
+:host ::ng-deep .register-wrapper .register-panel .register-form .p-password {
+  width: 100%;
+
+  input {
+    width: 100%;
+    font-size: 1.125rem;
+  }
+}
+
+.register-wrapper .register-panel .register-errors {
+  margin-bottom: 1rem;
+}
+
+.register-wrapper .register-panel .register-form .validation-errors {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 1px;
+}
+
+.register-wrapper .register-panel .register-footer {
+  text-align: center;
+}
+
+.focus-a:focus, .focus-a:focus-visible {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #a6d5fa;
+  border-color: #2196F3;
+}
+
+@media screen and (min-width: 992px) {
+  .register-wrapper {
+    width: 475px;
+  }
+}

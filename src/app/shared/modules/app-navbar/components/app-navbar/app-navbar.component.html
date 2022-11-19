@@ -1,0 +1,117 @@
+<div class="layout-navbar layout-navbar-after">
+  <div class="layout-navbar-wrapper">
+    <div class="layout-navbar-left">
+      <div class="layout-navbar-logo">
+        <a routerLink="/" tabindex="0">
+          <img alt="" src="assets/layout/images/logo-shopocon.png">
+          <div>
+            <span>Shopocon</span>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="layout-navbar-right">
+      <div class="menu-button" (click)="onSidebarToggle()" *ngIf="hasAnyRole$ | async">
+        <i class="pi pi-bars"></i>
+      </div>
+      <div class="layout-navbar-search-action">
+        <div class="search-item">
+            <span class="p-input-icon-left">
+              <i class="pi pi-search" (click)="onEnterSearch()" (mousedown)="$event.preventDefault()"></i>
+              <input type="text"
+                     pInputText [(ngModel)]="searchText"
+                     placeholder="Search..."
+                     class="p-inputtext p-component p-element"
+                     (keyup.enter)="onEnterSearch()"
+              >
+            </span>
+        </div>
+      </div>
+      <ul class="layout-navbar-actions">
+        <li class="navbar-item notifications">
+          <div class="navbar-icon-wrapper">
+            <span class="p-overlay-badge navbar-icon">
+              <i class="p-element pi pi-bell p-overlay-badge" pBadge value="2"></i>
+            </span>
+          </div>
+          <ul class="fade-in-down" style="display:none!important;">
+            <li class="layout-submenu-header"><h6 class="header-text">Notifications</h6><span class="p-badge">3</span>
+            </li>
+            <li role="menuitem">
+              <a href="#">
+                <i class="pi pi-shopping-cart"></i>
+                <div class="notifications-item">
+                  <h6>Order <span>#2254</span> is placed</h6>
+                  <span>Total Amount of <span>$34.50</span></span>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="#">
+                <i class="pi pi-clock"></i>
+                <div class="notifications-item">
+                  <h6>Meeting with <span>AF04</span> Team</h6>
+                  <span>Google Meets</span>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="#">
+                <i class="pi pi-th-large"></i>
+                <div class="notifications-item">
+                  <h6>Task <span>#15</span> is complete</h6>
+                  <span>9 Remaining Tasks</span>
+                </div>
+              </a>
+            </li>
+            <li role="menuitem">
+              <a href="#">
+                <i class="pi pi-shopping-cart"></i>
+                <div class="notifications-item">
+                  <h6>Order <span>#2255</span> is placed</h6>
+                  <span>Total Amount of <span>$40.45</span></span>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="navbar-item shopping-cart">
+          <div class="navbar-icon-wrapper">
+            <span class="p-overlay-badge navbar-icon">
+              <i class="p-element pi pi-shopping-cart p-overlay-badge" pBadge value="6"></i>
+            </span>
+          </div>
+        </li>
+        <li class="navbar-item user-sign-in" *ngIf="isGuest$ | async">
+          <a [routerLink]="loginUrl" [queryParams]="loginQueryParams" class="sign-in-href">
+            <span class="navbar-icon">
+              <i class="pi pi-sign-in"></i>
+            </span>
+            <div class="sign-in-text">
+              <h6>Sign In</h6>
+            </div>
+          </a>
+        </li>
+        <li class="navbar-item user-profile" *ngIf="isAuthenticated$ | async">
+          <div class="user-profile-wrapper" (click)="opNavbarProfileMenu.toggle($event)">
+            <i class="pi pi-user"></i>
+            <div class="profile-info" *ngIf="userAlias$ | async">
+              <h6>{{userAlias$ | async}}</h6>
+            </div>
+          </div>
+          <p-overlayPanel
+            #opNavbarProfileMenu
+            [dismissable]="true"
+            appendTo="body"
+            styleClass="navbar-fade-in-down-menu"
+          >
+            <ng-template pTemplate="navbarProfileMenu">
+              <ec-user-profile-menu (clickMenuItem)="opNavbarProfileMenu.hide()"></ec-user-profile-menu>
+            </ng-template>
+          </p-overlayPanel>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<ec-shared-sidebar [(visible)]="sidebarVisible"></ec-shared-sidebar>

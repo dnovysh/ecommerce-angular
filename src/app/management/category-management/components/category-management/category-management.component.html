@@ -1,0 +1,116 @@
+<p-toast></p-toast>
+<ec-access-denied *ngIf="accessDenied"></ec-access-denied>
+<div class="categories-wrapper" *ngIf="accessAllowed">
+  <div class="categories-body">
+    <div class="categories-container">
+      <p-toolbar styleClass="mb-4">
+        <ng-template pTemplate="left">
+          <form [formGroup]="newCategoryForm" (ngSubmit)="onAddNew()">
+            <button pButton pRipple label="New" icon="pi pi-plus"
+                    *ngIf="!adding && hasCreatePermission"
+                    class="p-button-success mr-2"
+                    (click)="onOpenNew()"
+            ></button>
+            <label class="font-medium" *ngIf="adding">New category name
+              <input formControlName="newCategoryName" pInputText type="text" class="ml-2 mr-2"
+                     (input)="onNewCategoryNameInput($event)">
+            </label>
+            <button *ngIf="adding" pButton pRipple type="submit" icon="pi pi-check"
+                    class="p-button-rounded p-button-text p-button-success mr-2"
+            ></button>
+            <button *ngIf="adding" pButton pRipple type="button" icon="pi pi-times"
+                    (click)="onCancelNew()" class="p-button-rounded p-button-text p-button-danger"
+            ></button>
+          </form>
+        </ng-template>
+        <ng-template pTemplate="right">
+          <button pButton pRipple label="Refresh" icon="pi pi-refresh"
+                  class="p-button-rounded p-button-text p-button-secondary"
+                  (click)="onRefresh()"
+          ></button>
+        </ng-template>
+      </p-toolbar>
+      <p-table
+        [value]="categories"
+        dataKey="id"
+        editMode="row"
+        responsiveLayout="scroll"
+        [loading]="loading"
+      >
+        <ng-template pTemplate="caption">
+          <div class="flex align-items-center justify-content-between">
+            <h5 class="m-0">Manage Categories</h5>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th style="width:8rem"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-category let-editing="editing" let-ri="rowIndex">
+          <tr [pEditableRow]="category">
+            <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  {{category.id}}
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{category.id}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="category.name" required>
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{category.name}}
+                </ng-template>
+              </p-cellEditor>
+            </td>
+            <td style="text-align:center">
+              <button
+                *ngIf="!editing && hasUpdatePermission"
+                pButton
+                pRipple
+                type="button"
+                pInitEditableRow
+                icon="pi pi-pencil"
+                (click)="onRowEditInit(category)"
+                class="p-button-rounded p-button-success mr-2"
+              ></button>
+              <button
+                *ngIf="editing"
+                pButton pRipple
+                type="button"
+                pSaveEditableRow
+                icon="pi pi-check"
+                (click)="onRowEditSave(category)"
+                class="p-button-rounded p-button-text p-button-success mr-2"
+              ></button>
+              <button
+                *ngIf="editing"
+                pButton pRipple
+                type="button"
+                pCancelEditableRow
+                icon="pi pi-times"
+                (click)="onRowEditCancel(category, ri)"
+                class="p-button-rounded p-button-text p-button-danger"
+              ></button>
+              <button
+                *ngIf="!editing && hasDeletePermission"
+                pButton pRipple
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-warning"
+                (click)="onDeleteCategory(category)"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

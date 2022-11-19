@@ -1,0 +1,36 @@
+h5 {
+  font-size: 1.25rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 1.5rem 0 1rem;
+  font-family: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  color: inherit;
+}
+
+.categories-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.categories-body {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  width: 100%;
+  justify-content: left;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  background-color: var(--surface-card);
+}
+
+.categories-container {
+  width: 100%;
+  padding: 0 24px;
+}
+
+:host::ng-deep .p-button.p-button-text:enabled:hover {
+  background: rgba(232, 241, 248, 0.7);
+  transition: background-color 0.2s;
+}

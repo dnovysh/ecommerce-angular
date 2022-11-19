@@ -1,0 +1,11 @@
+<div class="sign-out-wrapper flex w-full">
+  <div class="sign-out" *ngIf="signOutIsInProgress$ | async">
+    <span>Signing out is in progress. Please wait</span>
+    <div class="spinner-container">
+      <ec-loading></ec-loading>
+    </div>
+  </div>
+  <div class="sign-out-successful" *ngIf="message$ | async">
+    <span>{{message$ | async}}</span>
+  </div>
+</div>

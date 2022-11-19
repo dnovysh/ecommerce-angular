@@ -1,0 +1,142 @@
+<div class="login-body p-component-overlay"
+     id="loginBody1"
+     [tabIndex]="-1"
+     (focus)="onBackgroundFocus()"
+>
+  <div class="login-wrapper"
+       id="loginWrapper1"
+       [tabIndex]="-1"
+       (focus)="onBackgroundFocus()"
+  >
+    <div class="login-indent-top"></div>
+    <div class="login-panel">
+
+      <p-toast
+        key="signInErrorToast"
+        position="bottom-left"
+        [baseZIndex]="1999"
+        [preventOpenDuplicates]="true"
+        (onClose)="onToastClose()"
+      ></p-toast>
+
+      <div class="login-header">
+        <a [routerLink]="backToShopLink"
+           [queryParams]="backToShopQueryParams"
+           class="no-underline cursor-pointer"
+        >
+          <img src="assets/layout/images/logo-shopocon-auth.png" alt="Logo" height="101" class="mt-2 mb-3">
+        </a>
+        <div class="text-3xl font-medium mb-3">Welcome back to Shopocon</div>
+        <span class="text-600 font-medium line-height-3">Don't have an account?</span>
+        <a
+          routerLink="/signup"
+          [queryParams]="signInQueryParams"
+          #signUpHref
+          (keydown)="onKeydownFormField($event, 'signUpHref')"
+          (focus)="onFocus($event, 'signUpHref')"
+          class="font-medium no-underline ml-2 text-blue-500 cursor-pointer focus-a"
+        >
+          Sign up
+        </a>
+      </div>
+
+      <div class="login-errors" *ngIf="objectErrors">
+        <ec-auth-error [errors]="objectErrors"></ec-auth-error>
+      </div>
+
+      <div class="login-form">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="login-email-wrapper">
+            <label for="signInEmail1" class="block text-900 font-medium mb-2">Email</label>
+            <input
+              #signInEmail
+              id="signInEmail1"
+              formControlName="email"
+              type="email"
+              name="email"
+              pInputText
+              (input)="onEmailInput()"
+              (keydown)="onKeydownFormField($event, 'signInEmail')"
+              (focus)="onFocus($event, 'signInEmail')"
+              [ngClass]="{ 'ng-invalid ng-touched ng-dirty': isEmailInvalid }"
+            >
+            <div class="validation-errors" *ngIf="isEmailInvalid && emailValidationErrors">
+              <ec-auth-validation-errors [errors]="emailValidationErrors"></ec-auth-validation-errors>
+            </div>
+          </div>
+          <div
+            class="login-password-wrapper"
+            [tabIndex]="-1"
+            (focus)="onPasswordWrapperFocus()"
+            (click)="onPasswordWrapperClick($event)"
+          >
+            <label for="signInPassword1" class="block text-900 font-medium mb-2">Password</label>
+            <p-password
+              #signInPassword
+              inputId="signInPassword1"
+              formControlName="password"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="p-password p-component p-inputwrapper p-input-icon-right"
+              inputStyleClass="p-inputtext p-component p-element p-password-input"
+              (input)="onPasswordInput()"
+              (keydown)="onKeydownFormField($event, 'signInPassword')"
+              (onFocus)="onFocus($event, 'signInPassword')"
+              [ngClass]="{ 'ng-invalid ng-touched ng-dirty': isPasswordInvalid }"
+            ></p-password>
+            <div class="validation-errors" *ngIf="isPasswordInvalid && passwordValidationErrors">
+              <ec-auth-validation-errors [errors]="passwordValidationErrors"></ec-auth-validation-errors>
+            </div>
+          </div>
+          <div class="flex align-items-center justify-content-between mb-6">
+            <div
+              id="rememberMeWrapper1"
+              class="flex align-items-center"
+              [tabIndex]="-1"
+              (focus)="onRememberMeWrapperFocus()"
+            >
+              <p-checkbox
+                #signInRememberMe
+                id="signInRememberMe1"
+                formControlName="rememberMe"
+                [binary]="true"
+                (keydown)="onKeydownFormField($event, 'signInRememberMe')"
+                styleClass="mr-2"
+              ></p-checkbox>
+              <label for="signInRememberMe1" class="text-900">Remember me</label>
+            </div>
+            <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer p-disabled">
+              Forgot password?
+            </a>
+          </div>
+          <button
+            #signInSubmitButton
+            type="submit" [disabled]="isSubmitting"
+            pButton
+            pRipple
+            label="Sign In"
+            (keydown)="onKeydownFormField($event, 'signInSubmitButton')"
+            (focus)="onFocus($event, 'signInSubmitButton')"
+            class="w-full font-semibold"
+          ></button>
+        </form>
+      </div>
+
+      <div class="login-footer">
+        <span class="text-600 font-medium line-height-3">Don't want to sign in now?</span>
+        <a
+          #backToShopHref
+          [routerLink]="backToShopLink"
+          [queryParams]="backToShopQueryParams"
+          (keydown)="onKeydownFormField($event, 'backToShopHref')"
+          (focus)="onFocus($event, 'backToShopHref')"
+          class="font-medium no-underline ml-2 text-blue-500 cursor-pointer focus-a"
+        >
+          Back to shop
+        </a>
+      </div>
+
+    </div>
+    <div class="login-indent-bottom"></div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+:host ::ng-deep .auth-validation-errors {
+  .p-inline-message {
+    justify-content: left;
+    width: 100%;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-top: 2px;
+  }
+
+  .p-inline-message-icon {
+    font-size: smaller;
+  }
+
+  .p-inline-message-text {
+    font-size: smaller;
+  }
+}
